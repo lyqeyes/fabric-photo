@@ -1,7 +1,8 @@
-const events = require('events');
+import CustomEvents from './lib/custom-event';
 
 import Main from './modules/main';
 import Draw from './modules/draw';
+import Text from './modules/text';
 import consts from './consts';
 
 import util from './lib/util.js';
@@ -9,7 +10,7 @@ import util from './lib/util.js';
 const {eventNames, rejectMessages} = consts;
 export default class{
     constructor() {
-        this._customEvents = new events.EventEmitter();
+        this._customEvents = new CustomEvents();
 
         this._undoStack = [];
         this._redoStack = [];
@@ -29,6 +30,7 @@ export default class{
 
         this._register(main);
         this._register(new Draw(main));
+        this._register(new Text(main));
     }
 
 
