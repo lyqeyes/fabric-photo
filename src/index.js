@@ -369,7 +369,7 @@ class FabricPhoto {
         //this.endLineDrawing();
         this.endMosaicDrawing();
         //this.endCropping();
-        //this.endDrawingShapeMode();
+        this.endDrawingShapeMode();
         this.deactivateAll();
         this._state = states.NORMAL;
     }

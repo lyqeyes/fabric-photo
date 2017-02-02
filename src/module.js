@@ -6,6 +6,7 @@ import Text from './modules/text';
 import Mosaic from './modules/mosaic';
 import ImageLoader from './modules/image-loader';
 import Rotation from './modules/rotation';
+import Shape from './modules/shape';
 
 import consts from './consts';
 
@@ -39,6 +40,8 @@ export default class{
         this._register(new ImageLoader(main));
         this._register(new Mosaic(main));
         this._register(new Rotation(main));
+        this._register(new Shape(main));
+        
     }
 
 
