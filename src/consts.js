@@ -16,7 +16,8 @@ export default {
         'TEXT',
         'ICON',
         'FILTER',
-        'SHAPE'
+        'SHAPE',
+        'MOSAIC'
     ),
 
     /**
@@ -30,7 +31,8 @@ export default {
         'ROTATE_IMAGE',
         'ADD_OBJECT',
         'REMOVE_OBJECT',
-        'APPLY_FILTER'
+        'APPLY_FILTER',
+        'ZOOM'
     ),
 
     /**
@@ -52,7 +54,9 @@ export default {
         START_FREE_DRAWING: 'startFreeDrawing',
         END_FREE_DRAWING: 'endFreeDrawing',
         START_LINE_DRAWING: 'startLineDrawing',
-        END_LINE_DRAWING: 'endLineDrawing',
+        END_LINE_DRAWING: 'endLineDrawing',        
+        START_MOSAIC_DRAWING: 'startMosaicDrawing',
+        END_MOSAIC_DRAWING: 'endMosaicDrawing',
         EMPTY_REDO_STACK: 'emptyRedoStack',
         EMPTY_UNDO_STACK: 'emptyUndoStack',
         PUSH_UNDO_STACK: 'pushUndoStack',
@@ -72,6 +76,7 @@ export default {
         'CROP',
         'FREE_DRAWING',
         'LINE',
+        'MOSAIC',
         'TEXT',
         'SHAPE'
     ),
@@ -103,10 +108,7 @@ export default {
         }
     },
 
-    /**
-     * Promise reject messages
-     * @type {Object.<string, string>}
-     */
+
     rejectMessages: {
         flip: 'The flipX and flipY setting values are not changed.',
         rotation: 'The current angle is same the old angle.',

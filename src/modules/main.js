@@ -1,5 +1,6 @@
 import Base from './base';
 import consts from '../consts';
+import util from '../lib/util.js';
 
 const DEFAULT_CSS_MAX_WIDTH = 700;
 const DEFAULT_CSS_MAX_HEIGHT = 400;
@@ -10,7 +11,9 @@ const cssOnly = {
 const backstoreOnly = {
     backstoreOnly: true
 };
-
+/*
+* 图形编辑器的 画板相关的设定 都需要在这里实现
+*/
 export default class Main extends Base {
     constructor() {
         super();
@@ -49,7 +52,7 @@ export default class Main extends Base {
      */
     setCanvasImage(name, canvasImage) {
         if (canvasImage) {
-            tui.util.stamp(canvasImage);
+            util.stamp(canvasImage);
         }
         this.imageName = name;
         this.canvasImage = canvasImage;
@@ -80,14 +83,18 @@ export default class Main extends Base {
         } else {
             selectedElement = document.querySelector(element);
         }
-
+        
+        if(!selectedElement || !selectedElement.nodeName){
+            throw new Error('容器元素是空');
+        }
+        
         if (selectedElement.nodeName.toUpperCase() !== 'CANVAS') {
             canvasElement = document.createElement('canvas');
             selectedElement.appendChild(canvasElement);
         }
 
         this.canvas = new fabric.Canvas(canvasElement, {
-            containerClass: 'tui-image-editor-canvas-container',
+            containerClass: 'xm-fabric-photo-editor-canvas-container',
             enableRetinaScaling: false
         });
     }

@@ -3,11 +3,16 @@ import CustomEvents from './lib/custom-event';
 import Main from './modules/main';
 import Draw from './modules/draw';
 import Text from './modules/text';
+import Mosaic from './modules/mosaic';
+import ImageLoader from './modules/image-loader';
+import Rotation from './modules/rotation';
+
 import consts from './consts';
 
 import util from './lib/util.js';
 
 const {eventNames, rejectMessages} = consts;
+
 export default class{
     constructor() {
         this._customEvents = new CustomEvents();
@@ -31,6 +36,9 @@ export default class{
         this._register(main);
         this._register(new Draw(main));
         this._register(new Text(main));
+        this._register(new ImageLoader(main));
+        this._register(new Mosaic(main));
+        this._register(new Rotation(main));
     }
 
 

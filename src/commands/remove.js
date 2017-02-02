@@ -4,7 +4,7 @@ import consts from '../consts';
 
 const {moduleNames} = consts;
 const {MAIN, IMAGE_LOADER, FLIP, ROTATION, FILTER} = moduleNames;
-export default function(){
+export default function(target){
     return new Command({
         /**
          * @param {object.<string, Component>} moduleMap - Modules injection

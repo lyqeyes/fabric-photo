@@ -1,3 +1,7 @@
+/*
+* module base class
+* all modules should inherite this base class
+*/
 export default class {
     /**
      * Save image(background) of canvas
@@ -107,7 +111,7 @@ export default class {
 
     /**
      * Return root
-     * @returns {Component}
+     * @returns {Module}
      */
     getRoot() {
         let next = this.getParent();

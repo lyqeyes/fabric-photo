@@ -2,8 +2,14 @@
  * Created by yeanzhi on 17/1/13.
  */
 'use strict';
-import React, {Component} from 'react';
-import ReactDOM, {findDOMNode} from 'react-dom';
+import React, {
+    Component
+}
+from 'react';
+import ReactDOM, {
+    findDOMNode
+}
+from 'react-dom';
 import classnames from 'classnames';
 
 import FabricPhoto from '../src/index'
@@ -20,23 +26,64 @@ export default class WrapContainer extends Component {
     }
 
     componentDidMount() {
+        // let width = 700,
+        // height = 400;
+        // var xhr = new XMLHttpRequest();
+        // let that = this;
+        // xhr.onreadystatechange = function() {
+        //     if (this.readyState == 4 && this.status == 200) {
+        //         let reader = new FileReader();
+        //         reader.onload = function() {
+        //             let img = new Image();
+        //             img.onload = function() {
+        //                 let originWidth = this.width;
+        //                 let originHeight = this.height;
+        //                 let scale = 1;
+        //                 let imgWidth = originWidth,
+        //                     imgHeight = originHeight;
+        //                 if (imgWidth > width) {
+        //                     scale = width / imgWidth;
+        //                 }
+        //                 if (imgHeight > height) {
+        //                     let _scale = height / imgHeight;
+        //                     if (_scale < scale) {
+        //                         scale = _scale;
+        //                     }
+        //                 }
 
-        var xhr = new XMLHttpRequest();
-        let that = this;
-        xhr.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                window.fabricPhoto = that.fp = new FabricPhoto(this.response, {
-                    renderTo: '#upload-file-image-preview-canvas',
-                });
-            }
-        }
-        //xhr.open('GET', 'http://mss.ximing.ren/v1/mss_814dc1610cda4b2e8febd6ea2c809db5/image/1484297784369.jpeg');
-         //xhr.open('GET', 'http://mss.ximing.ren/v1/mss_814dc1610cda4b2e8febd6ea2c809db5/image/1484297784312.png');
-        //xhr.open('GET', 'http://mss.ximing.ren/v1/mss_814dc1610cda4b2e8febd6ea2c809db5/image/1484297783376.jpeg');
-         xhr.open('GET', 'http://mss.ximing.ren/v1/mss_814dc1610cda4b2e8febd6ea2c809db5/image/1484297783302.jpg');
-        //xhr.open('GET', 'http://mss.ximing.ren/v1/mss_814dc1610cda4b2e8febd6ea2c809db5/image/1484297783036.png');
-        xhr.responseType = 'blob';
-        xhr.send();
+        //                 scale = Math.floor(scale * 10) / 10;
+
+        //                 imgWidth = imgWidth * scale;
+        //                 imgHeight = imgHeight * scale;
+        //                 window.fabricPhoto = that.fp = new FabricPhoto('#upload-file-image-preview canvas', {
+        //                     cssMaxWidth: imgWidth,
+        //                     cssMaxHeight: imgHeight
+        //                 });
+        //                 that.fp.loadImageFromURL(dataUrl, 'image name');
+        //             }
+        //             var dataUrl = img.src = this.result;
+        //         }
+        //         reader.readAsDataURL(this.response);
+        //     }
+        // }
+
+        // //xhr.open('GET', 'http://mss.ximing.ren/v1/mss_814dc1610cda4b2e8febd6ea2c809db5/image/1484297784369.jpeg');
+        // //xhr.open('GET', 'http://mss.ximing.ren/v1/mss_814dc1610cda4b2e8febd6ea2c809db5/image/1484297784312.png');
+        // //xhr.open('GET', 'http://mss.ximing.ren/v1/mss_814dc1610cda4b2e8febd6ea2c809db5/image/1484297783376.jpeg');
+        // xhr.open('GET', 'http://mss.ximing.ren/v1/mss_814dc1610cda4b2e8febd6ea2c809db5/image/1484297783302.jpg');
+        // //xhr.open('GET', 'http://mss.ximing.ren/v1/mss_814dc1610cda4b2e8febd6ea2c809db5/image/1484297783036.png');
+        // xhr.responseType = 'blob';
+        // xhr.send();
+
+        window.fabricPhoto = this.fp = new FabricPhoto('#upload-file-image-preview', {
+            cssMaxWidth: 700,
+            cssMaxHeight: 400
+        });
+        //this.fp.loadImageFromURL('http://mss.ximing.ren/v1/mss_814dc1610cda4b2e8febd6ea2c809db5/image/1484297783302.jpg', 'image name');
+        this.fp.loadImageFromURL('http://mss.ximing.ren/v1/mss_814dc1610cda4b2e8febd6ea2c809db5/image/1484297784369.jpeg', 'image name');
+        //this.fp.loadImageFromURL('http://mss.ximing.ren/v1/mss_814dc1610cda4b2e8febd6ea2c809db5/image/1484297784312.png', 'image name');
+        //this.fp.loadImageFromURL('http://mss.ximing.ren/v1/mss_814dc1610cda4b2e8febd6ea2c809db5/image/1484297783376.jpeg', 'image name');
+        //this.fp.loadImageFromURL('http://mss.ximing.ren/v1/mss_814dc1610cda4b2e8febd6ea2c809db5/image/1484297783036.png', 'image name');
     }
 
     componentWillUnmount() {
@@ -77,8 +124,8 @@ export default class WrapContainer extends Component {
     changeRoutate() {
         this.kp.execCommand('changeRotate', 90);
     };
-    
-    startClip(){
+
+    startClip() {
         this.kp.execCommand('startClip');
     }
 
@@ -106,7 +153,10 @@ export default class WrapContainer extends Component {
     }
 
     getDialogViewPort() {
-        const {height, width} = this.getWindowViewPort();
+        const {
+            height,
+            width
+        } = this.getWindowViewPort();
         return {
             width: width < 680 ? 680 : width > 900 ? 900 : width,
             height: height < 450 ? 450 : height > 600 ? 600 : height
@@ -123,9 +173,9 @@ export default class WrapContainer extends Component {
         return (
             <div className="wrap_inner">
                 <div className="main">
-                    <div className="upload-file-image-preview">
-                        <canvas id="upload-file-image-preview-canvas" width="600" height="600"></canvas>
-                        <div className={btnClassname}>
+                    <div className="upload-file-image-preview" id="upload-file-image-preview">
+                    </div>
+                    <div className={btnClassname}>
                             <div className="image-thumb-btns">
                                 <i className="dxicon dxicon-image-suoxiao" onClick={this.changeScale(-10)}/>
                                 <div className="thumb-divider"></div>
@@ -174,7 +224,6 @@ export default class WrapContainer extends Component {
                             <div className="ctn-btns">
                             </div>
                         </div>
-                    </div>
                 </div>
             </div>
         );

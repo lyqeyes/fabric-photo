@@ -31,23 +31,11 @@ let DomURL = window.URL || window.webkitURL || window;
 
 class FabricPhoto {
 
-    constructor(source, options) {
-        let _config = Object.assign(defultOpt, options);
-        this.$container = $(_config.renderTo);
-        if (this.$container.length === 0) {
-            throw new Error('容器不存在');
-        }
-        this.config = _config;
-        this.source = source;
-        this.init();
-    }
-
-    init() {
-        imageLayout.apply(this);
+    constructor(element, option) {
+        option = option || {};
         this._module = new module();
         this._canvas = null;
         this._state = states.NORMAL;
-
         this._handlers = {
             keydown: this._onKeyDown.bind(this),
             mousedown: this._onMouseDown.bind(this),
@@ -65,7 +53,7 @@ class FabricPhoto {
         this._attachDomEvents();
 
 
-        if (this.option.selectionStyle) {
+        if (option.selectionStyle) {
             this._setSelectionStyle(option.selectionStyle);
         }
     }
@@ -73,22 +61,6 @@ class FabricPhoto {
     _setSelectionStyle(styles) {
         Object.assign(fObjectOptions.SELECTION_STYLE, styles);
     }
-    
-    getContainerViewBox() {
-        let {
-            top,
-            left,
-            width,
-            height
-        } = this.$container[0].getBoundingClientRect();
-        return {
-            top,
-            left,
-            width,
-            height
-        };
-    }
-
 
     _attachModuleEvents() {
         const {
@@ -319,8 +291,8 @@ class FabricPhoto {
 
         textComp.setSelectedInfo(fEvent.target, true);
     }
-    
-        /**
+
+    /**
      * Set canvas element
      * @param {string|jQuery|HTMLElement} element - Wrapper or canvas element or selector
      * @param {number} cssMaxWidth - Canvas css max width
@@ -336,8 +308,8 @@ class FabricPhoto {
         });
         this._canvas = mainModule.getCanvas();
     }
-    
-     /**
+
+    /**
      * Returns main module
      * @returns {Module} Main module
      * @private
@@ -355,7 +327,7 @@ class FabricPhoto {
     _getModule(name) {
         return this._module.getModule(name);
     }
-    
+
     /**
      * Get current state
      * @returns {string}
@@ -374,8 +346,8 @@ class FabricPhoto {
     getCurrentState() {
         return this._state;
     }
-    
-     /**
+
+    /**
      * Clear all objects
      * @example
      * imageEditor.clearObjects();
@@ -390,7 +362,7 @@ class FabricPhoto {
         command.setExecuteCallback(callback);
         this.execute(command);
     }
-    
+
     /**
      * End current action & Deactivate
      * @example
@@ -403,14 +375,15 @@ class FabricPhoto {
     endAll() {
         this.endTextMode();
         this.endFreeDrawing();
-        this.endLineDrawing();
-        this.endCropping();
-        this.endDrawingShapeMode();
+        //this.endLineDrawing();
+        this.endMosaicDrawing();
+        //this.endCropping();
+        //this.endDrawingShapeMode();
         this.deactivateAll();
         this._state = states.NORMAL;
     }
-    
-     /**
+
+    /**
      * Deactivate all objects
      * @example
      * imageEditor.deactivateAll();
@@ -427,7 +400,7 @@ class FabricPhoto {
      */
     execute(command) {
         this.endAll();
-        this._invoker.invoke(command);
+        this._module.invoke(command);
     }
 
     /**
@@ -437,7 +410,7 @@ class FabricPhoto {
      */
     undo() {
         this.endAll();
-        this._invoker.undo();
+        this._module.undo();
     }
 
     /**
@@ -447,7 +420,7 @@ class FabricPhoto {
      */
     redo() {
         this.endAll();
-        this._invoker.redo();
+        this._module.redo();
     }
 
     /**
@@ -463,12 +436,12 @@ class FabricPhoto {
         }
 
         this.loadImageFromURL(
-            URL.createObjectURL(imgFile),
+            DomURL.createObjectURL(imgFile),
             imageName || imgFile.name
         );
     }
-    
-     /**
+
+    /**
      * Load image from url
      * @param {string} url - File url
      * @param {string} imageName - imageName
@@ -486,7 +459,8 @@ class FabricPhoto {
             .setUndoCallback(oImage => {
                 if (oImage) {
                     callback(oImage);
-                } else {
+                }
+                else {
                     /**
                      * @event ImageEditor#clearImage
                      */
@@ -495,8 +469,8 @@ class FabricPhoto {
             });
         this.execute(command);
     }
-    
-    
+
+
     /**
      * Callback after image loading
      * @param {?fabric.Image} oImage - Image instance
@@ -505,7 +479,10 @@ class FabricPhoto {
     _callbackAfterImageLoading(oImage) {
         const mainModule = this._getMainModule();
         const canvasElement = mainModule.getCanvasElement();
-        const {width, height} = canvasElement.getBoundingClientRect();
+        const {
+            width,
+            height
+        } = canvasElement.getBoundingClientRect();
 
         /**
          * @event ImageEditor#loadImage
@@ -542,13 +519,12 @@ class FabricPhoto {
         }
 
         fabric.Image.fromURL(imgUrl,
-            this._callbackAfterLoadingImageObject.bind(this),
-            {
+            this._callbackAfterLoadingImageObject.bind(this), {
                 crossOrigin: 'Anonymous'
             }
         );
     }
-    
+
     /**
      * Callback function after loading image
      * @param {fabric.Image} obj - Fabric image object
@@ -567,8 +543,8 @@ class FabricPhoto {
 
         this._canvas.add(obj).setActiveObject(obj);
     }
-    
-     /**
+
+    /**
      * Start cropping
      * @example
      * imageEditor.startCropping();
@@ -618,7 +594,7 @@ class FabricPhoto {
             this.loadImageFromURL(data.url, data.imageName);
         }
     }
-    
+
     /**
      * @param {string} type - 'rotate' or 'setAngle'
      * @param {number} angle - angle value (degree)
@@ -667,8 +643,8 @@ class FabricPhoto {
     setAngle(angle) {
         this._rotate('setAngle', angle);
     }
-    
-     /**
+
+    /**
      * Start free-drawing mode
      * @param {{width: number, color: string}} [setting] - Brush width & color
      * @example
@@ -740,7 +716,7 @@ class FabricPhoto {
          */
         this.fire(events.END_FREE_DRAWING);
     }
-    
+
     /**
      * Start line-drawing mode
      * @param {{width: number, color: string}} [setting] - Brush width & color
@@ -785,12 +761,46 @@ class FabricPhoto {
          */
         this.fire(events.END_LINE_DRAWING);
     }
-    
-     /**
-     * Start to draw shape on canvas (bind event on canvas)
+
+
+    /**
+     * Start mosaic mode
+     * @param {{dimensions: number}} [setting] - dimensions
      * @example
-     * imageEditor.startDrawingShapeMode();
+     * imageEditor.startMosaicDrawing();
+     * imageEditor.endMosaicDrawing();
+     * imageEidtor.startLineDrawing({
+     *     dimensions: 12,
+     * });
      */
+    startMosaicDrawing(setting) {
+        this.endAll();
+        this._getModule(modules.MOSAIC).start(setting);
+        this._state = states.MOSAIC;
+
+        this.fire(events.START_MOSAIC_DRAWING);
+    }
+
+    /**
+     * End endMosaic mode
+     * @example
+     * imageEditor.startMosaicDrawing();
+     * imageEditor.endMosaicDrawing();
+     */
+    endMosaicDrawing() {
+            if (this.getCurrentState() !== states.LINE) {
+                return;
+            }
+            this._getModule(modules.LINE).end();
+            this._state = states.NORMAL;
+
+            this.fire(events.END_MOSAIC_DRAWING);
+        }
+        /**
+         * Start to draw shape on canvas (bind event on canvas)
+         * @example
+         * imageEditor.startDrawingShapeMode();
+         */
     startDrawingShapeMode() {
         if (this.getCurrentState() !== states.SHAPE) {
             this._state = states.SHAPE;
@@ -1060,11 +1070,11 @@ class FabricPhoto {
         this.fire(events.EDIT_TEXT);
     }
 
-     /**
-      * Mousedown event handler
-      * @param {fabric.Event} event - Current mousedown event object
-      * @private
-      */
+    /**
+     * Mousedown event handler
+     * @param {fabric.Event} event - Current mousedown event object
+     * @private
+     */
     _onFabricMouseDown(event) { // eslint-disable-line
         const obj = event.target;
         const e = event.e || {};
@@ -1126,7 +1136,7 @@ class FabricPhoto {
             }
         });
     }
-    
+
     /**
      * Remove active object or group
      * @example
@@ -1138,7 +1148,13 @@ class FabricPhoto {
         const command = commandFactory.create(commands.REMOVE_OBJECT, target);
         this.execute(command);
     }
-    
+
+    setZoom(rate) {
+        rate = rate || 1;
+        const command = commandFactory.create(commands.ZOOM, rate);
+        this.execute(command);
+    }
+
     /**
      * Get data url
      * @param {string} type - A DOMString indicating the image format. The default type is image/png.
@@ -1195,24 +1211,24 @@ class FabricPhoto {
     isEmptyRedoStack() {
         return this._module.isEmptyRedoStack();
     }
-    
-     /**
+
+    /**
      * Resize canvas dimension
      * @param {{width: number, height: number}} dimension - Max width & height
      */
     resizeCanvasDimension(dimension) {
-        const mainModule = this._getMainModule();
+            const mainModule = this._getMainModule();
 
-        if (!dimension) {
-            return;
+            if (!dimension) {
+                return;
+            }
+
+            mainModule.setCssMaxDimension(dimension);
+            mainModule.adjustCanvasDimension();
         }
-
-        mainModule.setCssMaxDimension(dimension);
-        mainModule.adjustCanvasDimension();
-    }
- /**
-     * Destroy
-     */
+        /**
+         * Destroy
+         */
     destroy() {
         const wrapperEl = this._canvas.wrapperEl;
 
@@ -1244,6 +1260,7 @@ class FabricPhoto {
             options.top = centerPosition.top;
         }
     }
+
 
 }
 
