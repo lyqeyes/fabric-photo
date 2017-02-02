@@ -7,11 +7,12 @@ const {
 const webpack = require('webpack');
 const path = require('path');
 const c9 = !!process.env.PORT;
+const c9Host = process.env.HOST || 'fabric-photo-yeanzhi.c9users.io';
 module.exports = {
     entry: {
         'index': [
             'react-hot-loader/patch',
-            `webpack-dev-server/client?${c9?'http://fabric-photo-yeanzhi.c9users.io':'http://127.0.0.1:9876'}`,
+            `webpack-dev-server/client?${c9?c9Host:'http://127.0.0.1:9876'}`,
             'webpack/hot/only-dev-server',
             './demo/index.js'
         ]

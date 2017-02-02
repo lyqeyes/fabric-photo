@@ -122,15 +122,6 @@ class FabricPhoto {
     _onMouseDown(fEvent) {
             const originPointer = this._canvas.getPointer(fEvent.e);
 
-            /**
-             * @event ImageEditor#mousedown
-             * @param {object} event - Event object
-             * @example
-             * imageEditor.on('mousedown', function(event) {
-             *     console.log(event.e);
-             *     console.log(event.originPointer);
-             * });
-             */
             this.fire(events.MOUSE_DOWN, {
                 e: fEvent.e,
                 originPointer
