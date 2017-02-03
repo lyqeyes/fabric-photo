@@ -127,7 +127,7 @@ export default class WrapContainer extends Component {
             this.fp.endTextMode();
             this.fp.endLineDrawing();
             this.fp.endMosaicDrawing();
-            //this.fp.endCropping();
+            this.fp.endCropping();
             this.fp.endArrowDrawing();
 
             this.fp.startDrawingShapeMode();
@@ -141,7 +141,7 @@ export default class WrapContainer extends Component {
             this.fp.endLineDrawing();
             this.fp.endArrowDrawing();
             this.fp.endMosaicDrawing();
-            //this.fp.endCropping();
+            this.fp.endCropping();
             this.fp.endDrawingShapeMode();
             this.fp.endTextMode();
             console.log('++++++---- start text mode', this.fp.getCurrentState(), consts.states.TEXT);
@@ -243,7 +243,7 @@ export default class WrapContainer extends Component {
         this.resetEditorState();
     }
 
-    onClipBtnClick() {
+    onCropBtnClick() {
         this.fp.endAll();
         this.fp.startCropping();
     }
@@ -251,9 +251,6 @@ export default class WrapContainer extends Component {
     onClearBtnClick() {
         this.fp.endAll();
         this.resetEditorState();
-        this.setState({
-            isEdit: false
-        });
         this.fp.clearObjects();
     }
     onApplyCropBtn() {
@@ -448,7 +445,7 @@ export default class WrapContainer extends Component {
                             <i className="dxicon dxicon-image-text" onClick={this.onTextBtnClick.bind(this)} />
                             <i className="dxicon dxicon-image-masaike" onClick={this.onMosaicBtnClick.bind(this)} />
                             <i className="dxicon dxicon-image-xuanzhuan" onClick={this.onRotationBtnClick.bind(this)} />
-                            <i className="dxicon dxicon-image-jiancai" onClick={this.onClipBtnClick.bind(this)} />
+                            <i className="dxicon dxicon-image-jiancai" onClick={this.onCropBtnClick.bind(this)} />
                             <span className="tools-divider"> </span>
                             <span className="file-button-cancel"
                                 onClick={this.onClearBtnClick.bind(this)}>复原</span>

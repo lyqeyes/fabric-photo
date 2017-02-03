@@ -1,3 +1,4 @@
+const {min, max} = Math;
 function isUndefined(obj) {
     return obj === undefined;
 }
