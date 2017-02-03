@@ -13,77 +13,104 @@ from 'react-dom';
 import classnames from 'classnames';
 
 import FabricPhoto from '../src/index'
+import consts from '../src/consts'
 
 export default class WrapContainer extends Component {
     constructor() {
         super();
         this.state = {
-            isEdit: false,
-            editOpver: 'draw',
-            editColor: 'black',
-            editStroke: 8
+            editState: consts.states.NORMAL,
+            arrowMenu: {
+                color: '#FF3440',
+                stroke: 4
+            },
+            freeDraw: {
+                color: '#FF3440',
+                stroke: 4
+            },
+            text: {
+                color: '#FF3440'
+            },
+            mosaic: {
+                stroke: '#FF3440'
+            }
         };
     }
 
     componentDidMount() {
-        // let width = 700,
-        // height = 400;
-        // var xhr = new XMLHttpRequest();
-        // let that = this;
-        // xhr.onreadystatechange = function() {
-        //     if (this.readyState == 4 && this.status == 200) {
-        //         let reader = new FileReader();
-        //         reader.onload = function() {
-        //             let img = new Image();
-        //             img.onload = function() {
-        //                 let originWidth = this.width;
-        //                 let originHeight = this.height;
-        //                 let scale = 1;
-        //                 let imgWidth = originWidth,
-        //                     imgHeight = originHeight;
-        //                 if (imgWidth > width) {
-        //                     scale = width / imgWidth;
-        //                 }
-        //                 if (imgHeight > height) {
-        //                     let _scale = height / imgHeight;
-        //                     if (_scale < scale) {
-        //                         scale = _scale;
-        //                     }
-        //                 }
-
-        //                 scale = Math.floor(scale * 10) / 10;
-
-        //                 imgWidth = imgWidth * scale;
-        //                 imgHeight = imgHeight * scale;
-        //                 window.fabricPhoto = that.fp = new FabricPhoto('#upload-file-image-preview canvas', {
-        //                     cssMaxWidth: imgWidth,
-        //                     cssMaxHeight: imgHeight
-        //                 });
-        //                 that.fp.loadImageFromURL(dataUrl, 'image name');
-        //             }
-        //             var dataUrl = img.src = this.result;
-        //         }
-        //         reader.readAsDataURL(this.response);
-        //     }
-        // }
-
-        // //xhr.open('GET', 'http://mss.ximing.ren/v1/mss_814dc1610cda4b2e8febd6ea2c809db5/image/1484297784369.jpeg');
-        // //xhr.open('GET', 'http://mss.ximing.ren/v1/mss_814dc1610cda4b2e8febd6ea2c809db5/image/1484297784312.png');
-        // //xhr.open('GET', 'http://mss.ximing.ren/v1/mss_814dc1610cda4b2e8febd6ea2c809db5/image/1484297783376.jpeg');
-        // xhr.open('GET', 'http://mss.ximing.ren/v1/mss_814dc1610cda4b2e8febd6ea2c809db5/image/1484297783302.jpg');
-        // //xhr.open('GET', 'http://mss.ximing.ren/v1/mss_814dc1610cda4b2e8febd6ea2c809db5/image/1484297783036.png');
-        // xhr.responseType = 'blob';
-        // xhr.send();
-
         window.fabricPhoto = this.fp = new FabricPhoto('#upload-file-image-preview', {
             cssMaxWidth: 700,
             cssMaxHeight: 400
+        });
+        this.fp.once('loadImage', (oImage) => {
+            this.fp.clearUndoStack();
         });
         //this.fp.loadImageFromURL('http://mss.ximing.ren/v1/mss_814dc1610cda4b2e8febd6ea2c809db5/image/1484297783302.jpg', 'image name');
         this.fp.loadImageFromURL('http://mss.ximing.ren/v1/mss_814dc1610cda4b2e8febd6ea2c809db5/image/1484297784369.jpeg', 'image name');
         //this.fp.loadImageFromURL('http://mss.ximing.ren/v1/mss_814dc1610cda4b2e8febd6ea2c809db5/image/1484297784312.png', 'image name');
         //this.fp.loadImageFromURL('http://mss.ximing.ren/v1/mss_814dc1610cda4b2e8febd6ea2c809db5/image/1484297783376.jpeg', 'image name');
         //this.fp.loadImageFromURL('http://mss.ximing.ren/v1/mss_814dc1610cda4b2e8febd6ea2c809db5/image/1484297783036.png', 'image name');
+
+        this.fp.on('selectObject', (obj) => {
+            //console.log('selectObject--->',obj);
+            if (obj.type === 'rect' || obj.type === 'circle' || obj.type === 'triangle') {
+                this.setState({
+                    editState: consts.states.SHAPE,
+                });
+                this.activateShapeMode();
+            }
+            else if (obj.type === 'text') {
+                this.setState({
+                    editState: consts.states.TEXT,
+                });
+                this.activateTextMode();
+            }
+        });
+        this.fp.on('activateText', (obj) => {
+            //console.log('activateText----obj--->',obj);
+            // add new text on cavas
+            if (obj.type === 'new') {
+                console.log('--activateText--new-->', obj);
+                this.fp.addText('双击编辑', {
+                    styles: {
+                        fill: this.state.text.color,
+                        fontSize: 50
+                    },
+                    position: obj.originPosition
+                });
+            }
+        });
+        this.fp.on({
+            emptyUndoStack: () => {
+                // $btnUndo.addClass('disabled');
+                // resizeEditor();
+            },
+            emptyRedoStack: () => {
+                // $btnRedo.addClass('disabled');
+                // resizeEditor();
+            },
+            pushUndoStack: () => {
+                // $btnUndo.removeClass('disabled');
+                // resizeEditor();
+            },
+            pushRedoStack: () => {
+                // $btnRedo.removeClass('disabled');
+                // resizeEditor();
+            },
+            endCropping: () => {
+                // $cropSubMenu.hide();
+                // resizeEditor();
+            },
+            endFreeDrawing: () => {
+                //$freeDrawingSubMenu.hide();
+            },
+            adjustObject: (obj, type) => {
+                if (obj.type === 'text' && type === 'scale') {
+                    //$inputFontSizeRange.val(obj.getFontSize());
+                }
+            }
+        });
+
     }
 
     componentWillUnmount() {
@@ -94,56 +121,33 @@ export default class WrapContainer extends Component {
         }
     }
 
-    removePhotoEditor() {
-        this.setState({
-            isEdit: false,
-            editOpver: 'draw',
-            editColor: 'black',
-            editStroke: 8
-        });
-        if (this.kp) {
-            this.kp.resetKityPhoto(this.kp.originalImage.width, this.kp.originalImage.height);
+    activateShapeMode() {
+        if (this.fp.getCurrentState() !== consts.states.SHAPE) {
+            this.fp.endFreeDrawing();
+            this.fp.endTextMode();
+            this.fp.endLineDrawing();
+            this.fp.endMosaicDrawing();
+            //this.fp.endCropping();
+            this.fp.endArrowDrawing();
+
+            this.fp.startDrawingShapeMode();
         }
-    };
-
-    changeEditorAction(opver) {
-        return () => {
-            this.kp.execCommand('changeOpver', opver);
-        }
-    };
-
-    changeEditorColor(color) {
-        return () => {
-            this.kp.execCommand('color', color);
-            this.setState({
-                editColor: color
-            });
-        }
-    };
-
-    changeRoutate() {
-        this.kp.execCommand('changeRotate', 90);
-    };
-
-    startClip() {
-        this.kp.execCommand('startClip');
     }
 
-    changeEditorStroke(stroke) {
-        return () => {
-            this.kp.execCommand('stroke', stroke);
-            this.setState({
-                editStroke: stroke
-            });
-        }
-    };
+    activateTextMode() {
 
-    changeScale(scale) {
-        return () => {
-            this.kp.execCommand('changeScale', scale);
+        if (this.fp.getCurrentState() !== consts.states.TEXT) {
+            this.fp.endFreeDrawing();
+            this.fp.endLineDrawing();
+            this.fp.endArrowDrawing();
+            this.fp.endMosaicDrawing();
+            //this.fp.endCropping();
+            this.fp.endDrawingShapeMode();
+            this.fp.endTextMode();
+            console.log('++++++---- start text mode', this.fp.getCurrentState(), consts.states.TEXT);
+            this.fp.startTextMode();
         }
-    };
-
+    }
 
     getWindowViewPort() {
         return {
@@ -163,6 +167,246 @@ export default class WrapContainer extends Component {
         }
     }
 
+    resetEditorState() {
+        this.setState({
+            editState: consts.states.NORMAL
+        });
+    }
+
+    onArrowBtnClick() {
+        this.fp.endAll();
+        if (this.state.editState === consts.states.ARROW) {
+            this.resetEditorState();
+        }
+        else {
+            this.setState({
+                editState: consts.states.ARROW
+            });
+            this.fp.startArrowDrawing({
+                width: this.state.freeDraw.stroke,
+                color: this.state.freeDraw.color
+            });
+        }
+    }
+
+    onFreeDrawBtnClick() {
+        this.fp.endAll();
+        if (this.state.editState === consts.states.FREE_DRAWING) {
+            this.resetEditorState();
+        }
+        else {
+            this.setState({
+                editState: consts.states.FREE_DRAWING
+            });
+            this.fp.startFreeDrawing({
+                width: this.state.freeDraw.stroke,
+                color: this.state.freeDraw.color
+            });
+        }
+    }
+
+    onMosaicBtnClick() {
+        this.fp.endAll();
+        if (this.state.editState === consts.states.MOSAIC) {
+            this.resetEditorState();
+        }
+        else {
+            this.setState({
+                editState: consts.states.MOSAIC
+            });
+            this.fp.startMosaicDrawing({
+                dimensions: this.state.mosaic.stroke
+            });
+        }
+    }
+
+    onTextBtnClick() {
+        if (this.fp.getCurrentState() === consts.states.TEXT) {
+            console.log('_________onTextBtnClick end');
+            this.fp.endAll();
+            this.resetEditorState();
+        }
+        else {
+            console.log('_________onTextBtnClick start');
+            this.setState({
+                editState: consts.states.TEXT
+            });
+            //this.activateTextMode();
+            this.fp.endAll();
+            this.fp.startTextMode();
+        }
+    }
+
+    onRotationBtnClick() {
+        this.fp.endAll();
+        this.fp.rotate(90);
+        this.resetEditorState();
+    }
+
+    onClipBtnClick() {
+        this.fp.endAll();
+        this.fp.startCropping();
+    }
+
+    onClearBtnClick() {
+        this.fp.endAll();
+        this.resetEditorState();
+        this.setState({
+            isEdit: false
+        });
+        this.fp.clearObjects();
+    }
+    onApplyCropBtn() {
+        this.fp.endAll();
+        this.resetEditorState();
+        this.fp.endCropping(true);
+    }
+
+    onCancleCropBtn() {
+        this.fp.endAll();
+        this.resetEditorState();
+        this.fp.endCropping();
+    }
+
+    onUndoBtn() {
+        this.fp.endAll();
+        this.resetEditorState();
+        this.fp.undo();
+    }
+    onRedoBtn() {
+        this.fp.endAll();
+        this.resetEditorState();
+        this.fp.redo();
+    }
+
+    renderArrowMenus() {
+        return (
+            <div className="tools-panel">
+                <div className="tools-panel-brush">
+                    <div>
+                        <span className="small-brush" onClick={() => { } }> </span>
+                    </div>
+                    <div>
+                        <span className="normal-brush" onClick={() => { } }> </span>
+                    </div>
+                    <div>
+                        <span className="big-brush" onClick={() => { } }> </span>
+                    </div>
+                </div>
+                <span className="tools-divider"> </span>
+                <div className="tools-panel-color">
+                    <span className="color red" onClick={this.changeEditorColor('#FF3440')}> </span>
+                    <span className="color yellow"
+                        onClick={this.changeEditorColor('#FFCF50')}> </span>
+                    <span className="color green"
+                        onClick={this.changeEditorColor('#00A344')}> </span>
+                    <span className="color blue"
+                        onClick={this.changeEditorColor('#0DA9D6')}> </span>
+                    <span className="color grey"
+                        onClick={this.changeEditorColor('#999999')}> </span>
+                    <span className="color black"
+                        onClick={this.changeEditorColor('#ffffff')}> </span>
+                    <span className="color white"
+                        onClick={this.changeEditorColor('#000000')}> </span>
+                </div>
+            </div>
+        )
+    }
+
+    renderFreeDrawMenus() {
+        return (
+            <div className="tools-panel">
+                <div className="tools-panel-brush">
+                    <div>
+                        <span className="small-brush" onClick={() => { } }> </span>
+                    </div>
+                    <div>
+                        <span className="normal-brush" onClick={() => { } }> </span>
+                    </div>
+                    <div>
+                        <span className="big-brush" onClick={() => { } }> </span>
+                    </div>
+                </div>
+                <span className="tools-divider"> </span>
+                <div className="tools-panel-color">
+                    <span className="color red" onClick={this.changeEditorColor('#FF3440')}> </span>
+                    <span className="color yellow"
+                        onClick={this.changeEditorColor('#FFCF50')}> </span>
+                    <span className="color green"
+                        onClick={this.changeEditorColor('#00A344')}> </span>
+                    <span className="color blue"
+                        onClick={this.changeEditorColor('#0DA9D6')}> </span>
+                    <span className="color grey"
+                        onClick={this.changeEditorColor('#999999')}> </span>
+                    <span className="color black"
+                        onClick={this.changeEditorColor('#ffffff')}> </span>
+                    <span className="color white"
+                        onClick={this.changeEditorColor('#000000')}> </span>
+                </div>
+            </div>
+        )
+    }
+
+    renderMosaicMenus() {
+        return (
+            <div className="tools-panel">
+                <div className="tools-panel-brush">
+                    <div>
+                        <span className="small-brush" onClick={() => { } }> </span>
+                    </div>
+                    <div>
+                        <span className="normal-brush" onClick={() => { } }> </span>
+                    </div>
+                    <div>
+                        <span className="big-brush" onClick={() => { } }> </span>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
+    renderTextMenus() {
+        return (
+            <div className="tools-panel">
+                <div className="tools-panel-color">
+                    <span className="color red" onClick={this.changeEditorColor('#FF3440')}> </span>
+                    <span className="color yellow"
+                        onClick={this.changeEditorColor('#FFCF50')}> </span>
+                    <span className="color green"
+                        onClick={this.changeEditorColor('#00A344')}> </span>
+                    <span className="color blue"
+                        onClick={this.changeEditorColor('#0DA9D6')}> </span>
+                    <span className="color grey"
+                        onClick={this.changeEditorColor('#999999')}> </span>
+                    <span className="color black"
+                        onClick={this.changeEditorColor('#ffffff')}> </span>
+                    <span className="color white"
+                        onClick={this.changeEditorColor('#000000')}> </span>
+                </div>
+            </div>
+        )
+    }
+
+    renderCropMenus() {
+        return (
+            <div className="tools-panel">
+                <div className="tools-panel-crop">
+                <span className="tools-panel-crop-apply-btn"
+                        onClick={this.onApplyCropBtn.bind(this)}> </span>
+                <span className="tools-panel-crop-cancel-btn"
+                        onClick={this.onCancleCropBtn.bind(this)}> </span>
+                </div>
+            </div>
+        )
+    }
+
+    onChangeScaleBtnClick() {
+        return () => {}
+    }
+
+    changeEditorColor() {
+        return () => {}
+    }
 
     render() {
         let btnClassname = classnames({
@@ -170,60 +414,53 @@ export default class WrapContainer extends Component {
             'file-button--pc': process.env.APP_ENV === 'pc',
             'upload-success': true
         });
+        let menus = null;
+        this.fp && console.log('editor state', this.fp.getCurrentState());
+        if (this.fp && this.fp.getCurrentState() === consts.states.FREE_DRAWING) {
+            menus = this.renderFreeDrawMenus();
+        }
+        else if (this.fp && this.fp.getCurrentState() === consts.states.ARROW) {
+            menus = this.renderArrowMenus();
+        }
+        else if (this.fp && this.fp.getCurrentState() === consts.states.MOSAIC) {
+            menus = this.renderMosaicMenus();
+        }
+        else if (this.fp && this.fp.getCurrentState() === consts.states.TEXT) {
+            menus = this.renderTextMenus();
+        }
+        else {
+            menus = null;
+        }
         return (
             <div className="wrap_inner">
                 <div className="main">
                     <div className="upload-file-image-preview" id="upload-file-image-preview">
                     </div>
                     <div className={btnClassname}>
-                            <div className="image-thumb-btns">
-                                <i className="dxicon dxicon-image-suoxiao" onClick={this.changeScale(-10)}/>
-                                <div className="thumb-divider"></div>
-                                <i className="dxicon dxicon-image-fangda" onClick={this.changeScale(10)}/>
-                            </div>
-                            <div className="image-tools-btns">
-                                <i className="dxicon dxicon-image-jiantou" onClick={this.changeEditorAction('line')}/>
-                                <i className="dxicon dxicon-image-huabi" onClick={this.changeEditorAction('draw')}/>
-                                <i className="dxicon dxicon-image-text" onClick={this.changeEditorAction('text')}/>
-                                <i className="dxicon dxicon-image-masaike" onClick={this.changeEditorAction('mosaic')}/>
-                                <i className="dxicon dxicon-image-xuanzhuan" onClick={this.changeRoutate.bind(this)}/>
-                                <i className="dxicon dxicon-image-jiancai" onClick={this.startClip.bind(this)}/>
-                                <span className="tools-divider"> </span>
-                                <span className="file-button-cancel"
-                                      onClick={this.removePhotoEditor.bind(this)}>复原</span>
-                                <div className="tools-panel">
-                                    <div className="tools-panel-brush">
-                                        <div>
-                                            <span className="small-brush" onClick={this.changeEditorStroke(4)}> </span>
-                                        </div>
-                                        <div>
-                                            <span className="normal-brush" onClick={this.changeEditorStroke(8)}> </span>
-                                        </div>
-                                        <div>
-                                            <span className="big-brush" onClick={this.changeEditorStroke(12)}> </span>
-                                        </div>
-                                    </div>
-                                    <span className="tools-divider"> </span>
-                                    <div className="tools-panel-color">
-                                        <span className="color red" onClick={this.changeEditorColor('#FF3440')}> </span>
-                                        <span className="color yellow"
-                                              onClick={this.changeEditorColor('#FFCF50')}> </span>
-                                        <span className="color green"
-                                              onClick={this.changeEditorColor('#00A344')}> </span>
-                                        <span className="color blue"
-                                              onClick={this.changeEditorColor('#0DA9D6')}> </span>
-                                        <span className="color grey"
-                                              onClick={this.changeEditorColor('#999999')}> </span>
-                                        <span className="color black"
-                                              onClick={this.changeEditorColor('#ffffff')}> </span>
-                                        <span className="color white"
-                                              onClick={this.changeEditorColor('#000000')}> </span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="ctn-btns">
-                            </div>
+                        <div className="image-thumb-btns">
+                            <i className="dxicon dxicon-image-suoxiao" onClick={this.onChangeScaleBtnClick(-10)} />
+                            <div className="thumb-divider"></div>
+                            <i className="dxicon dxicon-image-fangda" onClick={this.onChangeScaleBtnClick(10)} />
                         </div>
+                        <div className="image-tools-btns">
+                            <i className="dxicon dxicon-image-jiantou" onClick={this.onArrowBtnClick.bind(this)} />
+                            <i className="dxicon dxicon-image-huabi" onClick={this.onFreeDrawBtnClick.bind(this)} />
+                            <i className="dxicon dxicon-image-text" onClick={this.onTextBtnClick.bind(this)} />
+                            <i className="dxicon dxicon-image-masaike" onClick={this.onMosaicBtnClick.bind(this)} />
+                            <i className="dxicon dxicon-image-xuanzhuan" onClick={this.onRotationBtnClick.bind(this)} />
+                            <i className="dxicon dxicon-image-jiancai" onClick={this.onClipBtnClick.bind(this)} />
+                            <span className="tools-divider"> </span>
+                            <span className="file-button-cancel"
+                                onClick={this.onClearBtnClick.bind(this)}>复原</span>
+                                <span className="file-button-cancel"
+                                onClick={this.onUndoBtn.bind(this)}>undo</span>
+                                <span className="file-button-cancel"
+                                onClick={this.onRedoBtn.bind(this)}>redo</span>
+                                {menus}
+                        </div>
+                        <div className="ctn-btns">
+                        </div>
+                    </div>
                 </div>
             </div>
         );

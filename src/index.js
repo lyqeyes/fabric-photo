@@ -71,19 +71,19 @@ class FabricPhoto {
         } = events;
 
         /**
-         * @event ImageEditor#pushUndoStack
+         * @event fabricPhoto#pushUndoStack
          */
         this._module.on(PUSH_UNDO_STACK, this.fire.bind(this, PUSH_UNDO_STACK));
         /**
-         * @event ImageEditor#pushRedoStack
+         * @event fabricPhoto#pushRedoStack
          */
         this._module.on(PUSH_REDO_STACK, this.fire.bind(this, PUSH_REDO_STACK));
         /**
-         * @event ImageEditor#emptyUndoStack
+         * @event fabricPhoto#emptyUndoStack
          */
         this._module.on(EMPTY_UNDO_STACK, this.fire.bind(this, EMPTY_UNDO_STACK));
         /**
-         * @event ImageEditor#emptyRedoStack
+         * @event fabricPhoto#emptyRedoStack
          */
         this._module.on(EMPTY_REDO_STACK, this.fire.bind(this, EMPTY_REDO_STACK));
     }
@@ -120,86 +120,86 @@ class FabricPhoto {
         }
     }
     _onMouseDown(fEvent) {
-            const originPointer = this._canvas.getPointer(fEvent.e);
+        const originPointer = this._canvas.getPointer(fEvent.e);
 
-            this.fire(events.MOUSE_DOWN, {
-                e: fEvent.e,
-                originPointer
-            });
-        }
-        /**
-         * "object:added" canvas event handler
-         * @param {{target: fabric.Object, e: MouseEvent}} fEvent - Fabric event
-         * @private
-         */
+        this.fire(events.MOUSE_DOWN, {
+            e: fEvent.e,
+            originPointer
+        });
+    }
+    /**
+     * "object:added" canvas event handler
+     * @param {{target: fabric.Object, e: MouseEvent}} fEvent - Fabric event
+     * @private
+     */
     _onAddedObject(fEvent) {
-            const obj = fEvent.target;
+        const obj = fEvent.target;
 
-            if (obj.isType('cropzone') || obj.isType('text')) {
-                return;
-            }
-
-            if (!hasStamp(obj)) {
-                const command = commandFactory.create(commands.ADD_OBJECT, obj);
-                this._module.pushUndoStack(command);
-                this._module.clearRedoStack();
-            }
-
-            /**
-             * @event ImageEditor#addObject
-             * @param {fabric.Object} obj - http://fabricjs.com/docs/fabric.Object.html
-             * @example
-             * imageEditor.on('addObject', function(obj) {
-             *     console.log(obj);
-             * });
-             */
-            this.fire(events.ADD_OBJECT, obj);
+        if (obj.isType('cropzone') || obj.isType('text')) {
+            return;
         }
+
+        if (!hasStamp(obj)) {
+            const command = commandFactory.create(commands.ADD_OBJECT, obj);
+            this._module.pushUndoStack(command);
+            this._module.clearRedoStack();
+        }
+
         /**
-         * "object:removed" canvas event handler
-         * @param {{target: fabric.Object, e: MouseEvent}} fEvent - Fabric event
-         * @private
+         * @event fabricPhoto#addObject
+         * @param {fabric.Object} obj - http://fabricjs.com/docs/fabric.Object.html
+         * @example
+         * fabricPhoto.on('addObject', function(obj) {
+         *     console.log(obj);
+         * });
          */
+        this.fire(events.ADD_OBJECT, obj);
+    }
+    /**
+     * "object:removed" canvas event handler
+     * @param {{target: fabric.Object, e: MouseEvent}} fEvent - Fabric event
+     * @private
+     */
     _onRemovedObject(fEvent) {
-            /**
-             * @event ImageEditor#removeObject
-             * @param {fabric.Object} obj - http://fabricjs.com/docs/fabric.Object.html
-             * @example
-             * imageEditor.on('removeObject', function(obj) {
-             *     console.log(obj);
-             * });
-             */
-            this.fire(events.REMOVE_OBJECT, fEvent.target);
-        }
         /**
-         * "object:selected" canvas event handler
-         * @param {{target: fabric.Object, e: MouseEvent}} fEvent - Fabric event
-         * @private
+         * @event fabricPhoto#removeObject
+         * @param {fabric.Object} obj - http://fabricjs.com/docs/fabric.Object.html
+         * @example
+         * fabricPhoto.on('removeObject', function(obj) {
+         *     console.log(obj);
+         * });
          */
+        this.fire(events.REMOVE_OBJECT, fEvent.target);
+    }
+    /**
+     * "object:selected" canvas event handler
+     * @param {{target: fabric.Object, e: MouseEvent}} fEvent - Fabric event
+     * @private
+     */
     _onSelectedObject(fEvent) {
-            /**
-             * @event ImageEditor#selectObject
-             * @param {fabric.Object} obj - http://fabricjs.com/docs/fabric.Object.html
-             * @example
-             * imageEditor.on('selectObject', function(obj) {
-             *     console.log(obj);
-             *     console.log(obj.type);
-             * });
-             */
-            this.fire(events.SELECT_OBJECT, fEvent.target);
-        }
         /**
-         * "object:moving" canvas event handler
-         * @param {{target: fabric.Object, e: MouseEvent}} fEvent - Fabric event
-         * @private
+         * @event fabricPhoto#selectObject
+         * @param {fabric.Object} obj - http://fabricjs.com/docs/fabric.Object.html
+         * @example
+         * fabricPhoto.on('selectObject', function(obj) {
+         *     console.log(obj);
+         *     console.log(obj.type);
+         * });
          */
+        this.fire(events.SELECT_OBJECT, fEvent.target);
+    }
+    /**
+     * "object:moving" canvas event handler
+     * @param {{target: fabric.Object, e: MouseEvent}} fEvent - Fabric event
+     * @private
+     */
     _onMovingObject(fEvent) {
         /**
-         * @event ImageEditor#adjustObject
+         * @event fabricPhoto#adjustObject
          * @param {fabric.Object} obj - http://fabricjs.com/docs/fabric.Object.html
          * @param {string} Action type (move / scale)
          * @example
-         * imageEditor.on('adjustObject', function(obj, type) {
+         * fabricPhoto.on('adjustObject', function(obj, type) {
          *     console.log(obj);
          *     console.log(type);
          * });
@@ -215,11 +215,11 @@ class FabricPhoto {
     _onScalingObject(fEvent) {
         /**
          * @ignore
-         * @event ImageEditor#adjustObject
+         * @event fabricPhoto#adjustObject
          * @param {fabric.Object} obj - http://fabricjs.com/docs/fabric.Object.html
          * @param {string} Action type (move / scale)
          * @example
-         * imageEditor.on('adjustObject', function(obj, type) {
+         * fabricPhoto.on('adjustObject', function(obj, type) {
          *     console.log(obj);
          *     console.log(type);
          * });
@@ -235,13 +235,13 @@ class FabricPhoto {
      * @private
      */
     _onCreatedPath(obj) {
-            obj.path.set(consts.fObjectOptions.SELECTION_STYLE);
-        }
-        /**
-         * onSelectClear handler in fabric canvas
-         * @param {{target: fabric.Object, e: MouseEvent}} fEvent - Fabric event
-         * @private
-         */
+        obj.path.set(consts.fObjectOptions.SELECTION_STYLE);
+    }
+    /**
+     * onSelectClear handler in fabric canvas
+     * @param {{target: fabric.Object, e: MouseEvent}} fEvent - Fabric event
+     * @private
+     */
     _onFabricSelectClear(fEvent) {
         const textComp = this._getModule(modules.TEXT);
         const obj = textComp.getSelectedObj();
@@ -330,8 +330,8 @@ class FabricPhoto {
      * //    FREE_DRAWING: 'FREE_DRAWING'
      * //    TEXT: 'TEXT'
      * //
-     * if (imageEditor.getCurrentState() === 'FREE_DRAWING') {
-     *     imageEditor.endFreeDrawing();
+     * if (fabricPhoto.getCurrentState() === 'FREE_DRAWING') {
+     *     fabricPhoto.endFreeDrawing();
      * }
      */
     getCurrentState() {
@@ -341,14 +341,14 @@ class FabricPhoto {
     /**
      * Clear all objects
      * @example
-     * imageEditor.clearObjects();
+     * fabricPhoto.clearObjects();
      */
     clearObjects() {
         const command = commandFactory.create(commands.CLEAR_OBJECTS);
         const callback = this.fire.bind(this, events.CLEAR_OBJECTS);
 
         /**
-         * @event ImageEditor#clearObjects
+         * @event fabricPhoto#clearObjects
          */
         command.setExecuteCallback(callback);
         this.execute(command);
@@ -357,16 +357,17 @@ class FabricPhoto {
     /**
      * End current action & Deactivate
      * @example
-     * imageEditor.startFreeDrawing();
-     * imageEidtor.endAll(); // === imageEidtor.endFreeDrawing();
+     * fabricPhoto.startFreeDrawing();
+     * fabricPhoto.endAll(); // === fabricPhoto.endFreeDrawing();
      *
-     * imageEditor.startCropping();
-     * imageEditor.endAll(); // === imageEidtor.endCropping();
+     * fabricPhoto.startCropping();
+     * fabricPhoto.endAll(); // === fabricPhoto.endCropping();
      */
     endAll() {
         this.endTextMode();
         this.endFreeDrawing();
-        //this.endLineDrawing();
+        this.endLineDrawing();
+        this.endArrowDrawing();
         this.endMosaicDrawing();
         //this.endCropping();
         this.endDrawingShapeMode();
@@ -377,7 +378,7 @@ class FabricPhoto {
     /**
      * Deactivate all objects
      * @example
-     * imageEditor.deactivateAll();
+     * fabricPhoto.deactivateAll();
      */
     deactivateAll() {
         this._canvas.deactivateAll();
@@ -397,7 +398,7 @@ class FabricPhoto {
     /**
      * Undo
      * @example
-     * imageEditor.undo();
+     * fabricPhoto.undo();
      */
     undo() {
         this.endAll();
@@ -407,7 +408,7 @@ class FabricPhoto {
     /**
      * Redo
      * @example
-     * imageEditor.redo();
+     * fabricPhoto.redo();
      */
     redo() {
         this.endAll();
@@ -419,7 +420,7 @@ class FabricPhoto {
      * @param {File} imgFile - Image file
      * @param {string} [imageName] - imageName
      * @example
-     * imageEditor.loadImageFromFile(file);
+     * fabricPhoto.loadImageFromFile(file);
      */
     loadImageFromFile(imgFile, imageName) {
         if (!imgFile) {
@@ -437,7 +438,7 @@ class FabricPhoto {
      * @param {string} url - File url
      * @param {string} imageName - imageName
      * @example
-     * imageEditor.loadImageFromURL('http://url/testImage.png', 'lena')
+     * fabricPhoto.loadImageFromURL('http://url/testImage.png', 'lena')
      */
     loadImageFromURL(url, imageName) {
         if (!imageName || !url) {
@@ -476,14 +477,14 @@ class FabricPhoto {
         } = canvasElement.getBoundingClientRect();
 
         /**
-         * @event ImageEditor#loadImage
+         * @event fabricPhoto#loadImage
          * @param {object} dimension
          *  @param {number} dimension.originalWidth - original image width
          *  @param {number} dimension.originalHeight - original image height
          *  @param {number} dimension.currentWidth - current width (css)
          *  @param {number} dimension.current - current height (css)
          * @example
-         * imageEditor.on('loadImage', function(dimension) {
+         * fabricPhoto.on('loadImage', function(dimension) {
          *     console.log(dimension.originalWidth);
          *     console.log(dimension.originalHeight);
          *     console.log(dimension.currentWidth);
@@ -502,7 +503,7 @@ class FabricPhoto {
      * Add image object on canvas
      * @param {string} imgUrl - Image url to make object
      * @example
-     * imageEditor.addImageObject('path/fileName.jpg');
+     * fabricPhoto.addImageObject('path/fileName.jpg');
      */
     addImageObject(imgUrl) {
         if (!imgUrl) {
@@ -538,7 +539,7 @@ class FabricPhoto {
     /**
      * Start cropping
      * @example
-     * imageEditor.startCropping();
+     * fabricPhoto.startCropping();
      */
     startCropping() {
         if (this.getCurrentState() === states.CROP) {
@@ -550,7 +551,7 @@ class FabricPhoto {
         const cropper = this._getModule(modules.CROPPER);
         cropper.start();
         /**
-         * @event ImageEditor#startCropping
+         * @event fabricPhoto#startCropping
          */
         this.fire(events.START_CROPPING);
     }
@@ -559,11 +560,11 @@ class FabricPhoto {
      * Apply cropping
      * @param {boolean} [isApplying] - Whether the cropping is applied or canceled
      * @example
-     * imageEditor.startCropping();
-     * imageEditor.endCropping(false); // cancel cropping
+     * fabricPhoto.startCropping();
+     * fabricPhoto.endCropping(false); // cancel cropping
      *
-     * imageEditor.startCropping();
-     * imageEditor.endCropping(true); // apply cropping
+     * fabricPhoto.startCropping();
+     * fabricPhoto.endCropping(true); // apply cropping
      */
     endCropping(isApplying) {
         if (this.getCurrentState() !== states.CROP) {
@@ -575,9 +576,6 @@ class FabricPhoto {
         const data = cropper.end(isApplying);
 
         this.once('loadImage', () => {
-            /**
-             * @event ImageEditor#endCropping
-             */
             this.fire(events.END_CROPPING);
         });
 
@@ -596,10 +594,10 @@ class FabricPhoto {
         const command = commandFactory.create(commands.ROTATE_IMAGE, type, angle);
 
         /**
-         * @event ImageEditor#rotateImage
+         * @event fabricPhoto#rotateImage
          * @param {number} currentAngle - image.angle
          * @example
-         * imageEditor.on('rotateImage', function(angle) {
+         * fabricPhoto.on('rotateImage', function(angle) {
          *     console.log('angle: ', angle);
          * });
          */
@@ -612,10 +610,10 @@ class FabricPhoto {
      * Rotate image
      * @param {number} angle - Additional angle to rotate image
      * @example
-     * imageEditor.setAngle(10); // angle = 10
-     * imageEditor.rotate(10); // angle = 20
-     * imageEidtor.setAngle(5); // angle = 5
-     * imageEidtor.rotate(-95); // angle = -90
+     * fabricPhoto.setAngle(10); // angle = 10
+     * fabricPhoto.rotate(10); // angle = 20
+     * fabricPhoto.setAngle(5); // angle = 5
+     * fabricPhoto.rotate(-95); // angle = -90
      */
     rotate(angle) {
         this._rotate('rotate', angle);
@@ -625,11 +623,11 @@ class FabricPhoto {
      * Set angle
      * @param {number} angle - Angle of image
      * @example
-     * imageEditor.setAngle(10); // angle = 10
-     * imageEditor.rotate(10); // angle = 20
-     * imageEidtor.setAngle(5); // angle = 5
-     * imageEidtor.rotate(50); // angle = 55
-     * imageEidtor.setAngle(-40); // angle = -40
+     * fabricPhoto.setAngle(10); // angle = 10
+     * fabricPhoto.rotate(10); // angle = 20
+     * fabricPhoto.setAngle(5); // angle = 5
+     * fabricPhoto.rotate(50); // angle = 55
+     * fabricPhoto.setAngle(-40); // angle = -40
      */
     setAngle(angle) {
         this._rotate('setAngle', angle);
@@ -639,9 +637,9 @@ class FabricPhoto {
      * Start free-drawing mode
      * @param {{width: number, color: string}} [setting] - Brush width & color
      * @example
-     * imageEditor.startFreeDrawing();
-     * imageEditor.endFreeDrawing();
-     * imageEidtor.startFreeDrawing({
+     * fabricPhoto.startFreeDrawing();
+     * fabricPhoto.endFreeDrawing();
+     * fabricPhoto.startFreeDrawing({
      *     width: 12,
      *     color: 'rgba(0, 0, 0, 0.5)'
      * });
@@ -664,12 +662,12 @@ class FabricPhoto {
      * Set drawing brush
      * @param {{width: number, color: string}} setting - Brush width & color
      * @example
-     * imageEditor.startFreeDrawing();
-     * imageEditor.setBrush({
+     * fabricPhoto.startFreeDrawing();
+     * fabricPhoto.setBrush({
      *     width: 12,
      *     color: 'rgba(0, 0, 0, 0.5)'
      * });
-     * imageEditor.setBrush({
+     * fabricPhoto.setBrush({
      *     width: 8,
      *     color: 'FFFFFF'
      * });
@@ -692,8 +690,8 @@ class FabricPhoto {
     /**
      * End free-drawing mode
      * @example
-     * imageEditor.startFreeDrawing();
-     * imageEditor.endFreeDrawing();
+     * fabricPhoto.startFreeDrawing();
+     * fabricPhoto.endFreeDrawing();
      */
     endFreeDrawing() {
         if (this.getCurrentState() !== states.FREE_DRAWING) {
@@ -703,7 +701,7 @@ class FabricPhoto {
         this._state = states.NORMAL;
 
         /**
-         * @event ImageEditor#endFreeDrawing
+         * @event fabricPhoto#endFreeDrawing
          */
         this.fire(events.END_FREE_DRAWING);
     }
@@ -712,9 +710,9 @@ class FabricPhoto {
      * Start line-drawing mode
      * @param {{width: number, color: string}} [setting] - Brush width & color
      * @example
-     * imageEditor.startLineDrawing();
-     * imageEditor.endLineDrawing();
-     * imageEidtor.startLineDrawing({
+     * fabricPhoto.startLineDrawing();
+     * fabricPhoto.endLineDrawing();
+     * fabricPhoto.startLineDrawing({
      *     width: 12,
      *     color: 'rgba(0, 0, 0, 0.5)'
      * });
@@ -729,7 +727,7 @@ class FabricPhoto {
         this._state = states.LINE;
 
         /**
-         * @event ImageEditor#startLineDrawing
+         * @event fabricPhoto#startLineDrawing
          */
         this.fire(events.START_LINE_DRAWING);
     }
@@ -737,8 +735,8 @@ class FabricPhoto {
     /**
      * End line-drawing mode
      * @example
-     * imageEditor.startLineDrawing();
-     * imageEditor.endLineDrawing();
+     * fabricPhoto.startLineDrawing();
+     * fabricPhoto.endLineDrawing();
      */
     endLineDrawing() {
         if (this.getCurrentState() !== states.LINE) {
@@ -748,9 +746,40 @@ class FabricPhoto {
         this._state = states.NORMAL;
 
         /**
-         * @event ImageEditor#endLineDrawing
+         * @event fabricPhoto#endLineDrawing
          */
         this.fire(events.END_LINE_DRAWING);
+    }
+
+
+    /**
+     * Start arrow-drawing mode
+     * @param {{width: number, color: string}} [setting] - Brush width & color
+     * @example
+     * fabricPhoto.startArrowDrawing();
+     * fabricPhoto.endArrowDrawing();
+     * fabricPhoto.startLineDrawing({
+     *     width: 12,
+     *     color: 'rgba(0, 0, 0, 0.5)'
+     * });
+     */
+    startArrowDrawing(setting) {
+        this.endAll();
+        this._getModule(modules.ARROW).start(setting);
+        this._state = states.ARROW;
+        this.fire(events.START_ARROW_DRAWING);
+    }
+
+    /**
+     * End arrow-drawing mode
+     * @example
+     * fabricPhoto.startArrowDrawing();
+     * fabricPhoto.endArrowDrawing();
+     */
+    endArrowDrawing() {
+        this._getModule(modules.ARROW).end();
+        this._state = states.NORMAL;
+        this.fire(events.END_ARROW_DRAWING);
     }
 
 
@@ -758,9 +787,9 @@ class FabricPhoto {
      * Start mosaic mode
      * @param {{dimensions: number}} [setting] - dimensions
      * @example
-     * imageEditor.startMosaicDrawing();
-     * imageEditor.endMosaicDrawing();
-     * imageEidtor.startLineDrawing({
+     * fabricPhoto.startMosaicDrawing();
+     * fabricPhoto.endMosaicDrawing();
+     * fabricPhoto.startLineDrawing({
      *     dimensions: 12,
      * });
      */
@@ -775,23 +804,19 @@ class FabricPhoto {
     /**
      * End endMosaic mode
      * @example
-     * imageEditor.startMosaicDrawing();
-     * imageEditor.endMosaicDrawing();
+     * fabricPhoto.startMosaicDrawing();
+     * fabricPhoto.endMosaicDrawing();
      */
     endMosaicDrawing() {
-            if (this.getCurrentState() !== states.LINE) {
-                return;
-            }
-            this._getModule(modules.LINE).end();
-            this._state = states.NORMAL;
-
-            this.fire(events.END_MOSAIC_DRAWING);
-        }
-        /**
-         * Start to draw shape on canvas (bind event on canvas)
-         * @example
-         * imageEditor.startDrawingShapeMode();
-         */
+        this._getModule(modules.MOSAIC).end();
+        this._state = states.NORMAL;
+        this.fire(events.END_MOSAIC_DRAWING);
+    }
+    /**
+     * Start to draw shape on canvas (bind event on canvas)
+     * @example
+     * fabricPhoto.startDrawingShapeMode();
+     */
     startDrawingShapeMode() {
         if (this.getCurrentState() !== states.SHAPE) {
             this._state = states.SHAPE;
@@ -812,24 +837,24 @@ class FabricPhoto {
      *      @param {number} [options.ry] - Radius y value (When type option is 'circle', this options can use)
      *      @param {number} [options.isRegular] - Whether resizing shape has 1:1 ratio or not
      * @example
-     * imageEditor.setDrawingShape('rect', {
+     * fabricPhoto.setDrawingShape('rect', {
      *     fill: 'red',
      *     width: 100,
      *     height: 200
      * });
-     * imageEditor.setDrawingShape('circle', {
+     * fabricPhoto.setDrawingShape('circle', {
      *     fill: 'transparent',
      *     stroke: 'blue',
      *     strokeWidth: 3,
      *     rx: 10,
      *     ry: 100
      * });
-     * imageEditor.setDrawingShape('triangle', { // When resizing, the shape keep the 1:1 ratio
+     * fabricPhoto.setDrawingShape('triangle', { // When resizing, the shape keep the 1:1 ratio
      *     width: 1,
      *     height: 1,
      *     isRegular: true
      * });
-     * imageEditor.setDrawingShape('circle', { // When resizing, the shape keep the 1:1 ratio
+     * fabricPhoto.setDrawingShape('circle', { // When resizing, the shape keep the 1:1 ratio
      *     rx: 10,
      *     ry: 10,
      *     isRegular: true
@@ -854,7 +879,7 @@ class FabricPhoto {
      *      @param {number} [options.top] - Shape y position
      *      @param {number} [options.isRegular] - Whether resizing shape has 1:1 ratio or not
      * @example
-     * imageEditor.addShape('rect', {
+     * fabricPhoto.addShape('rect', {
      *     fill: 'red',
      *     stroke: 'blue',
      *     strokeWidth: 3,
@@ -864,7 +889,7 @@ class FabricPhoto {
      *     top: 10,
      *     isRegular: true
      * });
-     * imageEditor.addShape('circle', {
+     * fabricPhoto.addShape('circle', {
      *     fill: 'red',
      *     stroke: 'blue',
      *     strokeWidth: 3,
@@ -893,14 +918,14 @@ class FabricPhoto {
      *      @param {number} [options.isRegular] - Whether resizing shape has 1:1 ratio or not
      * @example
      * // call after selecting shape object on canvas
-     * imageEditor.changeShape({ // change rectagle or triangle
+     * fabricPhoto.changeShape({ // change rectagle or triangle
      *     fill: 'red',
      *     stroke: 'blue',
      *     strokeWidth: 3,
      *     width: 100,
      *     height: 200
      * });
-     * imageEditor.changeShape({ // change circle
+     * fabricPhoto.changeShape({ // change circle
      *     fill: 'red',
      *     stroke: 'blue',
      *     strokeWidth: 3,
@@ -922,8 +947,8 @@ class FabricPhoto {
     /**
      * End to draw shape on canvas (unbind event on canvas)
      * @example
-     * imageEditor.startDrawingShapeMode();
-     * imageEditor.endDrawingShapeMode();
+     * fabricPhoto.startDrawingShapeMode();
+     * fabricPhoto.endDrawingShapeMode();
      */
     endDrawingShapeMode() {
         if (this.getCurrentState() === states.SHAPE) {
@@ -935,18 +960,18 @@ class FabricPhoto {
     /**
      * Start text input mode
      * @example
-     * imageEditor.endTextMode();
-     * imageEditor.startTextMode();
+     * fabricPhoto.endTextMode();
+     * fabricPhoto.startTextMode();
      */
     startTextMode() {
         if (this.getCurrentState() !== states.TEXT) {
             this._state = states.TEXT;
 
             this._getModule(modules.TEXT).start({
-                mousedown: this._onFabricMouseDown.bind(this),
-                select: this._onFabricSelect.bind(this),
-                selectClear: this._onFabricSelectClear.bind(this),
-                dbclick: this._onDBClick.bind(this),
+                mousedown: util.bind(this._onFabricMouseDown,this),
+                select: util.bind(this._onFabricSelect, this),
+                selectClear: util.bind(this._onFabricSelectClear, this),
+                dbclick: util.bind(this._onDBClick, this),
                 remove: this._handlers.removedObject
             });
         }
@@ -966,8 +991,8 @@ class FabricPhoto {
      *         @param {string} [options.styles.textDecoraiton] Type of line (underline / line-throgh / overline)
      *     @param {{x: number, y: number}} [options.position] - Initial position
      * @example
-     * imageEditor.addText();
-     * imageEditor.addText('init text', {
+     * fabricPhoto.addText();
+     * fabricPhoto.addText('init text', {
      *     styles: {
      *     fill: '#000',
      *         fontSize: '20',
@@ -991,7 +1016,7 @@ class FabricPhoto {
      * Change contents of selected text object on image
      * @param {string} text - Changing text
      * @example
-     * imageEditor.changeText('change text');
+     * fabricPhoto.changeText('change text');
      */
     changeText(text) {
         const activeObj = this._canvas.getActiveObject();
@@ -1015,7 +1040,7 @@ class FabricPhoto {
      *     @param {string} [styleObj.textAlign] Type of text align (left / center / right)
      *     @param {string} [styleObj.textDecoraiton] Type of line (underline / line-throgh / overline)
      * @example
-     * imageEditor.changeTextStyle({
+     * fabricPhoto.changeTextStyle({
      *     fontStyle: 'italic'
      * });
      */
@@ -1033,8 +1058,8 @@ class FabricPhoto {
     /**
      * End text input mode
      * @example
-     * imageEditor.startTextMode();
-     * imageEditor.endTextMode();
+     * fabricPhoto.startTextMode();
+     * fabricPhoto.endTextMode();
      */
     endTextMode() {
         if (this.getCurrentState() !== states.TEXT) {
@@ -1054,7 +1079,7 @@ class FabricPhoto {
         /**
          * @event ImageEditor#editText
          * @example
-         * imageEditor.on('editText', function(obj) {
+         * fabricPhoto.on('editText', function(obj) {
          *     console.log('text object: ' + obj);
          * });
          */
@@ -1083,7 +1108,7 @@ class FabricPhoto {
         }
 
         /**
-         * @event ImageEditor#activateText
+         * @event fabricPhoto#activateText
          * @param {object} options
          *     @param {boolean} options.type - Type of text object (new / select)
          *     @param {string} options.text - Current text
@@ -1098,7 +1123,7 @@ class FabricPhoto {
          *     @param {{x: number, y: number}} options.originPosition - Current position on origin canvas
          *     @param {{x: number, y: number}} options.clientPosition - Current position on client area
          * @example
-         * imageEditor.on('activateText', function(obj) {
+         * fabricPhoto.on('activateText', function(obj) {
          *     console.log('text object type: ' + obj.type);
          *     console.log('text contents: ' + obj.text);
          *     console.log('text styles: ' + obj.styles);
@@ -1131,7 +1156,7 @@ class FabricPhoto {
     /**
      * Remove active object or group
      * @example
-     * imageEditor.removeActiveObject();
+     * fabricPhoto.removeActiveObject();
      */
     removeActiveObject() {
         const canvas = this._canvas;
@@ -1170,7 +1195,7 @@ class FabricPhoto {
     /**
      * Clear undoStack
      * @example
-     * imageEditor.clearUndoStack();
+     * fabricPhoto.clearUndoStack();
      */
     clearUndoStack() {
         this._module.clearUndoStack();
@@ -1179,7 +1204,7 @@ class FabricPhoto {
     /**
      * Clear redoStack
      * @example
-     * imageEditor.clearRedoStack();
+     * fabricPhoto.clearRedoStack();
      */
     clearRedoStack() {
         this._module.clearRedoStack();
@@ -1188,7 +1213,7 @@ class FabricPhoto {
     /**
      * Whehter the undo stack is empty or not
      * @returns {boolean}
-     * imageEditor.isEmptyUndoStack();
+     * fabricPhoto.isEmptyUndoStack();
      */
     isEmptyUndoStack() {
         return this._module.isEmptyUndoStack();
@@ -1197,7 +1222,7 @@ class FabricPhoto {
     /**
      * Whehter the redo stack is empty or not
      * @returns {boolean}
-     * imageEditor.isEmptyRedoStack();
+     * fabricPhoto.isEmptyRedoStack();
      */
     isEmptyRedoStack() {
         return this._module.isEmptyRedoStack();
@@ -1208,18 +1233,18 @@ class FabricPhoto {
      * @param {{width: number, height: number}} dimension - Max width & height
      */
     resizeCanvasDimension(dimension) {
-            const mainModule = this._getMainModule();
+        const mainModule = this._getMainModule();
 
-            if (!dimension) {
-                return;
-            }
-
-            mainModule.setCssMaxDimension(dimension);
-            mainModule.adjustCanvasDimension();
+        if (!dimension) {
+            return;
         }
-        /**
-         * Destroy
-         */
+
+        mainModule.setCssMaxDimension(dimension);
+        mainModule.adjustCanvasDimension();
+    }
+    /**
+     * Destroy
+     */
     destroy() {
         const wrapperEl = this._canvas.wrapperEl;
 

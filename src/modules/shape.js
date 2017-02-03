@@ -2,7 +2,7 @@ import Base from './base';
 import consts from '../consts';
 import util from '../lib/util';
 
-import resizeHelper from '../helper/shape-resize-helper.js';
+import resizeHelper from '../lib/shape-resize-helper.js';
 
 const {inArray} = util;
 
@@ -30,7 +30,7 @@ export default class Shape extends Base {
     constructor(parent) {
         super();
         this.setParent(parent);
-        this.name = consts.componentNames.SHAPE;
+        this.name = consts.moduleNames.SHAPE;
         this._shapeObj = null;
 
         this._type = DEFAULT_TYPE;

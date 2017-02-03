@@ -9,7 +9,7 @@ export default class Rotation extends Base {
     constructor(parent) {
         super();
         this.setParent(parent);
-        this.name = componentNames.ROTATION;
+        this.name = consts.moduleNames.ROTATION;
     }
 
     getCurrentAngle() {

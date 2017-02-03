@@ -7,7 +7,7 @@ const {
 const webpack = require('webpack');
 const path = require('path');
 const c9 = !!process.env.PORT;
-const c9Host = process.env.HOST || 'fabric-photo-yeanzhi.c9users.io';
+const c9Host = process.env.HOST || 'http://fabric-photo-yeanzhi.c9users.io/';
 module.exports = {
     entry: {
         'index': [

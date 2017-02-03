@@ -1,34 +1,15 @@
 import Base from './base.js';
 import consts from '../consts';
 
-/**
- * FreeDrawing
- * @class FreeDrawing
- * @param {Component} parent - parent Module
- * @extends {Base}
- * @ignore
- */
 export default class FreeDrawing extends Base {
     constructor(parent) {
         super();
         this.setParent(parent);
 
-        /**
-         * Component name
-         * @type {string}
-         */
         this.name = consts.moduleNames.FREE_DRAWING;
 
-        /**
-         * Brush width
-         * @type {number}
-         */
         this.width = 12;
 
-        /**
-         * fabric.Color instance for brush color
-         * @type {fabric.Color}
-         */
         this.oColor = new fabric.Color('rgba(0, 0, 0, 0.5)');
     }
 

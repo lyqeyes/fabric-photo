@@ -304,7 +304,17 @@ function forEach(obj, iteratee, context) {
         forEachOwnProperties(obj, iteratee, context);
     }
 }
+function map(obj, iteratee, context) {
+        var resultArray = [];
 
+        context = context || null;
+
+        forEach(obj, function() {
+            resultArray.push(iteratee.apply(context, arguments));
+        });
+
+        return resultArray;
+}
 function isExisty(param) {
     return param != null;
 }
@@ -320,6 +330,40 @@ function isString(obj) {
 function isNumber(obj) {
     return typeof obj === 'number' || obj instanceof Number;
 }
+function bind(fn, obj) {
+        var slice = Array.prototype.slice;
+
+        if (fn.bind) {
+            return fn.bind.apply(fn, slice.call(arguments, 1));
+        }
+
+        /* istanbul ignore next */
+        var args = slice.call(arguments, 2);
+
+        /* istanbul ignore next */
+        return function() {
+            /* istanbul ignore next */
+            return fn.apply(obj, args.length ? args.concat(slice.call(arguments)) : arguments);
+        };
+ }
+ function extend(target, objects) {
+        var source,
+            prop,
+            hasOwnProp = Object.prototype.hasOwnProperty,
+            i,
+            len;
+
+        for (i = 1, len = arguments.length; i < len; i++) {
+            source = arguments[i];
+            for (prop in source) {
+                if (hasOwnProp.call(source, prop)) {
+                    target[prop] = source[prop];
+                }
+            }
+        }
+        return target;
+}
+
 export default {
     createObject: createObject(),
     inherit: inherit,
@@ -343,5 +387,8 @@ export default {
     browser: browser,
     makeStyleText: makeStyleText,
     forEach: forEach,
-    isExisty: isExisty
+    map: map,
+    isExisty: isExisty,
+    bind: bind,
+    extend: extend
 }

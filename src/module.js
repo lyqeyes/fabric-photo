@@ -7,6 +7,9 @@ import Mosaic from './modules/mosaic';
 import ImageLoader from './modules/image-loader';
 import Rotation from './modules/rotation';
 import Shape from './modules/shape';
+import Line from './modules/line';
+import Arrow from './modules/arrow';
+import Cropper from './modules/cropper';
 
 import consts from './consts';
 
@@ -41,6 +44,9 @@ export default class{
         this._register(new Mosaic(main));
         this._register(new Rotation(main));
         this._register(new Shape(main));
+        this._register(new Line(main));
+        this._register(new Arrow(main));
+        this._register(new Cropper(main));
         
     }
 

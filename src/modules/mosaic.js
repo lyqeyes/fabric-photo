@@ -6,9 +6,9 @@ export default class Mosaic extends Base {
         super();
         this.setParent(parent);
 
-        this.name = consts.componentNames.MOSAIC;
+        this.name = consts.moduleNames.MOSAIC;
 
-        this._dimensions = 12;
+        this._dimensions = 16;
 
         this._listeners = {
             mousedown: this._onFabricMouseDown.bind(this),
@@ -27,7 +27,7 @@ export default class Mosaic extends Base {
         canvas.selection = false;
 
         setting = setting || {};
-        this._dimensions = setting.dimensions || this._dimensions;
+        this._dimensions = parseInt(setting.dimensions) || this._dimensions;
 
         canvas.forEachObject(obj => {
             obj.set({
@@ -58,21 +58,23 @@ export default class Mosaic extends Base {
     _onFabricMouseDown(fEvent) {
         const canvas = this.getCanvas();
         const pointer = this.pointer = canvas.getPointer(fEvent.e);
+        console.log(pointer);
         this._mosaicGroup = new fabric.Group([], {
             left: pointer.x,
             top: pointer.y
         });
         canvas.add(this._mosaicGroup);
+        this._mosaicGroup.set('selectable', false);
+        canvas.renderAll();
         canvas.on({
             'mouse:move': this._listeners.mousemove,
             'mouse:up': this._listeners.mouseup
         });
-        this.getImageData = canvas.contextContainer.getImageData;
     }
     _onFabricMouseMove(fEvent) {
         const canvas = this.getCanvas();
         const pointer = canvas.getPointer(fEvent.e);
-        let imageData = this.getImageData(pointer.x, pointer.y, this._dimensions, this._dimensions);
+        let imageData = canvas.contextContainer.getImageData(parseInt(pointer.x), parseInt(pointer.y), this._dimensions, this._dimensions);
         let rgba = [0, 0, 0, 0];
         let length = imageData.data.length / 4;
         for (let i = 0; i < length; i++) {
@@ -81,12 +83,12 @@ export default class Mosaic extends Base {
             rgba[2] += imageData.data[i * 4 + 2];
             rgba[3] += imageData.data[i * 4 + 3];
         }
-        this._mosaicGroup.add(new fabric.Rect({
-            fill: `rgba(${rgba[0]/length},${rgba[1]/length} ,${rgba[2]/length},${rgba[3]/length})`,
+        this._mosaicGroup.addWithUpdate(new fabric.Rect({
+            fill: `rgb(${parseInt(rgba[0]/length)},${parseInt(rgba[1]/length)},${parseInt(rgba[2]/length)})`,
             height: this._dimensions,
             width: this._dimensions,
-            left: pointer.x - this.pointer.x,
-            top: pointer.y - this.pointer.y
+            left: pointer.x,
+            top: pointer.y
         }));
         canvas.renderAll();
     }
@@ -95,7 +97,6 @@ export default class Mosaic extends Base {
         const canvas = this.getCanvas();
         this._mosaicGroup = null;
         this.pointer = null;
-        this.getImageData = null;
         canvas.off({
             'mouse:move': this._listeners.mousemove,
             'mouse:up': this._listeners.mouseup

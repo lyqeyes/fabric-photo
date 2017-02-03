@@ -250,11 +250,11 @@ export default class Text extends Base {
 
         this._textarea = textarea;
 
-        this._listeners = Object.assign(this._listeners, {
-            input: this._onInput.bind(this),
-            keydown: this._onKeyDown.bind(this),
-            blur: this._onBlur.bind(this),
-            scroll:this._onScroll.bind(this)
+        this._listeners = util.extend(this._listeners, {
+            input: util.bind(this._onInput,this),
+            keydown: util.bind(this._onKeyDown,this),
+            blur: util.bind(this._onBlur, this),
+            scroll:util.bind(this._onScroll, this)
         });
 
         if (browser.msie && browser.version === 9) {
@@ -275,6 +275,8 @@ export default class Text extends Base {
         const textarea = container.querySelector('textarea');
 
         container.removeChild(textarea);
+        
+        console.log('remove text area',container);
 
         this._textarea = null;
 
@@ -324,6 +326,7 @@ export default class Text extends Base {
      * @private
      */
     _onBlur() {
+        console.log('---- textarea blur');
         const ratio = this.getCanvasRatio();
         const editingObj = this._editingObj;
         const editingObjInfos = this._editingObjInfos;
