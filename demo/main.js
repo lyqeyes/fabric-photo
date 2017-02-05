@@ -244,35 +244,25 @@ export default class WrapContainer extends Component {
     }
 
     onCropBtnClick() {
-        this.fp.endAll();
         this.fp.startCropping();
     }
 
     onClearBtnClick() {
-        this.fp.endAll();
         this.resetEditorState();
         this.fp.clearObjects();
     }
     onApplyCropBtn() {
-        this.fp.endAll();
-        this.resetEditorState();
         this.fp.endCropping(true);
     }
 
     onCancleCropBtn() {
-        this.fp.endAll();
-        this.resetEditorState();
         this.fp.endCropping();
     }
 
     onUndoBtn() {
-        this.fp.endAll();
-        this.resetEditorState();
         this.fp.undo();
     }
     onRedoBtn() {
-        this.fp.endAll();
-        this.resetEditorState();
         this.fp.redo();
     }
 

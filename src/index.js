@@ -550,9 +550,6 @@ class FabricPhoto {
         this._state = states.CROP;
         const cropper = this._getModule(modules.CROPPER);
         cropper.start();
-        /**
-         * @event fabricPhoto#startCropping
-         */
         this.fire(events.START_CROPPING);
     }
 
