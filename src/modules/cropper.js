@@ -3,7 +3,7 @@ import consts from '../consts';
 import Cropzone from '../lib/cropzone';
 import util from '../lib/util';
 
-const MOUSE_MOVE_THRESHOLD = 10;
+const MOUSE_MOVE_THRESHOLD = consts.MOUSE_MOVE_THRESHOLD;
 const abs = Math.abs;
 const clamp = util.clamp;
 const keyCodes = consts.keyCodes;

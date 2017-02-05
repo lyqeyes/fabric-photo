@@ -20,7 +20,7 @@ export default class WrapContainer extends Component {
         super();
         this.state = {
             editState: consts.states.NORMAL,
-            arrowMenu: {
+            arrow: {
                 color: '#FF3440',
                 stroke: 4
             },
@@ -174,6 +174,7 @@ export default class WrapContainer extends Component {
 
     onArrowBtnClick() {
         this.fp.endAll();
+        //this.fp.startLineDrawing();
         if (this.state.editState === consts.states.ARROW) {
             this.resetEditorState();
         }
@@ -182,8 +183,8 @@ export default class WrapContainer extends Component {
                 editState: consts.states.ARROW
             });
             this.fp.startArrowDrawing({
-                width: this.state.freeDraw.stroke,
-                color: this.state.freeDraw.color
+                width: this.state.arrow.stroke,
+                color: this.state.arrow.color
             });
         }
     }

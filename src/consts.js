@@ -107,15 +107,17 @@ export default {
      */
     fObjectOptions: {
         SELECTION_STYLE: {
-            borderColor: 'red',
-            cornerColor: 'green',
-            cornerSize: 10,
+            borderColor: '#118BFB',
+            cornerColor: '#FFFFFF',
+            cornerStrokeColor:'#118BFB',
+            cornerSize: 15,
+            padding:5,
             originX: 'center',
             originY: 'center',
-            transparentCorners: false
+            transparentCorners: false,
+            cornerStyle:'circle'
         }
     },
-
 
     rejectMessages: {
         flip: 'The flipX and flipY setting values are not changed.',
@@ -124,5 +126,7 @@ export default {
         isLock: 'The executing command state is locked.',
         undo: 'The promise of undo command is reject.',
         redo: 'The promise of redo command is reject.'
-    }
+    },
+    
+    MOUSE_MOVE_THRESHOLD:10
 };
