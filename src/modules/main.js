@@ -178,27 +178,29 @@ export default class Main extends Base {
     }
     
     setZoom(zoom){
-        if(zoom<1 || zoom>4){
-            return;
-        }
         const canvasImage = this.canvasImage.scale(1);
         const boundingRect = canvasImage.getBoundingRect();
         const width = boundingRect.width;
         const height = boundingRect.height;
         const maxDimension = this._calcMaxDimension(width, height);
-        console.log(boundingRect,maxDimension,zoom);
-
-        // this.setCanvasBackstoreDimension({
-        //         width: maxDimension.width / zoom,
-        //         height: maxDimension.height / zoom
-        // });
+        //maximum is no more than twice the size of the picture
+        if(zoom < 1 || zoom > width*2 / maxDimension.width){
+            return;
+        }
+        const maxWidth = maxDimension.width * zoom;
+        const maxHeight = maxDimension.height * zoom;
+        
         if(this.canvas.lowerCanvasEl){
-            this.canvas.lowerCanvasEl.style['height'] = `${height}px`;   
-            this.canvas.lowerCanvasEl.style['width'] = `${width}px`;   
+            this.canvas.lowerCanvasEl.style['height'] = `${maxHeight}px`;   
+            this.canvas.lowerCanvasEl.style['width'] = `${maxWidth}px`;   
+            this.canvas.lowerCanvasEl.style['top'] = '0px';   
+            this.canvas.lowerCanvasEl.style['left'] = '0px';   
         }
         if (this.canvas.upperCanvasEl) {
-            this.canvas.upperCanvasEl.style['height'] = `${height}px`;   
-            this.canvas.upperCanvasEl.style['width'] = `${width}px`;
+            this.canvas.upperCanvasEl.style['height'] = `${maxHeight}px`;   
+            this.canvas.upperCanvasEl.style['width'] = `${maxWidth}px`;
+            this.canvas.upperCanvasEl.style['top'] = '0px';   
+            this.canvas.upperCanvasEl.style['left'] = '0px';
         }
         this.canvas.renderAll();
         this._zoom = zoom;
