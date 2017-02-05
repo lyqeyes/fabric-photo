@@ -128,6 +128,14 @@ export default class Main extends Base {
             height
         });
         this.canvas.centerObject(canvasImage);
+        if(this.canvas.lowerCanvasEl){
+            this.canvas.lowerCanvasEl.style['top'] = '0px';   
+            this.canvas.lowerCanvasEl.style['left'] = '0px';   
+        }
+        if (this.canvas.upperCanvasEl) {
+            this.canvas.upperCanvasEl.style['top'] = '0px';   
+            this.canvas.upperCanvasEl.style['left'] = '0px';
+        }
     }
 
     /**
@@ -202,9 +210,11 @@ export default class Main extends Base {
             this.canvas.upperCanvasEl.style['top'] = '0px';   
             this.canvas.upperCanvasEl.style['left'] = '0px';
         }
+        
         this.canvas.renderAll();
         this._zoom = zoom;
     }
+    
     
     getZoom(){
         return this._zoom;
