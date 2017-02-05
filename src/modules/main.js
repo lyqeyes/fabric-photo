@@ -97,12 +97,19 @@ export default class Main extends Base {
             containerClass: 'xm-fabric-photo-editor-canvas-container',
             enableRetinaScaling: false
         });
+        
+        //be used in zoom and panning
+        if (this.canvas.wrapperEl) {
+            this.canvas.wrapperEl.style['overflow'] = 'hidden';
+        }
     }
 
     /**
      * Adjust canvas dimension with scaling image
      */
     adjustCanvasDimension() {
+        //reset zoom to adjust canvas 
+        this._zoom = 1;
         const canvasImage = this.canvasImage.scale(1);
         const boundingRect = canvasImage.getBoundingRect();
         const width = boundingRect.width;
@@ -121,7 +128,6 @@ export default class Main extends Base {
             height
         });
         this.canvas.centerObject(canvasImage);
-        this.initZoom();
     }
 
     /**
@@ -171,10 +177,6 @@ export default class Main extends Base {
        this.canvas.setDimensions(dimension, backstoreOnly);
     }
     
-    initZoom(){
-        this._zoom = 1;
-    }
-    
     setZoom(zoom){
         if(zoom<1 || zoom>4){
             return;
@@ -184,10 +186,20 @@ export default class Main extends Base {
         const width = boundingRect.width;
         const height = boundingRect.height;
         const maxDimension = this._calcMaxDimension(width, height);
-        this.setCanvasBackstoreDimension({
-                width: maxDimension.width * zoom,
-                height: maxDimension.height * zoom
-        });
+        console.log(boundingRect,maxDimension,zoom);
+
+        // this.setCanvasBackstoreDimension({
+        //         width: maxDimension.width / zoom,
+        //         height: maxDimension.height / zoom
+        // });
+        if(this.canvas.lowerCanvasEl){
+            this.canvas.lowerCanvasEl.style['height'] = `${height}px`;   
+            this.canvas.lowerCanvasEl.style['width'] = `${width}px`;   
+        }
+        if (this.canvas.upperCanvasEl) {
+            this.canvas.upperCanvasEl.style['height'] = `${height}px`;   
+            this.canvas.upperCanvasEl.style['width'] = `${width}px`;
+        }
         this.canvas.renderAll();
         this._zoom = zoom;
     }

@@ -135,7 +135,6 @@ export default class WrapContainer extends Component {
     }
 
     activateTextMode() {
-
         if (this.fp.getCurrentState() !== consts.states.TEXT) {
             this.fp.endFreeDrawing();
             this.fp.endLineDrawing();
@@ -145,7 +144,6 @@ export default class WrapContainer extends Component {
             this.fp.endDrawingShapeMode();
             this.fp.endTextMode();
             this.fp.endPan();
-            console.log('++++++---- start text mode', this.fp.getCurrentState(), consts.states.TEXT);
             this.fp.startTextMode();
         }
     }

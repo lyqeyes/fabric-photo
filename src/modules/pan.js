@@ -1,6 +1,7 @@
 import Base from './base';
 import consts from '../consts';
 import util from '../lib/util';
+import $ from 'jquery';
 
 export default class Pan extends Base {
     constructor(parent) {
@@ -53,7 +54,14 @@ export default class Pan extends Base {
      */
     _onFabricMouseDown(fEvent) {
         const canvas = this.getCanvas();
-        this.pointer = canvas.getPointer(fEvent.e);
+        // this.pointer = canvas.getPointer(fEvent.e);
+        this.$lower = $(canvas.lowerCanvasEl)
+        this.$upper = $(canvas.upperCanvasEl)
+        this.$wrapper = $(canvas.wrapperEl)
+        this.deltaX = parseInt(this.$lower.css('left'), 10);
+        this.deltaY = parseInt(this.$lower.css('top'), 10);
+        this.deltaWidth = this.$upper.width() - this.$wrapper.width()
+        this.deltaHeight = this.$upper.height() - this.$wrapper.height()
         canvas.on({
             'mouse:move': this._listeners.mousemove,
             'mouse:up': this._listeners.mouseup
@@ -67,14 +75,23 @@ export default class Pan extends Base {
      */
     _onFabricMouseMove(fEvent) {
         const canvas = this.getCanvas();
-        var delta = new fabric.Point(fEvent.e.movementX, fEvent.e.movementY);
-        // const pointer = canvas.getPointer(fEvent.e);
-        // canvas.relativePan({
-        //     x:pointer.x-this.pointer.x,
-        //     y:pointer.y-this.pointer.y
-        // });
-        //this.pointer = pointer;
-        canvas.relativePan(delta);
+        // go out of use because of transform opver  
+        // var delta = new fabric.Point(fEvent.e.movementX, fEvent.e.movementY);
+        // canvas.relativePan(delta);
+        let deltaX = this.deltaX + fEvent.e.movementX;
+        let deltaY = this.deltaY + fEvent.e.movementY;
+        console.log(this.deltaWidth, this.deltaHeight, deltaX, deltaY);
+
+        if (this.deltaWidth > Math.abs(deltaX) && deltaX < 0) {
+            this.$lower.css('left', deltaX);
+            this.$upper.css('left', deltaX);
+            this.deltaX = deltaX;
+        }
+        if (this.deltaHeight > Math.abs(deltaY) && deltaY < 0) {
+            this.$lower.css('top', deltaY);
+            this.$upper.css('top', deltaY);
+            this.deltaY = deltaY;
+        }
     }
 
     /**
@@ -84,7 +101,9 @@ export default class Pan extends Base {
      */
     _onFabricMouseUp() {
         const canvas = this.getCanvas();
-        this.pointer = null;
+        // this.pointer = null;
+        this.$lower = null;
+        this.$upper = null;
         canvas.off({
             'mouse:move': this._listeners.mousemove,
             'mouse:up': this._listeners.mouseup
