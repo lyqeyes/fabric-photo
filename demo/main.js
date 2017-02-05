@@ -5,11 +5,11 @@
 import React, {
     Component
 }
-from 'react';
+    from 'react';
 import ReactDOM, {
     findDOMNode
 }
-from 'react-dom';
+    from 'react-dom';
 import classnames from 'classnames';
 
 import FabricPhoto from '../src/index'
@@ -49,7 +49,7 @@ export default class WrapContainer extends Component {
         this.fp.loadImageFromURL('http://mss.ximing.ren/v1/mss_814dc1610cda4b2e8febd6ea2c809db5/image/1484297784369.jpeg', 'image name');
         //this.fp.loadImageFromURL('http://mss.ximing.ren/v1/mss_814dc1610cda4b2e8febd6ea2c809db5/image/1484297784312.png', 'image name');
         //this.fp.loadImageFromURL('http://mss.ximing.ren/v1/mss_814dc1610cda4b2e8febd6ea2c809db5/image/1484297783376.jpeg', 'image name');
-        //this.fp.loadImageFromURL('http://mss.ximing.ren/v1/mss_814dc1610cda4b2e8febd6ea2c809db5/image/1484297783036.png', 'image name');
+        // this.fp.loadImageFromURL('http://mss.ximing.ren/v1/mss_814dc1610cda4b2e8febd6ea2c809db5/image/1484297783036.png', 'image name');
 
         this.fp.on('selectObject', (obj) => {
             //console.log('selectObject--->',obj);
@@ -129,7 +129,7 @@ export default class WrapContainer extends Component {
             this.fp.endMosaicDrawing();
             this.fp.endCropping();
             this.fp.endArrowDrawing();
-
+            this.fp.endPan();
             this.fp.startDrawingShapeMode();
         }
     }
@@ -144,6 +144,7 @@ export default class WrapContainer extends Component {
             this.fp.endCropping();
             this.fp.endDrawingShapeMode();
             this.fp.endTextMode();
+            this.fp.endPan();
             console.log('++++++---- start text mode', this.fp.getCurrentState(), consts.states.TEXT);
             this.fp.startTextMode();
         }
@@ -222,12 +223,10 @@ export default class WrapContainer extends Component {
 
     onTextBtnClick() {
         if (this.fp.getCurrentState() === consts.states.TEXT) {
-            console.log('_________onTextBtnClick end');
             this.fp.endAll();
             this.resetEditorState();
         }
         else {
-            console.log('_________onTextBtnClick start');
             this.setState({
                 editState: consts.states.TEXT
             });
@@ -266,18 +265,23 @@ export default class WrapContainer extends Component {
         this.fp.redo();
     }
 
+    onPanBtnClick() {
+        this.fp.endAll();
+        this.fp.startPan();
+    }
+
     renderArrowMenus() {
         return (
             <div className="tools-panel">
                 <div className="tools-panel-brush">
                     <div>
-                        <span className="small-brush" onClick={() => { } }> </span>
+                        <span className="small-brush" onClick={() => { }}> </span>
                     </div>
                     <div>
-                        <span className="normal-brush" onClick={() => { } }> </span>
+                        <span className="normal-brush" onClick={() => { }}> </span>
                     </div>
                     <div>
-                        <span className="big-brush" onClick={() => { } }> </span>
+                        <span className="big-brush" onClick={() => { }}> </span>
                     </div>
                 </div>
                 <span className="tools-divider"> </span>
@@ -305,13 +309,13 @@ export default class WrapContainer extends Component {
             <div className="tools-panel">
                 <div className="tools-panel-brush">
                     <div>
-                        <span className="small-brush" onClick={() => { } }> </span>
+                        <span className="small-brush" onClick={() => { }}> </span>
                     </div>
                     <div>
-                        <span className="normal-brush" onClick={() => { } }> </span>
+                        <span className="normal-brush" onClick={() => { }}> </span>
                     </div>
                     <div>
-                        <span className="big-brush" onClick={() => { } }> </span>
+                        <span className="big-brush" onClick={() => { }}> </span>
                     </div>
                 </div>
                 <span className="tools-divider"> </span>
@@ -339,13 +343,13 @@ export default class WrapContainer extends Component {
             <div className="tools-panel">
                 <div className="tools-panel-brush">
                     <div>
-                        <span className="small-brush" onClick={() => { } }> </span>
+                        <span className="small-brush" onClick={() => { }}> </span>
                     </div>
                     <div>
-                        <span className="normal-brush" onClick={() => { } }> </span>
+                        <span className="normal-brush" onClick={() => { }}> </span>
                     </div>
                     <div>
-                        <span className="big-brush" onClick={() => { } }> </span>
+                        <span className="big-brush" onClick={() => { }}> </span>
                     </div>
                 </div>
             </div>
@@ -378,21 +382,33 @@ export default class WrapContainer extends Component {
         return (
             <div className="tools-panel">
                 <div className="tools-panel-crop">
-                <span className="tools-panel-crop-apply-btn"
+                    <span className="tools-panel-crop-apply-btn"
                         onClick={this.onApplyCropBtn.bind(this)}> </span>
-                <span className="tools-panel-crop-cancel-btn"
+                    <span className="tools-panel-crop-cancel-btn"
                         onClick={this.onCancleCropBtn.bind(this)}> </span>
                 </div>
             </div>
         )
     }
 
-    onChangeScaleBtnClick() {
-        return () => {}
+    zoomOut(delta) {
+        let nextZoom = this.fp.getZoom() + delta;
+        if (nextZoom > 4) {
+            return;
+        }
+        this.fp.setZoom(nextZoom);
+    }
+
+    zoomIn(delta) {
+        let nextZoom = this.fp.getZoom() - delta;
+        if (nextZoom < 1) {
+            return;
+        }
+        this.fp.setZoom(nextZoom)
     }
 
     changeEditorColor() {
-        return () => {}
+        return () => { }
     }
 
     render() {
@@ -425,9 +441,9 @@ export default class WrapContainer extends Component {
                     </div>
                     <div className={btnClassname}>
                         <div className="image-thumb-btns">
-                            <i className="dxicon dxicon-image-suoxiao" onClick={this.onChangeScaleBtnClick(-10)} />
+                            <i className="dxicon dxicon-image-suoxiao" onClick={this.zoomIn.bind(this, 0.2)} />
                             <div className="thumb-divider"></div>
-                            <i className="dxicon dxicon-image-fangda" onClick={this.onChangeScaleBtnClick(10)} />
+                            <i className="dxicon dxicon-image-fangda" onClick={this.zoomOut.bind(this, 0.2)} />
                         </div>
                         <div className="image-tools-btns">
                             <i className="dxicon dxicon-image-jiantou" onClick={this.onArrowBtnClick.bind(this)} />
@@ -436,14 +452,15 @@ export default class WrapContainer extends Component {
                             <i className="dxicon dxicon-image-masaike" onClick={this.onMosaicBtnClick.bind(this)} />
                             <i className="dxicon dxicon-image-xuanzhuan" onClick={this.onRotationBtnClick.bind(this)} />
                             <i className="dxicon dxicon-image-jiancai" onClick={this.onCropBtnClick.bind(this)} />
+                            <i className="dxicon dxicon-image-jiancai" onClick={this.onPanBtnClick.bind(this)} />
                             <span className="tools-divider"> </span>
                             <span className="file-button-cancel"
                                 onClick={this.onClearBtnClick.bind(this)}>复原</span>
-                                <span className="file-button-cancel"
+                            <span className="file-button-cancel"
                                 onClick={this.onUndoBtn.bind(this)}>undo</span>
-                                <span className="file-button-cancel"
+                            <span className="file-button-cancel"
                                 onClick={this.onRedoBtn.bind(this)}>redo</span>
-                                {menus}
+                            {menus}
                         </div>
                         <div className="ctn-btns">
                         </div>

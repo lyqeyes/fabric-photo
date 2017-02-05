@@ -10,6 +10,7 @@ import Shape from './modules/shape';
 import Line from './modules/line';
 import Arrow from './modules/arrow';
 import Cropper from './modules/cropper';
+import Pan from './modules/pan';
 
 import consts from './consts';
 
@@ -47,6 +48,7 @@ export default class{
         this._register(new Line(main));
         this._register(new Arrow(main));
         this._register(new Cropper(main));
+        this._register(new Pan(main));
         
     }
 

@@ -74,7 +74,8 @@ export default class Mosaic extends Base {
     _onFabricMouseMove(fEvent) {
         const canvas = this.getCanvas();
         const pointer = canvas.getPointer(fEvent.e);
-        let imageData = canvas.contextContainer.getImageData(parseInt(pointer.x), parseInt(pointer.y), this._dimensions, this._dimensions);
+        //let imageData = canvas.contextContainer.getImageData(parseInt(pointer.x), parseInt(pointer.y), this._dimensions, this._dimensions);
+        let imageData = canvas.getContext().getImageData(parseInt(pointer.x), parseInt(pointer.y), this._dimensions, this._dimensions);
         let rgba = [0, 0, 0, 0];
         let length = imageData.data.length / 4;
         for (let i = 0; i < length; i++) {

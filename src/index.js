@@ -319,21 +319,7 @@ class FabricPhoto {
         return this._module.getModule(name);
     }
 
-    /**
-     * Get current state
-     * @returns {string}
-     * @example
-     * // Image editor states
-     * //
-     * //    NORMAL: 'NORMAL'
-     * //    CROP: 'CROP'
-     * //    FREE_DRAWING: 'FREE_DRAWING'
-     * //    TEXT: 'TEXT'
-     * //
-     * if (fabricPhoto.getCurrentState() === 'FREE_DRAWING') {
-     *     fabricPhoto.endFreeDrawing();
-     * }
-     */
+
     getCurrentState() {
         return this._state;
     }
@@ -371,6 +357,7 @@ class FabricPhoto {
         this.endMosaicDrawing();
         this.endCropping();
         this.endDrawingShapeMode();
+        this.endPan();
         this.deactivateAll();
         this._state = states.NORMAL;
     }
@@ -453,9 +440,6 @@ class FabricPhoto {
                     callback(oImage);
                 }
                 else {
-                    /**
-                     * @event ImageEditor#clearImage
-                     */
                     this.fire(events.CLEAR_IMAGE);
                 }
             });
@@ -1069,6 +1053,27 @@ class FabricPhoto {
     }
 
     /**
+     * Start pan mode
+     */
+    startPan() {
+        if (this.getCurrentState() === states.PAN) {
+            return;
+        }
+
+        this.endAll();
+        this._getModule(modules.PAN).start();
+        this._state = states.PAN;
+        this.fire(events.START_PAN);
+    }
+    /**
+     * End pan mode
+     */
+    endPan() {
+        this._getModule(modules.PAN).end();
+        this._state = states.NORMAL;
+        this.fire(events.END_PAN);
+    }
+    /**
      * Double click event handler
      * @private
      */
@@ -1166,6 +1171,12 @@ class FabricPhoto {
         rate = rate || 1;
         const command = commandFactory.create(commands.ZOOM, rate);
         this.execute(command);
+    }
+    
+    getZoom() {
+        //return this._canvas.getZoom();
+        const mainModule = this._getModule(modules.MAIN);
+        return mainModule.getZoom();
     }
 
     /**

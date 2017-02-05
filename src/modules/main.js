@@ -108,19 +108,20 @@ export default class Main extends Base {
         const width = boundingRect.width;
         const height = boundingRect.height;
         const maxDimension = this._calcMaxDimension(width, height);
-
         this.setCanvasCssDimension({
-            width: '100%',
-            height: '100%', // Set height '' for IE9
-            'max-width': `${maxDimension.width}px`,
-            'max-height': `${maxDimension.height}px`
+            // width: '100%',
+            // height: '100%', // Set height '' for IE9
+            // 'max-width': `${maxDimension.width}px`,
+            // 'max-height': `${maxDimension.height}px`
+            width:`${maxDimension.width}px`,
+            height:`${maxDimension.height}px`
         });
-
         this.setCanvasBackstoreDimension({
             width,
             height
         });
         this.canvas.centerObject(canvasImage);
+        this.initZoom();
     }
 
     /**
@@ -137,7 +138,6 @@ export default class Main extends Base {
         const hScaleFactor = this.cssMaxHeight / height;
         let cssMaxWidth = Math.min(width, this.cssMaxWidth);
         let cssMaxHeight = Math.min(height, this.cssMaxHeight);
-
         if (wScaleFactor < 1 && wScaleFactor < hScaleFactor) {
             cssMaxWidth = width * wScaleFactor;
             cssMaxHeight = height * wScaleFactor;
@@ -145,7 +145,6 @@ export default class Main extends Base {
             cssMaxWidth = width * hScaleFactor;
             cssMaxHeight = height * hScaleFactor;
         }
-
         return {
             width: Math.floor(cssMaxWidth),
             height: Math.floor(cssMaxHeight)
@@ -169,9 +168,34 @@ export default class Main extends Base {
      * @override
      */
     setCanvasBackstoreDimension(dimension) {
-        this.canvas.setDimensions(dimension, backstoreOnly);
+       this.canvas.setDimensions(dimension, backstoreOnly);
     }
-
+    
+    initZoom(){
+        this._zoom = 1;
+    }
+    
+    setZoom(zoom){
+        if(zoom<1 || zoom>4){
+            return;
+        }
+        const canvasImage = this.canvasImage.scale(1);
+        const boundingRect = canvasImage.getBoundingRect();
+        const width = boundingRect.width;
+        const height = boundingRect.height;
+        const maxDimension = this._calcMaxDimension(width, height);
+        this.setCanvasBackstoreDimension({
+                width: maxDimension.width * zoom,
+                height: maxDimension.height * zoom
+        });
+        this.canvas.renderAll();
+        this._zoom = zoom;
+    }
+    
+    getZoom(){
+        return this._zoom;
+    }
+    
     /**
      * Set image properties
      * {@link http://fabricjs.com/docs/fabric.Image.html#set}

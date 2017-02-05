@@ -18,7 +18,8 @@ export default {
         'ICON',
         'FILTER',
         'SHAPE',
-        'MOSAIC'
+        'MOSAIC',
+        'PAN'
     ),
 
     /**
@@ -56,6 +57,8 @@ export default {
         END_FREE_DRAWING: 'endFreeDrawing',
         START_LINE_DRAWING: 'startLineDrawing',
         END_LINE_DRAWING: 'endLineDrawing',
+        START_PAN: 'startPan',
+        END_PAN: 'endPan',
         START_ARROW_DRAWING: 'startArrowDrawing',
         END_ARROW_DRAWING: 'endArrowDrawing',
         START_MOSAIC_DRAWING: 'startMosaicDrawing',
@@ -82,7 +85,8 @@ export default {
         'ARROW',
         'MOSAIC',
         'TEXT',
-        'SHAPE'
+        'SHAPE',
+        'PAN'
     ),
 
     /**
