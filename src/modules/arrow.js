@@ -10,7 +10,12 @@ export default class Arrow extends Base {
         super();
         this.setParent(parent);
         this.name = consts.moduleNames.ARROW;
-        this._width = 12;
+        this._width = 5;
+        this._radius = 3;
+        this._dimension = {
+            height:20,
+            width:20
+        };
         this._oColor = new fabric.Color('rgba(0, 0, 0, 0.5)');
         this._listeners = {
             mousedown: this._onFabricMouseDown.bind(this),
@@ -21,7 +26,7 @@ export default class Arrow extends Base {
 
     /**
      * Start drawing arrow mode
-     * @param {{width: ?number, color: ?string}} [setting] - Brush width & color
+     * @param {{width: ?number, color: ?string,radius:?number,dimension:?object} [setting] - Brush width & color
      */
     start(setting) {
         const canvas = this.getCanvas();
@@ -43,13 +48,15 @@ export default class Arrow extends Base {
 
     /**
      * Set brush
-     * @param {{width: ?number, color: ?string}} [setting] - Brush width & color
+     * @param {{width: ?number, color: ?string,radius:?number,dimension:?object} [setting] - Brush width & color
      */
     setBrush(setting) {
         const brush = this.getCanvas().freeDrawingBrush;
 
         setting = setting || {};
         this._width = setting.width || this._width;
+        this._radius = setting.radius || this._radius;
+        this._dimension = Object.assign(this._dimension,setting.dimension);
 
         if (setting.color) {
             this._oColor = new fabric.Color(setting.color);
@@ -163,14 +170,14 @@ export default class Arrow extends Base {
             pointType: 'arrow_start',
             angle: startPointer.x===endPointer.x&&startPointer.y===endPointer.y?-45:
             this.calcArrowAngle(startPointer.x, startPointer.y, endPointer.x, endPointer.y)-90,
-            width: this._width*10,
-            height: this._width*10,
+            width: this._dimension.width,
+            height: this._dimension.height,
             fill: this._oColor.toRgba()
         });
         const circle = this.circle = new fabric.Circle({
             left: line.get('x2') + deltaX,
             top: line.get('y2') + deltaY,
-            radius: this._width*2,
+            radius: this._radius,
             stroke: this._oColor.toRgba(),
             strokeWidth: this._width,
             originX: 'center',
