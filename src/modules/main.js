@@ -12,8 +12,8 @@ const backstoreOnly = {
     backstoreOnly: true
 };
 /*
-* 图形编辑器的 画板相关的设定 都需要在这里实现
-*/
+ * 图形编辑器的 画板相关的设定 都需要在这里实现
+ */
 export default class Main extends Base {
     constructor() {
         super();
@@ -78,16 +78,18 @@ export default class Main extends Base {
 
         if (element.jquery) {
             selectedElement = element[0];
-        } else if (element.nodeType) {
+        }
+        else if (element.nodeType) {
             selectedElement = element;
-        } else {
+        }
+        else {
             selectedElement = document.querySelector(element);
         }
-        
-        if(!selectedElement || !selectedElement.nodeName){
+
+        if (!selectedElement || !selectedElement.nodeName) {
             throw new Error('容器元素是空');
         }
-        
+
         if (selectedElement.nodeName.toUpperCase() !== 'CANVAS') {
             canvasElement = document.createElement('canvas');
             selectedElement.appendChild(canvasElement);
@@ -97,7 +99,7 @@ export default class Main extends Base {
             containerClass: 'xm-fabric-photo-editor-canvas-container',
             enableRetinaScaling: false
         });
-        
+
         //be used in zoom and panning
         if (this.canvas.wrapperEl) {
             this.canvas.wrapperEl.style['overflow'] = 'hidden';
@@ -120,20 +122,20 @@ export default class Main extends Base {
             // height: '100%', // Set height '' for IE9
             // 'max-width': `${maxDimension.width}px`,
             // 'max-height': `${maxDimension.height}px`
-            width:`${maxDimension.width}px`,
-            height:`${maxDimension.height}px`
+            width: `${maxDimension.width}px`,
+            height: `${maxDimension.height}px`
         });
         this.setCanvasBackstoreDimension({
             width,
             height
         });
         this.canvas.centerObject(canvasImage);
-        if(this.canvas.lowerCanvasEl){
-            this.canvas.lowerCanvasEl.style['top'] = '0px';   
-            this.canvas.lowerCanvasEl.style['left'] = '0px';   
+        if (this.canvas.lowerCanvasEl) {
+            this.canvas.lowerCanvasEl.style['top'] = '0px';
+            this.canvas.lowerCanvasEl.style['left'] = '0px';
         }
         if (this.canvas.upperCanvasEl) {
-            this.canvas.upperCanvasEl.style['top'] = '0px';   
+            this.canvas.upperCanvasEl.style['top'] = '0px';
             this.canvas.upperCanvasEl.style['left'] = '0px';
         }
     }
@@ -155,7 +157,8 @@ export default class Main extends Base {
         if (wScaleFactor < 1 && wScaleFactor < hScaleFactor) {
             cssMaxWidth = width * wScaleFactor;
             cssMaxHeight = height * wScaleFactor;
-        } else if (hScaleFactor < 1 && hScaleFactor < wScaleFactor) {
+        }
+        else if (hScaleFactor < 1 && hScaleFactor < wScaleFactor) {
             cssMaxWidth = width * hScaleFactor;
             cssMaxHeight = height * hScaleFactor;
         }
@@ -182,44 +185,52 @@ export default class Main extends Base {
      * @override
      */
     setCanvasBackstoreDimension(dimension) {
-       this.canvas.setDimensions(dimension, backstoreOnly);
+        this.canvas.setDimensions(dimension, backstoreOnly);
     }
-    
-    setZoom(zoom){
+
+    setZoom(zoom) {
         const canvasImage = this.canvasImage.scale(1);
         const boundingRect = canvasImage.getBoundingRect();
         const width = boundingRect.width;
         const height = boundingRect.height;
         const maxDimension = this._calcMaxDimension(width, height);
         //maximum is no more than twice the size of the picture
-        if(zoom < 1 || zoom > width*2 / maxDimension.width){
+        if (zoom < 1 || zoom > width * 2 / maxDimension.width) {
             return;
         }
         const maxWidth = maxDimension.width * zoom;
         const maxHeight = maxDimension.height * zoom;
-        
-        if(this.canvas.lowerCanvasEl){
-            this.canvas.lowerCanvasEl.style['height'] = `${maxHeight}px`;   
-            this.canvas.lowerCanvasEl.style['width'] = `${maxWidth}px`;   
-            this.canvas.lowerCanvasEl.style['top'] = '0px';   
-            this.canvas.lowerCanvasEl.style['left'] = '0px';   
+
+        if (this.canvas.lowerCanvasEl) {
+            this.canvas.lowerCanvasEl.style['height'] = `${maxHeight}px`;
+            this.canvas.lowerCanvasEl.style['width'] = `${maxWidth}px`;
+            this.canvas.lowerCanvasEl.style['top'] = '0px';
+            this.canvas.lowerCanvasEl.style['left'] = '0px';
         }
         if (this.canvas.upperCanvasEl) {
-            this.canvas.upperCanvasEl.style['height'] = `${maxHeight}px`;   
+            this.canvas.upperCanvasEl.style['height'] = `${maxHeight}px`;
             this.canvas.upperCanvasEl.style['width'] = `${maxWidth}px`;
-            this.canvas.upperCanvasEl.style['top'] = '0px';   
+            this.canvas.upperCanvasEl.style['top'] = '0px';
             this.canvas.upperCanvasEl.style['left'] = '0px';
         }
-        
+        const wrapperWidth = parseInt(this.canvas.wrapperEl.style['height'], 10),
+            wrapperHeight = parseInt(this.canvas.wrapperEl.style['width'], 10);
+
+        if (this.cssMaxWidth > maxWidth || wrapperWidth > maxWidth) {
+            this.canvas.wrapperEl.style['width'] = `${maxWidth}px`;
+        }
+        if (this.cssMaxHeight > maxHeight || wrapperHeight > maxHeight) {
+            this.canvas.wrapperEl.style['height'] = `${maxHeight}px`;
+        }
         this.canvas.renderAll();
         this._zoom = zoom;
     }
-    
-    
-    getZoom(){
+
+
+    getZoom() {
         return this._zoom;
     }
-    
+
     /**
      * Set image properties
      * {@link http://fabricjs.com/docs/fabric.Image.html#set}
