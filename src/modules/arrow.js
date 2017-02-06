@@ -116,6 +116,11 @@ export default class Arrow extends Base {
      */
     _onFabricMouseDown(fEvent) {
         const canvas = this.getCanvas();
+        if(fEvent.target && fEvent.target.customType === 'arrow'){
+            console.log(fEvent.target);
+            canvas.trigger('object:selected', {target: fEvent.target});
+            return;
+        }
         const pointer = this.startPointer = canvas.getPointer(fEvent.e);
         //this.drawArrow(pointer,pointer);
         let group = this.group = new fabric.Group([/*this.line, this.arrow, this.circle*/], {
@@ -124,8 +129,10 @@ export default class Arrow extends Base {
             originX: 'center',
             originY: 'center'
         });
+        this.group.set(consts.fObjectOptions.SELECTION_STYLE);
+        this.group.set('selectable', true);
+        group.customType = 'arrow';
         canvas.add(group);
-        // this.group.set('selectable', false);
         canvas.renderAll();
         canvas.on({
             'mouse:move': this._listeners.mousemove,
@@ -138,14 +145,9 @@ export default class Arrow extends Base {
         const line = this.line = new fabric.Line(points, {
             stroke: this._oColor.toRgba(),
             strokeWidth: this._width,
-            //selectable: true,
             padding: 5,
-            // hasBorders: false,
-            // hasControls: false,
             originX: 'center',
-            originY: 'center',
-            // lockScalingX: true,
-            // lockScalingY: true
+            originY: 'center'
         });
 
         let centerX = (line.x1 + line.x2) / 2,
@@ -158,11 +160,6 @@ export default class Arrow extends Base {
             top: line.get('y1') + deltaY,
             originX: 'center',
             originY: 'center',
-            // hasBorders: false,
-            // hasControls: false,
-            // lockScalingX: true,
-            // lockScalingY: true,
-            // lockRotation: true,
             pointType: 'arrow_start',
             angle: startPointer.x===endPointer.x&&startPointer.y===endPointer.y?-45:
             this.calcArrowAngle(startPointer.x, startPointer.y, endPointer.x, endPointer.y)-90,
@@ -178,11 +175,6 @@ export default class Arrow extends Base {
             strokeWidth: this._width,
             originX: 'center',
             originY: 'center',
-            // hasBorders: false,
-            // hasControls: false,
-            // lockScalingX: true,
-            // lockScalingY: true,
-            // lockRotation: true,
             pointType: 'arrow_end',
             fill: this._oColor.toRgba()
         });
@@ -229,10 +221,8 @@ export default class Arrow extends Base {
     calcArrowAngle(x1, y1, x2, y2) {
         var angle = 0,
             x, y;
-
         x = (x2 - x1);
         y = (y2 - y1);
-
         if (x === 0) {
             angle = (y === 0) ? 0 : (y > 0) ? Math.PI / 2 : Math.PI * 3 / 2;
         }
@@ -242,7 +232,6 @@ export default class Arrow extends Base {
         else {
             angle = (x < 0) ? Math.atan(y / x) + Math.PI : (y < 0) ? Math.atan(y / x) + (2 * Math.PI) : Math.atan(y / x);
         }
-
         return (angle * 180 / Math.PI);
     }
 }
