@@ -44,11 +44,22 @@ export default class Cropper extends Base {
         canvas.forEachObject(obj => { // {@link http://fabricjs.com/docs/fabric.Object.html#evented}
             obj.evented = false;
         });
+        let canvasCssWidth = parseInt(canvas.wrapperEl.style['width'], 10),
+            canvasCssHeight = parseInt(canvas.wrapperEl.style['height'], 10),
+            canvasWidth = canvas.upperCanvasEl.width,
+            canvasHeight = canvas.upperCanvasEl.height;
+        let radio = canvasCssWidth / canvasWidth;
+        let marginLeft = canvasCssWidth * 0.1 / radio;
+        let marginTop = canvasCssHeight * 0.1 / radio;
+        let width = canvasCssWidth*0.8 / radio;
+        let height = canvasCssHeight*0.8 / radio;
+        console.log(canvasCssHeight,canvasCssWidth,canvasHeight,canvasWidth,radio)
+
         this._cropzone = new Cropzone({
-            left: -10,
-            top: -10,
-            width: 1,
-            height: 1,
+            left: marginLeft,
+            top: marginTop,
+            width: width,
+            height: height,
             strokeWidth: 0, // {@link https://github.com/kangax/fabric.js/issues/2860}
             cornerSize: 10,
             cornerColor: 'black',
@@ -63,6 +74,7 @@ export default class Cropper extends Base {
         canvas.on('mouse:down', this._listeners.mousedown);
         canvas.selection = false;
         canvas.defaultCursor = 'crosshair';
+        canvas.setActiveObject(this._cropzone);
 
         fabric.util.addListener(document, 'keydown', this._listeners.keydown);
         fabric.util.addListener(document, 'keyup', this._listeners.keyup);
@@ -156,7 +168,8 @@ export default class Cropper extends Base {
         if (this._withShiftKey) { // make fixed ratio cropzone
             if (width > height) {
                 height = width;
-            } else if (height > width) {
+            }
+            else if (height > width) {
                 width = height;
             }
 

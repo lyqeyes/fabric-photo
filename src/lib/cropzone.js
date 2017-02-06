@@ -29,6 +29,7 @@ const Cropzone = fabric.util.createClass(fabric.Rect, {
             'scaling': this._onScaling
         });
     },
+    objectCaching: false,
 
     /**
      * Render Crop-zone
@@ -61,7 +62,6 @@ const Cropzone = fabric.util.createClass(fabric.Rect, {
 
         // Reset scale
         ctx.scale(1 / originalScaleX, 1 / originalScaleY);
-        console.log('crop zone render');
     },
 
     /**
@@ -93,7 +93,7 @@ const Cropzone = fabric.util.createClass(fabric.Rect, {
         const coordinates = this._getCoordinates(ctx),
             x = coordinates.x,
             y = coordinates.y;
-console.log('outer rect',coordinates)
+
         ctx.save();
         ctx.fillStyle = fillStyle;
         ctx.beginPath();
@@ -134,7 +134,7 @@ console.log('outer rect',coordinates)
             left = this.getLeft(),
             top = this.getTop(),
             canvasEl = ctx.canvas; // canvas element, not fabric object
-        console.log(width,height);
+
         return {
             x: util.map([
                 -(halfWidth + left),                        // x0
