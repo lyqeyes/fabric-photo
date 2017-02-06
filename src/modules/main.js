@@ -189,6 +189,9 @@ export default class Main extends Base {
     }
 
     setZoom(zoom) {
+        if (this._zoom === zoom) {
+            return;
+        }
         const canvasImage = this.canvasImage.scale(1);
         const boundingRect = canvasImage.getBoundingRect();
         const width = boundingRect.width;
@@ -213,14 +216,12 @@ export default class Main extends Base {
             this.canvas.upperCanvasEl.style['top'] = '0px';
             this.canvas.upperCanvasEl.style['left'] = '0px';
         }
-        const wrapperWidth = parseInt(this.canvas.wrapperEl.style['height'], 10),
-            wrapperHeight = parseInt(this.canvas.wrapperEl.style['width'], 10);
-
-        if (this.cssMaxWidth > maxWidth || wrapperWidth > maxWidth) {
-            this.canvas.wrapperEl.style['width'] = `${maxWidth}px`;
+        
+        if (this.cssMaxWidth > maxWidth) {
+                this.canvas.wrapperEl.style['width'] = `${maxWidth}px`;
         }
-        if (this.cssMaxHeight > maxHeight || wrapperHeight > maxHeight) {
-            this.canvas.wrapperEl.style['height'] = `${maxHeight}px`;
+        if (this.cssMaxHeight > maxHeight) {
+                this.canvas.wrapperEl.style['height'] = `${maxHeight}px`;
         }
         this.canvas.renderAll();
         this._zoom = zoom;
