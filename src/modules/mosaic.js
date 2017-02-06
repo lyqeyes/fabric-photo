@@ -61,7 +61,9 @@ export default class Mosaic extends Base {
         console.log(pointer);
         this._mosaicGroup = new fabric.Group([], {
             left: pointer.x,
-            top: pointer.y
+            top: pointer.y,
+            originX: 'center',
+            originY: 'center'
         });
         canvas.add(this._mosaicGroup);
         this._mosaicGroup.set('selectable', false);

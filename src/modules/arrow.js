@@ -120,7 +120,9 @@ export default class Arrow extends Base {
         //this.drawArrow(pointer,pointer);
         let group = this.group = new fabric.Group([/*this.line, this.arrow, this.circle*/], {
             left: pointer.x,
-            top: pointer.y
+            top: pointer.y,
+            originX: 'center',
+            originY: 'center'
         });
         canvas.add(group);
         // this.group.set('selectable', false);
