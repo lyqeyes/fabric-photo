@@ -1,6 +1,6 @@
 import Base from './base.js';
 import consts from '../consts';
-import Cropzone from '../lib/cropzone';
+import Cropzone from '../shape/cropzone';
 import util from '../lib/util';
 
 const MOUSE_MOVE_THRESHOLD = consts.MOUSE_MOVE_THRESHOLD;
@@ -61,8 +61,11 @@ export default class Cropper extends Base {
             width: width,
             height: height,
             strokeWidth: 0, // {@link https://github.com/kangax/fabric.js/issues/2860}
-            cornerSize: 10,
             cornerColor: 'black',
+            cornerStyle:'circle',
+            cornerColor: '#FFFFFF',
+            cornerStrokeColor:'#118BFB',
+            cornerSize: 15,
             fill: 'transparent',
             hasRotatingPoint: false,
             hasBorders: false,
