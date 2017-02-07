@@ -30,8 +30,8 @@ export default function() {
             imgWidth = imgWidth * scale;
             imgHeight = imgHeight * scale;
             let canvas = that.canvas = new fabric.Canvas(that.$container[0], {
-                width:imgWidth,
-                height:imgHeight,
+                width: imgWidth,
+                height: imgHeight,
                 isDrawingMode: true
             });
 
@@ -44,13 +44,13 @@ export default function() {
                     top: 0
                 });
             }, {
-                width:imgWidth,
-                height:imgHeight
+                width: imgWidth,
+                height: imgHeight
             });
 
         };
-        
-        
+
+
         img.src = dataURI;
     }
     reader.readAsDataURL(this.source);
