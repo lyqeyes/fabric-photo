@@ -5,11 +5,11 @@
 import React, {
     Component
 }
-    from 'react';
+from 'react';
 import ReactDOM, {
     findDOMNode
 }
-    from 'react-dom';
+from 'react-dom';
 import classnames from 'classnames';
 
 import FabricPhoto from '../src/index'
@@ -46,11 +46,11 @@ export default class WrapContainer extends Component {
             this.fp.clearUndoStack();
         });
         //this.fp.loadImageFromURL('http://mss.ximing.ren/v1/mss_814dc1610cda4b2e8febd6ea2c809db5/image/1484297783302.jpg', 'image name');
-        // this.fp.loadImageFromURL('http://mss.ximing.ren/v1/mss_814dc1610cda4b2e8febd6ea2c809db5/image/1484297784369.jpeg', 'image name');
-        // this.fp.loadImageFromURL('http://mss.ximing.ren/v1/mss_814dc1610cda4b2e8febd6ea2c809db5/image/1484297784312.png', 'image name');
+        this.fp.loadImageFromURL('http://mss.ximing.ren/v1/mss_814dc1610cda4b2e8febd6ea2c809db5/image/1484297784369.jpeg', 'image name');
+        //this.fp.loadImageFromURL('http://mss.ximing.ren/v1/mss_814dc1610cda4b2e8febd6ea2c809db5/image/1484297784312.png', 'image name');
         // this.fp.loadImageFromURL('http://mss.ximing.ren/v1/mss_814dc1610cda4b2e8febd6ea2c809db5/image/1484297783376.jpeg', 'image name');
         //this.fp.loadImageFromURL('http://mss.ximing.ren/v1/mss_814dc1610cda4b2e8febd6ea2c809db5/image/1484297783036.png', 'image name');
-        this.fp.loadImageFromURL('http://mss.ximing.ren/v1/mss_814dc1610cda4b2e8febd6ea2c809db5/image/1486378338826.png','带文字的')
+        //this.fp.loadImageFromURL('http://mss.ximing.ren/v1/mss_814dc1610cda4b2e8febd6ea2c809db5/image/1486378338826.png','带文字的')
         this.fp.on('selectObject', (obj) => {
             //console.log('selectObject--->',obj);
             if (obj.type === 'rect' || obj.type === 'circle' || obj.type === 'triangle') {
@@ -407,9 +407,11 @@ export default class WrapContainer extends Component {
     }
 
     changeEditorColor() {
-        return () => { }
+        return () => {}
     }
-
+    onURL() {
+        this.fp.toDataURL('image/png')
+    }
     render() {
         let btnClassname = classnames({
             'file-button': true,
@@ -459,6 +461,8 @@ export default class WrapContainer extends Component {
                                 onClick={this.onUndoBtn.bind(this)}>undo</span>
                             <span className="file-button-cancel"
                                 onClick={this.onRedoBtn.bind(this)}>redo</span>
+                                <span className="file-button-cancel"
+                                onClick={this.onURL.bind(this)}>url</span>
                             {menus}
                         </div>
                         <div className="ctn-btns">
