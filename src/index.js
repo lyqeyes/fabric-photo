@@ -1,12 +1,11 @@
 import $ from 'jquery';
-import fabric from 'fabric';
-
 
 import imageLayout from './image-layout.js';
 import module from './module';
 import commandFactory from './command';
 import consts from './consts';
 import util from './lib/util';
+import dataURLtoBlob from './lib/canvas-to-blob';
 import CustomEvents from './lib/custom-event';
 
 const events = consts.eventNames;
@@ -338,6 +337,15 @@ class FabricPhoto {
          */
         command.setExecuteCallback(callback);
         this.execute(command);
+    }
+
+    /**
+     * Check whether the image is edited
+     * @example
+     * fabricPhoto.isEditor();
+     */
+    isEditor(){
+        return this._canvas.getObjects().length===0;
     }
 
     /**
@@ -1172,7 +1180,7 @@ class FabricPhoto {
         const command = commandFactory.create(commands.ZOOM, rate);
         this.execute(command);
     }
-    
+
     getZoom() {
         //return this._canvas.getZoom();
         const mainModule = this._getModule(modules.MAIN);
@@ -1188,6 +1196,17 @@ class FabricPhoto {
      */
     toDataURL(type) {
         return this._getMainModule().toDataURL(type);
+    }
+
+    /**
+     * Get blob
+     * @param {string} type - A DOMString indicating the image format. The default type is image/png.
+     * @returns {promise} promise
+     * @example
+     * imgEl.src = imageEditor.toDataURL();
+     */
+    toBlob(type){
+        dataURLtoBlob(this.toDataURL(type))
     }
 
     /**

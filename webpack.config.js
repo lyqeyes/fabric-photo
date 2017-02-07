@@ -51,7 +51,20 @@ module.exports = {
                 use: [
                     'babel-loader',
                 ],
-                exclude: /node_modules/
+                exclude: /node_modules/,
+                query: {
+                    "presets": [["es2015", { "modules": false }],"stage-0", "react"],
+                    "env": {
+                    },
+                    "ignore": [
+                        "node_modules/**",
+                        "dist"
+                    ],
+                    "plugins": [
+                        "react-hot-loader/babel",
+                        "transform-decorators-legacy"
+                    ]
+                }
             },
             {
                 test: /\.css$/,
