@@ -39,10 +39,11 @@ export default class Main extends Base {
     /**
      * To data url from canvas
      * @param {string} type - A DOMString indicating the image format. The default type is image/png.
+     * @param {number} quality - image's quality number
      * @returns {string} A DOMString containing the requested data URI.
      */
-    toDataURL(type) {
-        return this.canvas && this.canvas.toDataURL(type);
+    toDataURL(type,quality) {
+        return this.canvas && this.canvas.toDataURL(type,quality,1,0,0,this.canvas.width,this.canvas.height);
     }
 
     /**
@@ -51,17 +52,15 @@ export default class Main extends Base {
      * @param {number} quality - image's quality number
      * @returns {Blob}
      */
-    toBlob(type) {
-        // return new Promise((res,rej)=>{
-        //     if(this.canvas){
-        //         this.canvas.toBlob(function(blob){
-        //             res(blob);
-        //         },type,quality);
-        //     }else{
-        //         rej(new Error('canvas is null'))
-        //     }
-        // });
-        return dataURLtoBlob(this.toDataURL(type));
+    toBlob(type,quality=1) {
+        const wrapperElStyle = Object.assign({},this.canvas.wrapperEl.style);
+        const lowerCanvasElStyle = Object.assign({},this.canvas.lowerCanvasEl.style);
+        const upperCanvasElStyle = Object.assign({},this.canvas.upperCanvasEl.style);
+        let blob = dataURLtoBlob(this.toDataURL(type,quality));
+        util.setStyle(this.canvas.wrapperEl,wrapperElStyle);
+        util.setStyle(this.canvas.lowerCanvasEl,lowerCanvasElStyle);
+        util.setStyle(this.canvas.upperCanvasEl,upperCanvasElStyle);
+        return blob;
     }
 
     /**

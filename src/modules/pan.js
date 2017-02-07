@@ -75,12 +75,11 @@ export default class Pan extends Base {
      */
     _onFabricMouseMove(fEvent) {
         const canvas = this.getCanvas();
-        // go out of use because of transform opver  
+        // go out of use because of transform opver
         // var delta = new fabric.Point(fEvent.e.movementX, fEvent.e.movementY);
         // canvas.relativePan(delta);
         let deltaX = this.deltaX + fEvent.e.movementX;
         let deltaY = this.deltaY + fEvent.e.movementY;
-        console.log(this.deltaWidth, this.deltaHeight, deltaX, deltaY);
 
         if (this.deltaWidth > Math.abs(deltaX) && deltaX < 0) {
             this.$lower.css('left', deltaX);

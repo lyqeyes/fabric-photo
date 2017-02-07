@@ -1178,7 +1178,6 @@ class FabricPhoto {
     }
 
     getZoom() {
-        //return this._canvas.getZoom();
         const mainModule = this._getModule(modules.MAIN);
         return mainModule.getZoom();
     }
@@ -1191,7 +1190,7 @@ class FabricPhoto {
      * imgEl.src = imageEditor.toDataURL();
      */
     toDataURL(type) {
-        this.endAll();
+        this.endAll()
         return this._getMainModule().toDataURL(type);
     }
 

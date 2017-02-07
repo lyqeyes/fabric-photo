@@ -364,7 +364,10 @@ function bind(fn, obj) {
         }
         return target;
 }
-
+function setStyle(obj,css){
+    for(let atr in css)
+        obj.style[atr] = css[atr];
+}
 export default {
     createObject: createObject(),
     inherit: inherit,
@@ -391,5 +394,6 @@ export default {
     map: map,
     isExisty: isExisty,
     bind: bind,
-    extend: extend
+    extend: extend,
+    setStyle: setStyle
 }
