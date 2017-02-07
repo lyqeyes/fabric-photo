@@ -1,11 +1,7 @@
-import $ from 'jquery';
-
-import imageLayout from './image-layout.js';
 import module from './module';
 import commandFactory from './command';
 import consts from './consts';
 import util from './lib/util';
-import dataURLtoBlob from './lib/canvas-to-blob';
 import CustomEvents from './lib/custom-event';
 
 const events = consts.eventNames;
@@ -345,7 +341,7 @@ class FabricPhoto {
      * fabricPhoto.isEditor();
      */
     isEditor(){
-        return this._canvas.getObjects().length===0;
+        return this._canvas.getObjects().length>0;
     }
 
     /**
@@ -1195,18 +1191,20 @@ class FabricPhoto {
      * imgEl.src = imageEditor.toDataURL();
      */
     toDataURL(type) {
+        this.endAll();
         return this._getMainModule().toDataURL(type);
     }
 
     /**
      * Get blob
      * @param {string} type - A DOMString indicating the image format. The default type is image/png.
-     * @returns {promise} promise
+     * @returns {Blob} Blob
      * @example
      * imgEl.src = imageEditor.toDataURL();
      */
-    toBlob(type){
-        dataURLtoBlob(this.toDataURL(type))
+    toBlobData(type){
+        this.endAll();
+        return this._getMainModule().toBlob(type);
     }
 
     /**

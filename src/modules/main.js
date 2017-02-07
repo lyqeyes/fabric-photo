@@ -1,6 +1,7 @@
 import Base from './base';
 import consts from '../consts';
 import util from '../lib/util.js';
+import dataURLtoBlob from '../lib/canvas-to-blob';
 
 const DEFAULT_CSS_MAX_WIDTH = 700;
 const DEFAULT_CSS_MAX_HEIGHT = 400;
@@ -42,6 +43,25 @@ export default class Main extends Base {
      */
     toDataURL(type) {
         return this.canvas && this.canvas.toDataURL(type);
+    }
+
+    /**
+     * To data url from canvas
+     * @param {string} type - A DOMString indicating the image format. The default type is image/png.
+     * @param {number} quality - image's quality number
+     * @returns {Blob}
+     */
+    toBlob(type) {
+        // return new Promise((res,rej)=>{
+        //     if(this.canvas){
+        //         this.canvas.toBlob(function(blob){
+        //             res(blob);
+        //         },type,quality);
+        //     }else{
+        //         rej(new Error('canvas is null'))
+        //     }
+        // });
+        return dataURLtoBlob(this.toDataURL(type));
     }
 
     /**
@@ -110,7 +130,7 @@ export default class Main extends Base {
      * Adjust canvas dimension with scaling image
      */
     adjustCanvasDimension() {
-        //reset zoom to adjust canvas 
+        //reset zoom to adjust canvas
         this._zoom = 1;
         const canvasImage = this.canvasImage.scale(1);
         const boundingRect = canvasImage.getBoundingRect();
@@ -216,7 +236,7 @@ export default class Main extends Base {
             this.canvas.upperCanvasEl.style['top'] = '0px';
             this.canvas.upperCanvasEl.style['left'] = '0px';
         }
-        
+
         if (this.cssMaxWidth > maxWidth) {
                 this.canvas.wrapperEl.style['width'] = `${maxWidth}px`;
         }
