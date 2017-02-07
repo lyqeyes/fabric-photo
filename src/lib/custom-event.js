@@ -1,5 +1,5 @@
  import util from './util.js';
- 
+
  var R_EVENTNAME_SPLIT = /\s+/g; // eslint-disable-line
 
 
@@ -413,7 +413,7 @@
  };
 
 // alias
-CustomEvents.prototype.emit = CustomEvents.prototype.fire ;
+ CustomEvents.prototype.emit = CustomEvents.prototype.fire ;
 
  /**
   * Fire a event and returns the result of operation 'boolean AND' with all
@@ -486,5 +486,5 @@ CustomEvents.prototype.emit = CustomEvents.prototype.fire ;
      var events = this._safeEvent(eventName);
      return events.length;
  };
- 
+
  export default CustomEvents;

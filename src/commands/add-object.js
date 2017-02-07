@@ -3,8 +3,8 @@ import Command from './base';
 import consts from '../consts';
 
 const {moduleNames} = consts;
-const {MAIN, IMAGE_LOADER, FLIP, ROTATION, FILTER} = moduleNames;
-export default function(object){
+const {MAIN} = moduleNames;
+export default function(object) {
     util.stamp(object);
 
     return new Command({

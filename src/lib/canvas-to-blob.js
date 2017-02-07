@@ -3,28 +3,28 @@
  */
 'use strict';
 ;(function (window) {
-    'use strict'
+    'use strict';
 
     var CanvasPrototype = window.HTMLCanvasElement &&
-        window.HTMLCanvasElement.prototype
+        window.HTMLCanvasElement.prototype;
     var hasBlobConstructor = window.Blob && (function () {
-            try {
-                return Boolean(new Blob())
-            } catch (e) {
-                return false
-            }
-        }())
+        try {
+            return Boolean(new Blob());
+        } catch (e) {
+            return false;
+        }
+    })();
     var hasArrayBufferViewSupport = hasBlobConstructor && window.Uint8Array &&
         (function () {
             try {
-                return new Blob([new Uint8Array(100)]).size === 100
+                return new Blob([new Uint8Array(100)]).size === 100;
             } catch (e) {
-                return false
+                return false;
             }
-        }())
+        })();
     var BlobBuilder = window.BlobBuilder || window.WebKitBlobBuilder ||
-        window.MozBlobBuilder || window.MSBlobBuilder
-    var dataURIPattern = /^data:((.*?)(;charset=.*?)?)(;base64)?,/
+        window.MozBlobBuilder || window.MSBlobBuilder;
+    var dataURIPattern = /^data:((.*?)(;charset=.*?)?)(;base64)?,/;
     var dataURLtoBlob = (hasBlobConstructor || BlobBuilder) && window.atob &&
         window.ArrayBuffer && window.Uint8Array &&
         function (dataURI) {
@@ -36,64 +36,65 @@
                 arrayBuffer,
                 intArray,
                 i,
-                bb
+                bb;
             // Parse the dataURI components as per RFC 2397
-            matches = dataURI.match(dataURIPattern)
+            matches = dataURI.match(dataURIPattern);
             if (!matches) {
-                throw new Error('invalid data URI')
+                throw new Error('invalid data URI');
             }
             // Default to text/plain;charset=US-ASCII
             mediaType = matches[2]
                 ? matches[1]
-                : 'text/plain' + (matches[3] || ';charset=US-ASCII')
-            isBase64 = !!matches[4]
-            dataString = dataURI.slice(matches[0].length)
+                : 'text/plain' + (matches[3] || ';charset=US-ASCII');
+            isBase64 = !!matches[4];
+            dataString = dataURI.slice(matches[0].length);
             if (isBase64) {
                 // Convert base64 to raw binary data held in a string:
-                byteString = atob(dataString)
+                byteString = atob(dataString);
             } else {
                 // Convert base64/URLEncoded data component to raw binary:
-                byteString = decodeURIComponent(dataString)
+                byteString = decodeURIComponent(dataString);
             }
             // Write the bytes of the string to an ArrayBuffer:
-            arrayBuffer = new ArrayBuffer(byteString.length)
-            intArray = new Uint8Array(arrayBuffer)
+            arrayBuffer = new ArrayBuffer(byteString.length);
+            intArray = new Uint8Array(arrayBuffer);
             for (i = 0; i < byteString.length; i += 1) {
-                intArray[i] = byteString.charCodeAt(i)
+                intArray[i] = byteString.charCodeAt(i);
             }
             // Write the ArrayBuffer (or ArrayBufferView) to a blob:
             if (hasBlobConstructor) {
                 return new Blob(
                     [hasArrayBufferViewSupport ? intArray : arrayBuffer],
                     {type: mediaType}
-                )
+                );
             }
-            bb = new BlobBuilder()
-            bb.append(arrayBuffer)
-            return bb.getBlob(mediaType)
-        }
+            bb = new BlobBuilder();
+            bb.append(arrayBuffer);
+            return bb.getBlob(mediaType);
+        };
     if (window.HTMLCanvasElement && !CanvasPrototype.toBlob) {
         if (CanvasPrototype.mozGetAsFile) {
             CanvasPrototype.toBlob = function (callback, type, quality) {
                 if (quality && CanvasPrototype.toDataURL && dataURLtoBlob) {
-                    callback(dataURLtoBlob(this.toDataURL(type, quality)))
+                    callback(dataURLtoBlob(this.toDataURL(type, quality)));
                 } else {
-                    callback(this.mozGetAsFile('blob', type))
+                    callback(this.mozGetAsFile('blob', type));
                 }
-            }
+            };
         } else if (CanvasPrototype.toDataURL && dataURLtoBlob) {
             CanvasPrototype.toBlob = function (callback, type, quality) {
-                callback(dataURLtoBlob(this.toDataURL(type, quality)))
-            }
+                callback(dataURLtoBlob(this.toDataURL(type, quality)));
+            };
         }
     }
-    if (typeof define === 'function' && define.amd) {
-        define(function () {
-            return dataURLtoBlob
-        })
+    if (typeof define === 'function' && define.amd) { // eslint-disable-line no-undef
+        define(function () { // eslint-disable-line no-undef
+            return dataURLtoBlob;
+        });
     } else if (typeof module === 'object' && module.exports) {
-        module.exports = dataURLtoBlob
+        module.exports = dataURLtoBlob;
     } else {
-        window.dataURLtoBlob = dataURLtoBlob
+        window.dataURLtoBlob = dataURLtoBlob;
     }
-}(window))
+    /*eslint-enable */
+})(window);

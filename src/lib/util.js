@@ -1,6 +1,6 @@
 const {min, max} = Math;
 function isUndefined(obj) {
-    return obj === undefined;
+    return obj === void 0;
 }
 
 function isNull(obj) {
@@ -75,7 +75,16 @@ function hasStamp(obj) {
 function resetLastId() {
     lastId = 0;
 }
-
+function inArray (val,arr,startIndex = 0) {
+    arr = arr || [];
+    let len = arr.length;
+    for (let i = startIndex; i < len; i++) {
+        if (arr[i] === val) {
+            return true;
+        }
+    }
+    return false;
+};
 function compareJSON(object) {
     var leftChain,
         rightChain,
@@ -87,8 +96,8 @@ function compareJSON(object) {
 
         if (isNaN(x) &&
             isNaN(y) &&
-            tui.util.isNumber(x) &&
-            tui.util.isNumber(y)) {
+            isNumber(x) &&
+            isNumber(y)) {
             return true;
         }
 
@@ -96,7 +105,7 @@ function compareJSON(object) {
             return true;
         }
 
-        if ((tui.util.isFunction(x) && tui.util.isFunction(y)) ||
+        if ((isFunction(x) && isFunction(y)) ||
             (x instanceof Date && y instanceof Date) ||
             (x instanceof RegExp && y instanceof RegExp) ||
             (x instanceof String && y instanceof String) ||
@@ -115,8 +124,8 @@ function compareJSON(object) {
             return false;
         }
 
-        if (tui.util.inArray(x, leftChain) > -1 ||
-            tui.util.inArray(y, rightChain) > -1) {
+        if (inArray(x, leftChain) > -1 ||
+            inArray(y, rightChain) > -1) {
             return false;
         }
 
@@ -137,7 +146,7 @@ function compareJSON(object) {
                 return false;
             }
 
-            if (typeof(x[p]) === 'object' || typeof(x[p]) === 'function') {
+            if (typeof (x[p]) === 'object' || typeof (x[p]) === 'function') {
                 leftChain.push(x);
                 rightChain.push(y);
 
@@ -306,15 +315,15 @@ function forEach(obj, iteratee, context) {
     }
 }
 function map(obj, iteratee, context) {
-        var resultArray = [];
+    var resultArray = [];
 
-        context = context || null;
+    context = context || null;
 
-        forEach(obj, function() {
-            resultArray.push(iteratee.apply(context, arguments));
-        });
+    forEach(obj, function() {
+        resultArray.push(iteratee.apply(context, arguments));
+    });
 
-        return resultArray;
+    return resultArray;
 }
 function isExisty(param) {
     return param != null;
@@ -332,41 +341,41 @@ function isNumber(obj) {
     return typeof obj === 'number' || obj instanceof Number;
 }
 function bind(fn, obj) {
-        var slice = Array.prototype.slice;
+    var slice = Array.prototype.slice;
 
-        if (fn.bind) {
-            return fn.bind.apply(fn, slice.call(arguments, 1));
-        }
-
-        /* istanbul ignore next */
-        var args = slice.call(arguments, 2);
+    if (fn.bind) {
+        return fn.bind.apply(fn, slice.call(arguments, 1));
+    }
 
         /* istanbul ignore next */
-        return function() {
+    var args = slice.call(arguments, 2);
+
+        /* istanbul ignore next */
+    return function() {
             /* istanbul ignore next */
-            return fn.apply(obj, args.length ? args.concat(slice.call(arguments)) : arguments);
-        };
- }
- function extend(target, objects) {
-        var source,
-            prop,
-            hasOwnProp = Object.prototype.hasOwnProperty,
-            i,
-            len;
+        return fn.apply(obj, args.length ? args.concat(slice.call(arguments)) : arguments);
+    };
+}
+function extend(target, objects) {
+    var source,
+        prop,
+        hasOwnProp = Object.prototype.hasOwnProperty,
+        i,
+        len;
 
-        for (i = 1, len = arguments.length; i < len; i++) {
-            source = arguments[i];
-            for (prop in source) {
-                if (hasOwnProp.call(source, prop)) {
-                    target[prop] = source[prop];
-                }
+    for (i = 1, len = arguments.length; i < len; i++) {
+        source = arguments[i];
+        for (prop in source) {
+            if (hasOwnProp.call(source, prop)) {
+                target[prop] = source[prop];
             }
         }
-        return target;
+    }
+    return target;
 }
-function setStyle(obj,css){
+function setStyle(obj,css) {
     for(let atr in css)
-        obj.style[atr] = css[atr];
+        {obj.style[atr] = css[atr];}
 }
 export default {
     createObject: createObject(),
@@ -395,5 +404,6 @@ export default {
     isExisty: isExisty,
     bind: bind,
     extend: extend,
-    setStyle: setStyle
-}
+    setStyle: setStyle,
+    inArray:inArray
+};

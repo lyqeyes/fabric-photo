@@ -1,6 +1,5 @@
 import Base from './base';
 import consts from '../consts';
-import util from '../lib/util';
 import $ from 'jquery';
 
 export default class Pan extends Base {
@@ -55,13 +54,13 @@ export default class Pan extends Base {
     _onFabricMouseDown(fEvent) {
         const canvas = this.getCanvas();
         // this.pointer = canvas.getPointer(fEvent.e);
-        this.$lower = $(canvas.lowerCanvasEl)
-        this.$upper = $(canvas.upperCanvasEl)
-        this.$wrapper = $(canvas.wrapperEl)
+        this.$lower = $(canvas.lowerCanvasEl);
+        this.$upper = $(canvas.upperCanvasEl);
+        this.$wrapper = $(canvas.wrapperEl);
         this.deltaX = parseInt(this.$lower.css('left'), 10);
         this.deltaY = parseInt(this.$lower.css('top'), 10);
-        this.deltaWidth = this.$upper.width() - this.$wrapper.width()
-        this.deltaHeight = this.$upper.height() - this.$wrapper.height()
+        this.deltaWidth = this.$upper.width() - this.$wrapper.width();
+        this.deltaHeight = this.$upper.height() - this.$wrapper.height();
         canvas.on({
             'mouse:move': this._listeners.mousemove,
             'mouse:up': this._listeners.mouseup
@@ -74,7 +73,6 @@ export default class Pan extends Base {
      * @private
      */
     _onFabricMouseMove(fEvent) {
-        const canvas = this.getCanvas();
         // go out of use because of transform opver
         // var delta = new fabric.Point(fEvent.e.movementX, fEvent.e.movementY);
         // canvas.relativePan(delta);

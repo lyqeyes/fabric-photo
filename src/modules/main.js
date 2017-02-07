@@ -52,7 +52,7 @@ export default class Main extends Base {
      * @param {number} quality - image's quality number
      * @returns {Blob}
      */
-    toBlob(type,quality=1) {
+    toBlob(type,quality = 1) {
         const wrapperElStyle = Object.assign({},this.canvas.wrapperEl.style);
         const lowerCanvasElStyle = Object.assign({},this.canvas.lowerCanvasEl.style);
         const upperCanvasElStyle = Object.assign({},this.canvas.upperCanvasEl.style);
@@ -237,10 +237,10 @@ export default class Main extends Base {
         }
 
         if (this.cssMaxWidth > maxWidth) {
-                this.canvas.wrapperEl.style['width'] = `${maxWidth}px`;
+            this.canvas.wrapperEl.style['width'] = `${maxWidth}px`;
         }
         if (this.cssMaxHeight > maxHeight) {
-                this.canvas.wrapperEl.style['height'] = `${maxHeight}px`;
+            this.canvas.wrapperEl.style['height'] = `${maxHeight}px`;
         }
         this.canvas.renderAll();
         this._zoom = zoom;

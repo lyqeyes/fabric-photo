@@ -18,7 +18,7 @@ export default class Mosaic extends Base {
     }
 
     /**
-     * @param {{dimensions: ?number}} [setting] - Mosaic width 
+     * @param {{dimensions: ?number}} [setting] - Mosaic width
      */
     start(setting) {
         const canvas = this.getCanvas();
@@ -58,7 +58,6 @@ export default class Mosaic extends Base {
     _onFabricMouseDown(fEvent) {
         const canvas = this.getCanvas();
         const pointer = this.pointer = canvas.getPointer(fEvent.e);
-        console.log(pointer);
         this._mosaicGroup = new fabric.Group([], {
             left: pointer.x,
             top: pointer.y,
@@ -87,12 +86,12 @@ export default class Mosaic extends Base {
             rgba[3] += imageData.data[i * 4 + 3];
         }
         let mosaicRect = new fabric.Rect({
-            fill: `rgb(${parseInt(rgba[0]/length)},${parseInt(rgba[1]/length)},${parseInt(rgba[2]/length)})`,
+            fill: `rgb(${parseInt(rgba[0] / length)},${parseInt(rgba[1] / length)},${parseInt(rgba[2] / length)})`,
             height: this._dimensions,
             width: this._dimensions,
             left: pointer.x,
             top: pointer.y
-        })
+        });
         //this._mosaicGroup.addWithUpdate(mosaicRect);
         canvas.add(mosaicRect);
         canvas.renderAll();

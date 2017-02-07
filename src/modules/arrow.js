@@ -1,8 +1,5 @@
 import Base from './base';
 import consts from '../consts';
-import util from '../lib/util';
-
-const MOUSE_MOVE_THRESHOLD = consts.MOUSE_MOVE_THRESHOLD;
 const abs = Math.abs;
 
 export default class Arrow extends Base {
@@ -123,8 +120,7 @@ export default class Arrow extends Base {
      */
     _onFabricMouseDown(fEvent) {
         const canvas = this.getCanvas();
-        if(fEvent.target && fEvent.target.customType === 'arrow'){
-            console.log(fEvent.target);
+        if(fEvent.target && fEvent.target.customType === 'arrow') {
             canvas.trigger('object:selected', {target: fEvent.target});
             return;
         }
@@ -147,7 +143,7 @@ export default class Arrow extends Base {
         });
     }
 
-    drawArrow(startPointer,endPointer){
+    drawArrow(startPointer,endPointer) {
         const points = [startPointer.x, startPointer.y, endPointer.x, endPointer.y];
         const line = this.line = new fabric.Line(points, {
             stroke: this._oColor.toRgba(),
@@ -168,8 +164,8 @@ export default class Arrow extends Base {
             originX: 'center',
             originY: 'center',
             pointType: 'arrow_start',
-            angle: startPointer.x===endPointer.x&&startPointer.y===endPointer.y?-45:
-            this.calcArrowAngle(startPointer.x, startPointer.y, endPointer.x, endPointer.y)-90,
+            angle: startPointer.x === endPointer.x && startPointer.y === endPointer.y ? -45 :
+            this.calcArrowAngle(startPointer.x, startPointer.y, endPointer.x, endPointer.y) - 90,
             width: this._dimension.width,
             height: this._dimension.height,
             fill: this._oColor.toRgba()
@@ -187,7 +183,7 @@ export default class Arrow extends Base {
         });
         line.customType = arrow.customType = circle.customType = 'arrow';
     }
-    
+
     /**
      * Mousemove event handler in fabric canvas
      * @param {{target: fabric.Object, e: MouseEvent}} fEvent - Fabric event object

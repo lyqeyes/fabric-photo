@@ -22,5 +22,5 @@ function create(name, ...args) {
 }
 
 export default {
-   create
-}
+    create
+};

@@ -50,7 +50,7 @@ export default class Text extends Base {
         /*Listeners for fabric event*/
         this._listeners = {};
 
-        //文本编辑框 
+        //文本编辑框
         this._textarea = null;
 
         /*Ratio of current canvas*/
@@ -275,8 +275,6 @@ export default class Text extends Base {
         const textarea = container.querySelector('textarea');
 
         container.removeChild(textarea);
-        
-        console.log('remove text area',container);
 
         this._textarea = null;
 
@@ -326,7 +324,6 @@ export default class Text extends Base {
      * @private
      */
     _onBlur() {
-        console.log('---- textarea blur');
         const ratio = this.getCanvasRatio();
         const editingObj = this._editingObj;
         const editingObjInfos = this._editingObjInfos;
@@ -426,10 +423,10 @@ export default class Text extends Base {
         };
 
         textareaStyle.display = 'block';
-        
+
         textareaStyle.left = `${obj.oCoords.tl.x / ratio}px`;
         textareaStyle.top = `${obj.oCoords.tl.y / ratio}px`;
-        
+
         textareaStyle.width = `${Math.ceil(obj.getWidth() / ratio)}px`;
         textareaStyle.height = `${Math.ceil(obj.getHeight() / ratio)}px`;
         textareaStyle.transform = `rotate(${obj.getAngle()}deg)`;

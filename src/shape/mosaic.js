@@ -12,9 +12,9 @@ const Mosaic = fabric.util.createClass(fabric.Object, {
 
         options || (options = {});
 
-        this._minPoint={left:0,top:0};
+        this._minPoint = {left:0,top:0};
 
-        this._maxPoint={left:0,top:0};
+        this._maxPoint = {left:0,top:0};
 
         this._mosaicRects = [];
 
@@ -38,15 +38,15 @@ const Mosaic = fabric.util.createClass(fabric.Object, {
         });
     },
 
-    addMosaicRect: function(objects){
+    addMosaicRect: function(objects) {
         objects.forEach((object)=>{
-            if(object.left<this._minPoint.left || object.top<this._minPoint.top){
+            if(object.left < this._minPoint.left || object.top < this._minPoint.top) {
                 this._minPoint = {
                     left:object.left,
                     top:object.top
                 };
             }
-            if(object.left>this._maxPoint.left || object.top>this._maxPoint.top){
+            if(object.left > this._maxPoint.left || object.top > this._maxPoint.top) {
                 this._maxPoint = {
                     left:object.left,
                     top:object.top
@@ -64,11 +64,11 @@ const Mosaic = fabric.util.createClass(fabric.Object, {
     addMosicRectWithUpdate: function (...objects) {
         this.addMosaicRect(objects);
         this.set({
-            width: this._maxPoint.left-this._minPoint.left,
-            height: this._maxPoint.top-this._minPoint.top,
+            width: this._maxPoint.left - this._minPoint.left,
+            height: this._maxPoint.top - this._minPoint.top,
             left:this._minPoint.left,
             top:this._minPoint.top
         });
     }
-})
+});
 export default Mosaic;

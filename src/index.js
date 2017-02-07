@@ -1,4 +1,4 @@
-import module from './module';
+import Module from './module';
 import commandFactory from './command';
 import consts from './consts';
 import util from './lib/util';
@@ -18,17 +18,13 @@ const {
     hasStamp
 } = util;
 
-let defultOpt = {
-    renderTo: '#container',
-    thumb: ''
-};
 let DomURL = window.URL || window.webkitURL || window;
 
 class FabricPhoto {
 
     constructor(element, option) {
         option = option || {};
-        this._module = new module();
+        this._module = new Module();
         this._canvas = null;
         this._state = states.NORMAL;
         this._handlers = {
@@ -340,8 +336,8 @@ class FabricPhoto {
      * @example
      * fabricPhoto.isEditor();
      */
-    isEditor(){
-        return this._canvas.getObjects().length>0;
+    isEditor() {
+        return this._canvas.getObjects().length > 0;
     }
 
     /**
@@ -1190,7 +1186,7 @@ class FabricPhoto {
      * imgEl.src = imageEditor.toDataURL();
      */
     toDataURL(type) {
-        this.endAll()
+        this.endAll();
         return this._getMainModule().toDataURL(type);
     }
 
@@ -1201,7 +1197,7 @@ class FabricPhoto {
      * @example
      * imgEl.src = imageEditor.toDataURL();
      */
-    toBlobData(type){
+    toBlobData(type) {
         this.endAll();
         return this._getMainModule().toBlob(type);
     }

@@ -1,8 +1,6 @@
 import Base from './base';
 import consts from '../consts';
-import util from '../lib/util';
-
-const {componentNames, rejectMessages} = consts;
+const {rejectMessages} = consts;
 
 
 export default class Rotation extends Base {
