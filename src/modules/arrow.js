@@ -1,7 +1,12 @@
 import Base from './base';
 import consts from '../consts';
-const abs = Math.abs;
+import util from '../lib/util';
 
+const abs = Math.abs;
+const resetStyles = {
+    fill: '#000000',
+    width: 5
+};
 export default class Arrow extends Base {
     constructor(parent) {
         super();
@@ -63,6 +68,16 @@ export default class Arrow extends Base {
     }
 
     /**
+     * Set obj style
+     * @param {object} activeObj - Current selected text object
+     * @param {object} styleObj - Initial styles
+     */
+    setStyle(activeObj,styleObj){
+        activeObj.set(styleObj);
+        this.getCanvas().renderAll();
+    }
+
+    /**
      * End drawing line mode
      */
     end() {
@@ -78,39 +93,6 @@ export default class Arrow extends Base {
         });
 
         canvas.off('mouse:down', this._listeners.mousedown);
-    }
-
-    /**
-     * create an arrow on head
-     * @param [x1,y1,x2,y2]
-     */
-    _createArrowHead(points) {
-        var headLength = 15,
-
-            x1 = points[0],
-            y1 = points[1],
-            x2 = points[2],
-            y2 = points[3],
-
-            dx = x2 - x1,
-            dy = y2 - y1,
-
-            angle = Math.atan2(dy, dx);
-
-        angle *= 180 / Math.PI;
-        angle += 90;
-
-        var triangle = new fabric.Triangle({
-            angle: angle,
-            fill: this._oColor.toRgba(),
-            top: y2,
-            left: x2,
-            height: headLength,
-            width: headLength,
-            originX: 'center',
-            originY: 'center'
-        });
-        return triangle;
     }
 
     /**

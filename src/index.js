@@ -226,6 +226,7 @@ class FabricPhoto {
      * @private
      */
     _onCreatedPath(obj) {
+        obj.customType = 'freedraw';
         obj.path.set(consts.fObjectOptions.SELECTION_STYLE);
     }
     /**
@@ -638,7 +639,20 @@ class FabricPhoto {
          */
         this.fire(events.START_FREE_DRAWING);
     }
+    /**
+     * change path style
+     * @param {{width: number, color: string}} [setting] - Brush width & color
+     */
+    changeFreeDrawingPathStyle(setting){
+        const activeObj = this._canvas.getActiveObject();
 
+        if (this.getCurrentState() !== states.ARROW ||
+            !activeObj || activeObj.customType !== 'freedraw') {
+            return;
+        }
+
+        this._getModule(modules.FREE_DRAWING).setStyle(activeObj, setting);
+    }
     /**
      * Set drawing brush
      * @param {{width: number, color: string}} setting - Brush width & color
@@ -751,6 +765,20 @@ class FabricPhoto {
         this.fire(events.START_ARROW_DRAWING);
     }
 
+    /**
+     * Start change arrow obj
+     * @param {{width: number, color: string}} [setting] - Brush width & color
+     */
+    changeArrowStyle(setting){
+        const activeObj = this._canvas.getActiveObject();
+
+        if (this.getCurrentState() !== states.ARROW ||
+            !activeObj || activeObj.customType !== 'arrow') {
+            return;
+        }
+
+        this._getModule(modules.ARROW).setStyle(activeObj, setting);
+    }
     /**
      * End arrow-drawing mode
      * @example
