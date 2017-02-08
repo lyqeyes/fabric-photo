@@ -72,8 +72,8 @@ module.exports = {
             use: [
                 'style-loader',
                 'css-loader',
-                'postcss-loader',
-            ],
+                'postcss-loader'
+            ]
         }, {
             test: /\.scss$/,
             use: [
@@ -81,7 +81,7 @@ module.exports = {
                 'css-loader',
                 'postcss-loader',
                 'sass-loader'
-            ],
+            ]
         }, {
             test: /\.(png|jpg|jpeg|gif|woff|svg|eot|ttf|woff2)$/i,
             use: ['url-loader']
