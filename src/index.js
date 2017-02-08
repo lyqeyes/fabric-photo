@@ -1325,6 +1325,12 @@ class FabricPhoto {
         }
     }
 
+    /**
+     * adjustCanvasDimension
+     */
+    adjustCanvasDimension(){
+        this._getMainModule().adjustCanvasDimension();
+    }
 
 }
 
