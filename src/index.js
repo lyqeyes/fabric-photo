@@ -226,7 +226,7 @@ class FabricPhoto {
      * @private
      */
     _onCreatedPath(obj) {
-        obj.customType = 'freedraw';
+        obj.path.customType = 'freedraw';
         obj.path.set(consts.fObjectOptions.SELECTION_STYLE);
     }
     /**
@@ -646,7 +646,7 @@ class FabricPhoto {
     changeFreeDrawingPathStyle(setting){
         const activeObj = this._canvas.getActiveObject();
 
-        if (this.getCurrentState() !== states.ARROW ||
+        if (this.getCurrentState() !== states.FREE_DRAWING ||
             !activeObj || activeObj.customType !== 'freedraw') {
             return;
         }

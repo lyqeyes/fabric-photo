@@ -28,7 +28,7 @@ export default class FreeDrawing extends Base {
      * @param {{width: ?number, color: ?string}} [setting] - Brush width & color
      */
     setBrush(setting) {
-        const brush = this.getCanvas().freeDrawingBrush;
+        let brush = this.getCanvas().freeDrawingBrush;
         setting = setting || {};
         this.width = setting.width || this.width;
         if (setting.color) {
@@ -44,6 +44,7 @@ export default class FreeDrawing extends Base {
      * @param {object} styleObj - Initial styles
      */
     setStyle(activeObj,styleObj){
+        console.log('set style')
         activeObj.set(styleObj);
         this.getCanvas().renderAll();
     }
