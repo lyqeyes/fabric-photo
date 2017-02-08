@@ -123,7 +123,7 @@ export default class Text extends Base {
         this._setInitPos(options.position);
 
         if (options.styles) {
-            styles = Object.assign(options.styles, styles);
+            styles = Object.assign(styles,options.styles);
         }
 
         const newText = new fabric.Text(text, styles);
