@@ -408,7 +408,11 @@ export default class Text extends Base {
 
         this.isPrevEditing = true;
 
-        this.getCanvas().off('object:removed', this._listeners.remove);
+        const canvas = this.getCanvas();
+        const lowerCanvasElStyle = canvas.lowerCanvasEl.style;
+        const lowerElLeft = parseInt(lowerCanvasElStyle.left,10);
+        const lowerElTop = parseInt(lowerCanvasElStyle.top,10);
+        canvas.off('object:removed', this._listeners.remove);
 
         obj.remove();
 
@@ -424,8 +428,8 @@ export default class Text extends Base {
 
         textareaStyle.display = 'block';
 
-        textareaStyle.left = `${obj.oCoords.tl.x / ratio}px`;
-        textareaStyle.top = `${obj.oCoords.tl.y / ratio}px`;
+        textareaStyle.left = `${obj.oCoords.tl.x / ratio + lowerElLeft}px`;
+        textareaStyle.top = `${obj.oCoords.tl.y / ratio + lowerElTop}px`;
 
         textareaStyle.width = `${Math.ceil(obj.getWidth() / ratio)}px`;
         textareaStyle.height = `${Math.ceil(obj.getHeight() / ratio)}px`;
