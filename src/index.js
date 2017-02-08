@@ -351,12 +351,12 @@ class FabricPhoto {
      * fabricPhoto.endAll(); // === fabricPhoto.endCropping();
      */
     endAll() {
+        this.endCropping();
         this.endTextMode();
         this.endFreeDrawing();
         this.endLineDrawing();
         this.endArrowDrawing();
         this.endMosaicDrawing();
-        this.endCropping();
         this.endDrawingShapeMode();
         this.endPan();
         this.deactivateAll();

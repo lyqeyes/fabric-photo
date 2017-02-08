@@ -219,7 +219,11 @@ export default class Text extends Base {
      * @returns {number} Ratio value
      */
     getCanvasRatio() {
-        return this._ratio;
+        const canvasElement = this.getCanvasElement();
+        const cssWidth = parseInt(canvasElement.style.width, 10);
+        const originWidth = canvasElement.width;
+        const ratio = originWidth / cssWidth;
+        return ratio;
     }
 
     /**
@@ -329,6 +333,8 @@ export default class Text extends Base {
         const editingObjInfos = this._editingObjInfos;
         let transWidth = (editingObj.getWidth() / ratio) - (editingObjInfos.width / ratio);
         let transHeight = (editingObj.getHeight() / ratio) - (editingObjInfos.height / ratio);
+        console.log(editingObjInfos,transWidth,transHeight,
+            this._defaultStyles.left,this._defaultStyles.top);
 
         if (ratio === 1) {
             transWidth /= 2;
