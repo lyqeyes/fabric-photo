@@ -92,7 +92,7 @@ export default class Shape extends Base {
         this._isSelected = false;
 
         canvas.defaultCursor = 'default';
-        canvas.selection = true;
+        canvas.selection = false;
         canvas.uniScaleTransform = false;
         canvas.off({
             'mouse:down': this._handlers.mousedown

@@ -118,7 +118,7 @@ export default class Main extends Base {
             containerClass: 'xm-fabric-photo-editor-canvas-container',
             enableRetinaScaling: false
         });
-
+        this.canvas.selection = false;
         //be used in zoom and panning
         if (this.canvas.wrapperEl) {
             this.canvas.wrapperEl.style['overflow'] = 'hidden';
