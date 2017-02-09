@@ -331,25 +331,23 @@ export default class Text extends Base {
         const ratio = this.getCanvasRatio();
         const editingObj = this._editingObj;
         const editingObjInfos = this._editingObjInfos;
-        let transWidth = (editingObj.getWidth() / ratio) - (editingObjInfos.width / ratio);
-        let transHeight = (editingObj.getHeight() / ratio) - (editingObjInfos.height / ratio);
-        console.log(editingObjInfos,transWidth,transHeight,
-            this._defaultStyles.left,this._defaultStyles.top);
+        let transWidth = (editingObj.getWidth()) - (editingObjInfos.width);
+        let transHeight = (editingObj.getHeight()) - (editingObjInfos.height);
 
-        if (ratio === 1) {
-            transWidth /= 2;
-            transHeight /= 2;
-        }
+        // if (ratio === 1) {
+        //     transWidth /= 2;
+        //     transHeight /= 2;
+        // }
 
         this._textarea.style.display = 'none';
 
         this._editingObj.set({
-            left: editingObjInfos.left + transWidth,
-            top: editingObjInfos.top + transHeight
+            left: editingObjInfos.left+transWidth/2,
+            top: editingObjInfos.top+transHeight/2
         });
 
         this.getCanvas().add(this._editingObj);
-
+        //this._editingObj.
         this.getCanvas().on('object:removed', this._listeners.remove);
     }
 
