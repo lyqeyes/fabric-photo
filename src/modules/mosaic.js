@@ -75,9 +75,12 @@ export default class Mosaic extends Base {
         });
     }
     _onFabricMouseMove(fEvent) {
+        let ratio = this.getCanvasRatio();
+        ratio = Math.ceil(ratio);
+        let dimensions = this._dimensions*ratio
         const canvas = this.getCanvas();
         const pointer = canvas.getPointer(fEvent.e);
-        let imageData = canvas.contextContainer.getImageData(parseInt(pointer.x), parseInt(pointer.y), this._dimensions, this._dimensions);
+        let imageData = canvas.contextContainer.getImageData(parseInt(pointer.x), parseInt(pointer.y), dimensions, dimensions);
         // let imageData = canvas.getContext().getImageData(parseInt(pointer.x), parseInt(pointer.y), this._dimensions, this._dimensions);
         let rgba = [0, 0, 0, 0];
         let length = imageData.data.length / 4;
@@ -91,7 +94,7 @@ export default class Mosaic extends Base {
             left: pointer.x,
             top: pointer.y,
             fill: `rgb(${parseInt(rgba[0] / length)},${parseInt(rgba[1] / length)},${parseInt(rgba[2] / length)})`,
-            dimensions: this._dimensions
+            dimensions: dimensions
         });
         canvas.renderAll();
     }
@@ -103,5 +106,17 @@ export default class Mosaic extends Base {
             'mouse:move': this._listeners.mousemove,
             'mouse:up': this._listeners.mouseup
         });
+    }
+
+    /**
+     * Get ratio value of canvas
+     * @returns {number} Ratio value
+     */
+    getCanvasRatio() {
+        const canvasElement = this.getCanvasElement();
+        const cssWidth = parseInt(canvasElement.style.width, 10);
+        const originWidth = canvasElement.width;
+        const ratio = originWidth / cssWidth;
+        return ratio;
     }
 }
