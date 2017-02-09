@@ -127,6 +127,6 @@ export default {
         undo: 'The promise of undo command is reject.',
         redo: 'The promise of redo command is reject.'
     },
-    
+
     MOUSE_MOVE_THRESHOLD:10
 };

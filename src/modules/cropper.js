@@ -46,14 +46,12 @@ export default class Cropper extends Base {
         });
         let canvasCssWidth = parseInt(canvas.wrapperEl.style['width'], 10),
             canvasCssHeight = parseInt(canvas.wrapperEl.style['height'], 10),
-            canvasWidth = canvas.upperCanvasEl.width,
-            canvasHeight = canvas.upperCanvasEl.height;
+            canvasWidth = canvas.upperCanvasEl.width;
         let radio = canvasCssWidth / canvasWidth;
         let marginLeft = canvasCssWidth * 0.1 / radio;
         let marginTop = canvasCssHeight * 0.1 / radio;
-        let width = canvasCssWidth*0.8 / radio;
-        let height = canvasCssHeight*0.8 / radio;
-        console.log(canvasCssHeight,canvasCssWidth,canvasHeight,canvasWidth,radio)
+        let width = canvasCssWidth * 0.8 / radio;
+        let height = canvasCssHeight * 0.8 / radio;
 
         this._cropzone = new Cropzone({
             left: marginLeft,
@@ -61,7 +59,6 @@ export default class Cropper extends Base {
             width: width,
             height: height,
             strokeWidth: 0, // {@link https://github.com/kangax/fabric.js/issues/2860}
-            cornerColor: 'black',
             cornerStyle:'circle',
             cornerColor: '#FFFFFF',
             cornerStrokeColor:'#118BFB',

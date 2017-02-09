@@ -1,10 +1,9 @@
-import util from '../lib/util';
 import Command from './base';
 import consts from '../consts';
 
 const {moduleNames} = consts;
-const {MAIN, IMAGE_LOADER, FLIP, ROTATION, FILTER} = moduleNames;
-export default function (){
+const {MAIN} = moduleNames;
+export default function () {
     return new Command({
         /**
          * @param {object.<string, Component>} moduleMap - Components injection

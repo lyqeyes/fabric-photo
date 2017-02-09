@@ -1,7 +1,3 @@
-import util from '../lib/util';
-import consts from '../consts';
-
-
 const Arrow = fabric.util.createClass(fabric.Line, {
     /**
      * Constructor

@@ -19,7 +19,7 @@ export default class Mosaic extends Base {
     }
 
     /**
-     * @param {{dimensions: ?number}} [setting] - Mosaic width 
+     * @param {{dimensions: ?number}} [setting] - Mosaic width
      */
     start(setting) {
         const canvas = this.getCanvas();
@@ -90,7 +90,7 @@ export default class Mosaic extends Base {
         this._mosaicShape.addMosicRectWithUpdate({
             left: pointer.x,
             top: pointer.y,
-            fill: `rgb(${parseInt(rgba[0]/length)},${parseInt(rgba[1]/length)},${parseInt(rgba[2]/length)})`,
+            fill: `rgb(${parseInt(rgba[0] / length)},${parseInt(rgba[1] / length)},${parseInt(rgba[2] / length)})`,
             dimensions: this._dimensions
         });
         canvas.renderAll();

@@ -1,11 +1,10 @@
-import util from '../lib/util';
 import Command from './base';
 import consts from '../consts';
 
 const {moduleNames} = consts;
-const {MAIN, IMAGE_LOADER, FLIP, ROTATION, FILTER} = moduleNames;
-export default function (imageName, img){
-        return new Command({
+const {IMAGE_LOADER} = moduleNames;
+export default function (imageName, img) {
+    return new Command({
         execute(moduleMap) {
             const loader = moduleMap[IMAGE_LOADER];
             const canvas = loader.getCanvas();
@@ -16,11 +15,11 @@ export default function (imageName, img){
                 //"canvas.clear()" 会清除数据,所以用 slice进行一下 深拷贝
                 objects: canvas.getObjects().slice()
             };
-            
+
             canvas.clear();
 
             return loader.load(imageName, img);
-            
+
         },
         undo(moduleMap) {
             const loader = moduleMap[IMAGE_LOADER];
@@ -32,7 +31,7 @@ export default function (imageName, img){
             canvas.add.apply(canvasContext, store.objects);
 
             return loader.load(store.prevName, store.prevImage);
-            
+
         }
     });
 }

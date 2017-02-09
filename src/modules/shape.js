@@ -4,7 +4,7 @@ import util from '../lib/util';
 
 import resizeHelper from '../lib/shape-resize-helper.js';
 
-const {inArray} = util;
+const {inArray,extend} = util;
 
 const KEY_CODES = consts.keyCodes;
 const DEFAULT_TYPE = 'rect';

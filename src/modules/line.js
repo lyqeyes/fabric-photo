@@ -1,6 +1,5 @@
 import Base from './base';
 import consts from '../consts';
-import util from '../lib/util';
 
 export default class Line extends Base {
     constructor(parent) {

@@ -50,7 +50,7 @@ export default class Text extends Base {
         /*Listeners for fabric event*/
         this._listeners = {};
 
-        //文本编辑框 
+        //文本编辑框
         this._textarea = null;
 
         /*Ratio of current canvas*/
@@ -123,7 +123,7 @@ export default class Text extends Base {
         this._setInitPos(options.position);
 
         if (options.styles) {
-            styles = Object.assign(options.styles, styles);
+            styles = Object.assign(styles,options.styles);
         }
 
         const newText = new fabric.Text(text, styles);
@@ -219,7 +219,11 @@ export default class Text extends Base {
      * @returns {number} Ratio value
      */
     getCanvasRatio() {
-        return this._ratio;
+        const canvasElement = this.getCanvasElement();
+        const cssWidth = parseInt(canvasElement.style.width, 10);
+        const originWidth = canvasElement.width;
+        const ratio = originWidth / cssWidth;
+        return ratio;
     }
 
     /**
@@ -275,8 +279,6 @@ export default class Text extends Base {
         const textarea = container.querySelector('textarea');
 
         container.removeChild(textarea);
-        
-        console.log('remove text area',container);
 
         this._textarea = null;
 
@@ -326,12 +328,13 @@ export default class Text extends Base {
      * @private
      */
     _onBlur() {
-        console.log('---- textarea blur');
         const ratio = this.getCanvasRatio();
         const editingObj = this._editingObj;
         const editingObjInfos = this._editingObjInfos;
         let transWidth = (editingObj.getWidth() / ratio) - (editingObjInfos.width / ratio);
         let transHeight = (editingObj.getHeight() / ratio) - (editingObjInfos.height / ratio);
+        console.log(editingObjInfos,transWidth,transHeight,
+            this._defaultStyles.left,this._defaultStyles.top);
 
         if (ratio === 1) {
             transWidth /= 2;
@@ -411,7 +414,11 @@ export default class Text extends Base {
 
         this.isPrevEditing = true;
 
-        this.getCanvas().off('object:removed', this._listeners.remove);
+        const canvas = this.getCanvas();
+        const lowerCanvasElStyle = canvas.lowerCanvasEl.style;
+        const lowerElLeft = parseInt(lowerCanvasElStyle.left,10);
+        const lowerElTop = parseInt(lowerCanvasElStyle.top,10);
+        canvas.off('object:removed', this._listeners.remove);
 
         obj.remove();
 
@@ -426,10 +433,10 @@ export default class Text extends Base {
         };
 
         textareaStyle.display = 'block';
-        
-        textareaStyle.left = `${obj.oCoords.tl.x / ratio}px`;
-        textareaStyle.top = `${obj.oCoords.tl.y / ratio}px`;
-        
+
+        textareaStyle.left = `${obj.oCoords.tl.x / ratio + lowerElLeft}px`;
+        textareaStyle.top = `${obj.oCoords.tl.y / ratio + lowerElTop}px`;
+
         textareaStyle.width = `${Math.ceil(obj.getWidth() / ratio)}px`;
         textareaStyle.height = `${Math.ceil(obj.getHeight() / ratio)}px`;
         textareaStyle.transform = `rotate(${obj.getAngle()}deg)`;

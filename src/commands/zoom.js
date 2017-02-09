@@ -1,4 +1,3 @@
-import util from '../lib/util';
 import Command from './base';
 import consts from '../consts';
 
@@ -17,7 +16,7 @@ export default function(zoom) {
          */
         execute(moduleMap) {
             const mainModule = moduleMap[MAIN];
-            const canvas = mainModule.getCanvas();
+            // const canvas = mainModule.getCanvas();
             // this.zoom = (canvas.viewportTransform[0] || 1);
             // let zoom = rate * (canvas.viewportTransform[0] || 1);
             //直接这么设置是不行的，因为 这个本质上是在设置 transform 会导致坐标系乱套

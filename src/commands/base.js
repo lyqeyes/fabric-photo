@@ -1,6 +1,6 @@
 export default class {
     constructor(actions) {
-       
+
         this.execute = actions.execute;
 
         this.undo = actions.undo;

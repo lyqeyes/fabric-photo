@@ -1,9 +1,4 @@
-import $ from 'jquery';
-import fabric from 'fabric';
-
-
-import imageLayout from './image-layout.js';
-import module from './module';
+import Module from './module';
 import commandFactory from './command';
 import consts from './consts';
 import util from './lib/util';
@@ -23,17 +18,13 @@ const {
     hasStamp
 } = util;
 
-let defultOpt = {
-    renderTo: '#container',
-    thumb: ''
-};
 let DomURL = window.URL || window.webkitURL || window;
 
 class FabricPhoto {
 
     constructor(element, option) {
         option = option || {};
-        this._module = new module();
+        this._module = new Module();
         this._canvas = null;
         this._state = states.NORMAL;
         this._handlers = {
@@ -235,6 +226,7 @@ class FabricPhoto {
      * @private
      */
     _onCreatedPath(obj) {
+        obj.path.customType = 'freedraw';
         obj.path.set(consts.fObjectOptions.SELECTION_STYLE);
     }
     /**
@@ -341,6 +333,15 @@ class FabricPhoto {
     }
 
     /**
+     * Check whether the image is edited
+     * @example
+     * fabricPhoto.isEditor();
+     */
+    isEditor() {
+        return this._canvas.getObjects().length > 0;
+    }
+
+    /**
      * End current action & Deactivate
      * @example
      * fabricPhoto.startFreeDrawing();
@@ -350,12 +351,12 @@ class FabricPhoto {
      * fabricPhoto.endAll(); // === fabricPhoto.endCropping();
      */
     endAll() {
+        this.endCropping();
         this.endTextMode();
         this.endFreeDrawing();
         this.endLineDrawing();
         this.endArrowDrawing();
         this.endMosaicDrawing();
-        this.endCropping();
         this.endDrawingShapeMode();
         this.endPan();
         this.deactivateAll();
@@ -564,6 +565,39 @@ class FabricPhoto {
             this.loadImageFromURL(data.url, data.imageName);
         }
     }
+    /**
+     * start cropping
+     */
+    startCropByBoundInfo(){
+        this._state = states.CROP;
+    }
+    /**
+     * Apply cropping
+     * @param {object} [cropInfo] - crop bound info left top width height
+     */
+    endCropByBoundInfo(cropInfo){
+        if(!cropInfo){
+            return;
+        }
+        this.endAll();
+
+        const data = {
+            imageName: this.getImageName(),
+            url: this._canvas.toDataURL(cropInfo)
+        };
+
+        this.once('loadImage', () => {
+            this.fire(events.END_CROPPING);
+        });
+
+        if (data) {
+            this.loadImageFromURL(data.url, data.imageName);
+        }
+    }
+
+    getViewPortImage(){
+        return this._getMainModule().getViewPortImage();
+    }
 
     /**
      * @param {string} type - 'rotate' or 'setAngle'
@@ -638,7 +672,20 @@ class FabricPhoto {
          */
         this.fire(events.START_FREE_DRAWING);
     }
+    /**
+     * change path style
+     * @param {{width: number, color: string}} [setting] - Brush width & color
+     */
+    changeFreeDrawingPathStyle(setting){
+        const activeObj = this._canvas.getActiveObject();
 
+        if (this.getCurrentState() !== states.FREE_DRAWING ||
+            !activeObj || activeObj.customType !== 'freedraw') {
+            return;
+        }
+
+        this._getModule(modules.FREE_DRAWING).setStyle(activeObj, setting);
+    }
     /**
      * Set drawing brush
      * @param {{width: number, color: string}} setting - Brush width & color
@@ -751,6 +798,20 @@ class FabricPhoto {
         this.fire(events.START_ARROW_DRAWING);
     }
 
+    /**
+     * Start change arrow obj
+     * @param {{width: number, color: string}} [setting] - Brush width & color
+     */
+    changeArrowStyle(setting){
+        const activeObj = this._canvas.getActiveObject();
+
+        if (this.getCurrentState() !== states.ARROW ||
+            !activeObj || activeObj.customType !== 'arrow') {
+            return;
+        }
+
+        this._getModule(modules.ARROW).setStyle(activeObj, setting);
+    }
     /**
      * End arrow-drawing mode
      * @example
@@ -1172,9 +1233,8 @@ class FabricPhoto {
         const command = commandFactory.create(commands.ZOOM, rate);
         this.execute(command);
     }
-    
+
     getZoom() {
-        //return this._canvas.getZoom();
         const mainModule = this._getModule(modules.MAIN);
         return mainModule.getZoom();
     }
@@ -1187,7 +1247,20 @@ class FabricPhoto {
      * imgEl.src = imageEditor.toDataURL();
      */
     toDataURL(type) {
+        this.endAll();
         return this._getMainModule().toDataURL(type);
+    }
+
+    /**
+     * Get blob
+     * @param {string} type - A DOMString indicating the image format. The default type is image/png.
+     * @returns {Blob} Blob
+     * @example
+     * imgEl.src = imageEditor.toDataURL();
+     */
+    toBlobData(type) {
+        this.endAll();
+        return this._getMainModule().toBlob(type);
     }
 
     /**
@@ -1285,6 +1358,12 @@ class FabricPhoto {
         }
     }
 
+    /**
+     * adjustCanvasDimension
+     */
+    adjustCanvasDimension(){
+        this._getMainModule().adjustCanvasDimension();
+    }
 
 }
 

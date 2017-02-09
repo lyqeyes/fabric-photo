@@ -26,9 +26,9 @@ module.exports = {
     devtool: 'cheap-module-eval-source-map',
 
     devServer: {
-        contentBase: [path.join(__dirname, "html"),path.join(__dirname, "dist")],
+        contentBase: [path.join(__dirname, "html"), path.join(__dirname, "dist")],
         compress: true,
-        port: parseInt(process.env.PORT) ||9876,
+        port: parseInt(process.env.PORT) || 9876,
         host: "0.0.0.0",
         hot: true,
         inline: true,
@@ -39,41 +39,53 @@ module.exports = {
                 to: '/html/index.html'
             }]
         },
-        watchContentBase:true
+        watchContentBase: true
     },
     performance: {
         hints: false
     },
     module: {
-        rules: [
-            {
-                test: /\.js$/,
-                use: [
-                    'babel-loader',
-                ],
-                exclude: /node_modules/
-            },
-            {
-                test: /\.css$/,
-                use: [
-                    'style-loader',
-                    'css-loader',
-                    'postcss-loader',
-                ],
-            },
-            {
-                test: /\.scss$/,
-                use: [
-                    'style-loader',
-                    'css-loader',
-                    'postcss-loader',
-                    'sass-loader'
-                ],
-            },{
-                test: /\.(png|jpg|jpeg|gif|woff|svg|eot|ttf|woff2)$/i,
-                use: ['url-loader']
-            }
-        ]
+        rules: [{
+            test: /\.js$/,
+            use: [{
+                loader: 'babel-loader',
+                options: {
+                    "presets": [
+                        ["es2015", {
+                            "modules": false
+                        }], "stage-0", "react"
+                    ],
+                    "env": {},
+                    "ignore": [
+                        "node_modules/**",
+                        "dist"
+                    ],
+                    "plugins": [
+                        "react-hot-loader/babel",
+                        "transform-decorators-legacy"
+                    ]
+                }
+            }],
+            exclude: [/node_modules/]
+        }, {
+            test: /\.css$/,
+            use: [
+                'style-loader',
+                'css-loader',
+                'postcss-loader'
+            ]
+        }, {
+            test: /\.scss$/,
+            use: [
+                'style-loader',
+                'css-loader',
+                'postcss-loader',
+                'sass-loader'
+            ]
+        }, {
+            test: /\.(png|jpg|jpeg|gif|woff|svg|eot|ttf|woff2)$/i,
+            use: ['url-loader']
+        }]
     },
     externals: {
         jquery: 'jQuery',

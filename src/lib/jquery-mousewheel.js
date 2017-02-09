@@ -10,7 +10,7 @@
 export default function ($) {
 
     var toFix = ['wheel', 'mousewheel', 'DOMMouseScroll', 'MozMousePixelScroll'],
-        toBind = ( 'onwheel' in document || document.documentMode >= 9 ) ?
+        toBind = ('onwheel' in document || document.documentMode >= 9) ?
             ['wheel'] : ['mousewheel', 'DomMouseScroll', 'MozMousePixelScroll'],
         slice = Array.prototype.slice,
         nullLowestDeltaTimeout, lowestDelta;

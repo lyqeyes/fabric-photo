@@ -1,6 +1,7 @@
 import Base from './base';
 import consts from '../consts';
 import util from '../lib/util.js';
+import dataURLtoBlob from '../lib/canvas-to-blob';
 
 const DEFAULT_CSS_MAX_WIDTH = 700;
 const DEFAULT_CSS_MAX_HEIGHT = 400;
@@ -38,10 +39,28 @@ export default class Main extends Base {
     /**
      * To data url from canvas
      * @param {string} type - A DOMString indicating the image format. The default type is image/png.
+     * @param {number} quality - image's quality number
      * @returns {string} A DOMString containing the requested data URI.
      */
-    toDataURL(type) {
-        return this.canvas && this.canvas.toDataURL(type);
+    toDataURL(type,quality=1) {
+        return this.canvas && this.canvas.toDataURL(type,quality,1,0,0,this.canvas.width,this.canvas.height);
+    }
+
+    /**
+     * To data url from canvas
+     * @param {string} type - A DOMString indicating the image format. The default type is image/png.
+     * @param {number} quality - image's quality number
+     * @returns {Blob}
+     */
+    toBlob(type,quality = 1) {
+        const wrapperElStyle = Object.assign({},this.canvas.wrapperEl.style);
+        const lowerCanvasElStyle = Object.assign({},this.canvas.lowerCanvasEl.style);
+        const upperCanvasElStyle = Object.assign({},this.canvas.upperCanvasEl.style);
+        let blob = dataURLtoBlob(this.toDataURL(type,quality));
+        util.setStyle(this.canvas.wrapperEl,wrapperElStyle);
+        util.setStyle(this.canvas.lowerCanvasEl,lowerCanvasElStyle);
+        util.setStyle(this.canvas.upperCanvasEl,upperCanvasElStyle);
+        return blob;
     }
 
     /**
@@ -110,7 +129,7 @@ export default class Main extends Base {
      * Adjust canvas dimension with scaling image
      */
     adjustCanvasDimension() {
-        //reset zoom to adjust canvas 
+        //reset zoom to adjust canvas
         this._zoom = 1;
         const canvasImage = this.canvasImage.scale(1);
         const boundingRect = canvasImage.getBoundingRect();
@@ -216,17 +235,51 @@ export default class Main extends Base {
             this.canvas.upperCanvasEl.style['top'] = '0px';
             this.canvas.upperCanvasEl.style['left'] = '0px';
         }
-        
+
         if (this.cssMaxWidth > maxWidth) {
-                this.canvas.wrapperEl.style['width'] = `${maxWidth}px`;
+            this.canvas.wrapperEl.style['width'] = `${maxWidth}px`;
         }
         if (this.cssMaxHeight > maxHeight) {
-                this.canvas.wrapperEl.style['height'] = `${maxHeight}px`;
+            this.canvas.wrapperEl.style['height'] = `${maxHeight}px`;
         }
         this.canvas.renderAll();
         this._zoom = zoom;
     }
 
+    getViewPortImage(){
+        const wrapperEl = this.getCanvas().wrapperEl;
+        const upperCanvasEl = this.getCanvas().upperCanvasEl;
+        const left = parseInt(upperCanvasEl.style['left'],10),
+            top = parseInt(upperCanvasEl.style['top'],10);
+        let canvasCssWidth = parseInt(wrapperEl.style['width'], 10),
+            canvasCssHeight = parseInt(wrapperEl.style['height'], 10),
+            upperCanvasCssWidth = parseInt(upperCanvasEl.style['width'],10),
+            upperCanvasCssHeight = parseInt(upperCanvasEl.style['height'],10),
+            canvasWidth = upperCanvasEl.width;
+
+        let radio = upperCanvasCssWidth / canvasWidth;
+        let cropInfo = {
+            width:canvasCssWidth/radio,
+            height:canvasCssHeight/radio,
+            left:Math.abs(left/radio),
+            top:Math.abs(top/radio)
+        }
+        return {
+            cropInfo:cropInfo,
+            originInfo:{
+                height:upperCanvasCssHeight,
+                width:upperCanvasCssWidth,
+                left:Math.abs(left),
+                top:Math.abs(top)
+            },
+            viewPortInfo:{
+                height:canvasCssHeight,
+                width:canvasCssWidth
+            },
+            url:this.getCanvas().toDataURL(cropInfo),
+            radio:radio
+        }
+    }
 
     getZoom() {
         return this._zoom;
