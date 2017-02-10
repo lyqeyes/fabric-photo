@@ -20,9 +20,7 @@ const Mosaic = fabric.util.createClass(fabric.Object, {
 
         this.callSuper('initialize', options);
 
-        this.addMosaicRect(options.mosaicRects || []);
-
-        this.set({ width: 2 * this.radius, height: 2 * this.radius ,selectable:false});
+        this.addMosicRectWithUpdate(options.mosaicRects || []);
     },
 
     toObject: function() {
@@ -61,7 +59,7 @@ const Mosaic = fabric.util.createClass(fabric.Object, {
         });
     },
 
-    addMosicRectWithUpdate: function (...objects) {
+    addMosicRectWithUpdate: function (objects) {
         this.addMosaicRect(objects);
         this.set({
             width: this._maxPoint.left - this._minPoint.left,

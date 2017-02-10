@@ -9,7 +9,7 @@ export default class Mosaic extends Base {
 
         this.name = consts.moduleNames.MOSAIC;
 
-        this._dimensions = 8;
+        this._dimensions = 20;
 
         this._listeners = {
             mousedown: this._onFabricMouseDown.bind(this),
@@ -23,12 +23,7 @@ export default class Mosaic extends Base {
      */
     start(setting) {
         const canvas = this.getCanvas();
-        let lowerCanvas = canvas.getElement();
-        let mosaicLayer = this.mosaicLayer = $(lowerCanvas.cloneNode(true));
-        mosaicLayer.removeClass('lower-canvas').addClass('mosaic-canvas');
-        this.mosaicArr = [];
-        // let wrapperEl = canvas.wrapperEl;
-        $(lowerCanvas).after(mosaicLayer);
+
         canvas.defaultCursor = 'crosshair';
         canvas.selection = false;
 
@@ -48,22 +43,7 @@ export default class Mosaic extends Base {
 
     end() {
         const canvas = this.getCanvas();
-        console.log(this.mosaicArr,'--');
-        if (this.mosaicArr && this.mosaicArr.length > 0) {
-            let __mosaicShape = new MosaicShape({
-                mosaicRects: this.mosaicArr,
-                selectable: false,
-                left: 0,
-                top: 0,
-                originX: 'center',
-                originY: 'center'
-            });
-            canvas.add(__mosaicShape);
-            canvas.renderAll();
-        }
-        if(this.mosaicLayer){
-            this.mosaicLayer.remove();
-        }
+
         canvas.defaultCursor = 'default';
         canvas.selection = false;
 
@@ -72,22 +52,32 @@ export default class Mosaic extends Base {
                 evented: true
             });
         });
+
         canvas.off('mouse:down', this._listeners.mousedown);
     }
 
     _onFabricMouseDown(fEvent) {
         const canvas = this.getCanvas();
-
+        const pointer = this.pointer = canvas.getPointer(fEvent.e);
+        this._mosaicShape = new MosaicShape({
+            mosaicRects:[],
+            selectable:false,
+            left: pointer.x,
+            top: pointer.y,
+            originX: 'center',
+            originY: 'center'
+        });
+        canvas.add(this._mosaicShape);
+        canvas.renderAll();
         canvas.on({
             'mouse:move': this._listeners.mousemove,
             'mouse:up': this._listeners.mouseup
         });
     }
-
     _onFabricMouseMove(fEvent) {
         let ratio = this.getCanvasRatio();
         ratio = Math.ceil(ratio);
-        let dimensions = this._dimensions * ratio
+        let dimensions = this._dimensions*ratio
         const canvas = this.getCanvas();
         const pointer = canvas.getPointer(fEvent.e);
         let imageData = canvas.contextContainer.getImageData(parseInt(pointer.x), parseInt(pointer.y), dimensions, dimensions);
@@ -100,21 +90,18 @@ export default class Mosaic extends Base {
             rgba[2] += imageData.data[i * 4 + 2];
             rgba[3] += imageData.data[i * 4 + 3];
         }
-        let mosaicRect = {
+        this._mosaicShape.addMosicRectWithUpdate({
             left: pointer.x,
             top: pointer.y,
             fill: `rgb(${parseInt(rgba[0] / length)},${parseInt(rgba[1] / length)},${parseInt(rgba[2] / length)})`,
             dimensions: dimensions
-        };
-        this.mosaicArr.push(mosaicRect);
-        console.log(pointer,mosaicRect);
-        let ctx = this.mosaicLayer[0].getContext('2d');
-        ctx.fillStyle = mosaicRect.fill;
-        ctx.fillRect(mosaicRect.left, mosaicRect.top, mosaicRect.dimensions, mosaicRect.dimensions);
+        });
+        canvas.renderAll();
     }
 
     _onFabricMouseUp() {
         const canvas = this.getCanvas();
+        this._mosaicShape = null;
         canvas.off({
             'mouse:move': this._listeners.mousemove,
             'mouse:up': this._listeners.mouseup
