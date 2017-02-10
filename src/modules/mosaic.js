@@ -23,12 +23,7 @@ export default class Mosaic extends Base {
      */
     start(setting) {
         const canvas = this.getCanvas();
-        let lowerCanvas = canvas.getElement();
-        let mosaicLayer = this.mosaicLayer = $(lowerCanvas.cloneNode(true));
-        mosaicLayer.removeClass('lower-canvas').addClass('mosaic-canvas');
-        this.mosaicArr = [];
-        // let wrapperEl = canvas.wrapperEl;
-        $(lowerCanvas).after(mosaicLayer);
+
         canvas.defaultCursor = 'crosshair';
         canvas.selection = false;
 
@@ -48,22 +43,7 @@ export default class Mosaic extends Base {
 
     end() {
         const canvas = this.getCanvas();
-        console.log(this.mosaicArr,'--');
-        if (this.mosaicArr && this.mosaicArr.length > 0) {
-            let __mosaicShape = new MosaicShape({
-                mosaicRects: this.mosaicArr,
-                selectable: false,
-                left: 0,
-                top: 0,
-                originX: 'center',
-                originY: 'center'
-            });
-            canvas.add(__mosaicShape);
-            canvas.renderAll();
-        }
-        if(this.mosaicLayer){
-            this.mosaicLayer.remove();
-        }
+
         canvas.defaultCursor = 'default';
         canvas.selection = false;
 
@@ -77,7 +57,11 @@ export default class Mosaic extends Base {
 
     _onFabricMouseDown(fEvent) {
         const canvas = this.getCanvas();
-
+        let lowerCanvas = canvas.getElement();
+        let mosaicLayer = this.mosaicLayer = $(lowerCanvas.cloneNode(true));
+        mosaicLayer.removeClass('lower-canvas').addClass('mosaic-canvas');
+        this.mosaicArr = [];
+        $(lowerCanvas).after(mosaicLayer);
         canvas.on({
             'mouse:move': this._listeners.mousemove,
             'mouse:up': this._listeners.mouseup
@@ -107,7 +91,6 @@ export default class Mosaic extends Base {
             dimensions: dimensions
         };
         this.mosaicArr.push(mosaicRect);
-        console.log(pointer,mosaicRect);
         let ctx = this.mosaicLayer[0].getContext('2d');
         ctx.fillStyle = mosaicRect.fill;
         ctx.fillRect(mosaicRect.left, mosaicRect.top, mosaicRect.dimensions, mosaicRect.dimensions);
@@ -115,6 +98,22 @@ export default class Mosaic extends Base {
 
     _onFabricMouseUp() {
         const canvas = this.getCanvas();
+        if (this.mosaicArr && this.mosaicArr.length > 0) {
+            let __mosaicShape = new MosaicShape({
+                mosaicRects: this.mosaicArr,
+                selectable: false,
+                left: 0,
+                top: 0,
+                originX: 'center',
+                originY: 'center'
+            });
+            canvas.add(__mosaicShape);
+            canvas.renderAll();
+        }
+        if(this.mosaicLayer){
+            this.mosaicLayer.remove();
+        }
+        this.mosaicArr = [];
         canvas.off({
             'mouse:move': this._listeners.mousemove,
             'mouse:up': this._listeners.mouseup

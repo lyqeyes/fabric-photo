@@ -167,6 +167,7 @@ export default class{
 //redo命令
     redo() {
         let command = this._redoStack.pop();
+
         let promise;
 
         if (command && this._isLocked) {

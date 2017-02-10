@@ -135,7 +135,6 @@ class FabricPhoto {
             this._module.pushUndoStack(command);
             this._module.clearRedoStack();
         }
-
         /**
          * @event fabricPhoto#addObject
          * @param {fabric.Object} obj - http://fabricjs.com/docs/fabric.Object.html
