@@ -5,11 +5,8 @@ export default class FreeDrawing extends Base {
     constructor(parent) {
         super();
         this.setParent(parent);
-
         this.name = consts.moduleNames.FREE_DRAWING;
-
         this.width = 12;
-
         this.oColor = new fabric.Color('rgba(0, 0, 0, 0.5)');
     }
 
@@ -44,7 +41,6 @@ export default class FreeDrawing extends Base {
      * @param {object} styleObj - Initial styles
      */
     setStyle(activeObj,styleObj){
-        console.log('set style')
         activeObj.set(styleObj);
         this.getCanvas().renderAll();
     }

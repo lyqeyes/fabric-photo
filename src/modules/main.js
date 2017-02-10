@@ -34,6 +34,9 @@ export default class Main extends Base {
 
         /*Image name*/
         this.imageName = '';
+
+        fabric.Path.prototype.selectable = false;
+
     }
 
     /**
