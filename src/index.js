@@ -1009,10 +1009,10 @@ class FabricPhoto {
             this._state = states.TEXT;
 
             this._getModule(modules.TEXT).start({
-                mousedown: util.bind(this._onFabricMouseDown,this),
-                select: util.bind(this._onFabricSelect, this),
-                selectClear: util.bind(this._onFabricSelectClear, this),
-                dbclick: util.bind(this._onDBClick, this),
+                mousedown: this._onFabricMouseDown.bind(this),
+                select: this._onFabricSelect.bind(this),
+                selectClear: this._onFabricSelectClear.bind(this),
+                dbclick: this._onDBClick.bind(this),
                 remove: this._handlers.removedObject
             });
         }
@@ -1154,20 +1154,22 @@ class FabricPhoto {
      * @private
      */
     _onFabricMouseDown(event) { // eslint-disable-line
+        console.log(event)
         const obj = event.target;
         const e = event.e || {};
         const originPointer = this._canvas.getPointer(e);
         const textComp = this._getModule(modules.TEXT);
-
+        let isNew = false
         if (obj && !obj.isType('text')) {
-            return;
+            isNew = true;
         }
-
+        console.log(textComp)
         if (textComp.isPrevEditing) {
             textComp.isPrevEditing = false;
 
             return;
         }
+        console.log('emit')
 
         /**
          * @event fabricPhoto#activateText
@@ -1194,7 +1196,7 @@ class FabricPhoto {
          * });
          */
         this.fire(events.ACTIVATE_TEXT, {
-            type: obj ? 'select' : 'new',
+            type: !isNew ? 'select' : 'new',
             text: obj ? obj.text : '',
             styles: obj ? {
                 fill: obj.fill,
