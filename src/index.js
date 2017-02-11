@@ -1154,23 +1154,19 @@ class FabricPhoto {
      * @private
      */
     _onFabricMouseDown(event) { // eslint-disable-line
-        console.log(event)
         const obj = event.target;
         const e = event.e || {};
         const originPointer = this._canvas.getPointer(e);
         const textComp = this._getModule(modules.TEXT);
-        let isNew = false
+        let isNew = !obj;
         if (obj && !obj.isType('text')) {
             isNew = true;
         }
-        console.log(textComp)
         if (textComp.isPrevEditing) {
             textComp.isPrevEditing = false;
 
             return;
         }
-        console.log('emit')
-
         /**
          * @event fabricPhoto#activateText
          * @param {object} options
