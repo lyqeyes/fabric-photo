@@ -219,11 +219,10 @@ export default class Main extends Base {
         // const width = boundingRect.width;
         // const height = boundingRect.height;
         let {width,height,cssWidth} = this.getViewPortInfo().canvas;
-        // const maxDimension = this._calcMaxDimension(width, height);
-        console.log('origin zoom', zoom,this._zoom)
+        const maxDimension = this._calcMaxDimension(width, height);
         //maximum is no more than twice the size of the picture
 
-        zoom = Math.max(cssWidth / width, Math.min(zoom, 2));
+        zoom = Math.max(maxDimension.width / width, Math.min(zoom, 2));
 
         const maxWidth = width * zoom;
         const maxHeight = height * zoom;
