@@ -1232,7 +1232,16 @@ class FabricPhoto {
     setZoom(rate) {
         rate = rate || 1;
         const command = commandFactory.create(commands.ZOOM, rate);
+        const callback = this._callbackAfterZoom.bind(this);
+        command.setExecuteCallback(callback)
+            .setUndoCallback(zoom => {
+                callback(zoom);
+            });
         this.execute(command);
+    }
+
+    _callbackAfterZoom(zoom){
+        this.fire(consts.eventNames.CHANGE_ZOOM,zoom)
     }
 
     getZoom() {
