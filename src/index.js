@@ -1366,6 +1366,10 @@ class FabricPhoto {
         this._getMainModule().adjustCanvasDimension();
     }
 
+    getViewPortInfo(){
+        return this._getMainModule().getViewPortInfo();
+    }
+
 }
 
 CustomEvents.mixin(FabricPhoto);

@@ -133,7 +133,6 @@ export default class Main extends Base {
      */
     adjustCanvasDimension() {
         //reset zoom to adjust canvas
-        this._zoom = 1;
         const canvasImage = this.canvasImage.scale(1);
         const boundingRect = canvasImage.getBoundingRect();
         const width = boundingRect.width;
@@ -160,6 +159,7 @@ export default class Main extends Base {
             this.canvas.upperCanvasEl.style['top'] = '0px';
             this.canvas.upperCanvasEl.style['left'] = '0px';
         }
+        this._zoom = maxDimension.width/width;
     }
 
     /**
@@ -220,9 +220,8 @@ export default class Main extends Base {
         const height = boundingRect.height;
         const maxDimension = this._calcMaxDimension(width, height);
         //maximum is no more than twice the size of the picture
-        if (zoom < 1 || zoom > width * 2 / maxDimension.width) {
-            return;
-        }
+        zoom = Math.max(width/maxDimension.width,Math.min(zoom,width * 2 / maxDimension.width));
+
         const maxWidth = maxDimension.width * zoom;
         const maxHeight = maxDimension.height * zoom;
 
@@ -281,6 +280,23 @@ export default class Main extends Base {
             },
             url:this.getCanvas().toDataURL(cropInfo),
             radio:radio
+        }
+    }
+
+    getViewPortInfo(){
+        const canvas = this.getCanvas();
+        const upperCanvasEl = this.getCanvas().upperCanvasEl;
+        const left = parseInt(upperCanvasEl.style['left'],10),
+            top = parseInt(upperCanvasEl.style['top'],10);
+        let upperCanvasCssWidth = parseInt(upperCanvasEl.style['width'],10),
+            upperCanvasCssHeight = parseInt(upperCanvasEl.style['height'],10);
+        return{
+            canvas:{
+                height:canvas.height,
+                width:canvas.width,
+                cssHeight:upperCanvasCssHeight,
+                cssWidth:upperCanvasCssWidth
+            }
         }
     }
 
