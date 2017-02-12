@@ -102,20 +102,25 @@ export default class Arrow extends Base {
      */
     _onFabricMouseDown(fEvent) {
         const canvas = this.getCanvas();
-        if(fEvent.target && fEvent.target.customType === 'arrow') {
-            canvas.trigger('object:selected', {target: fEvent.target});
-            return;
-        }
+        console.log('ssss',fEvent.target)
+        // if(fEvent.target && fEvent.target.customType === 'arrow') {
+        //     canvas.trigger('object:selected', {target: fEvent.target});
+        //     return;
+        // }
         const pointer = this.startPointer = canvas.getPointer(fEvent.e);
         //this.drawArrow(pointer,pointer);
         let group = this.group = new fabric.Group([/*this.line, this.arrow, this.circle*/], {
             left: pointer.x,
             top: pointer.y,
-            originX: 'center',
-            originY: 'center'
+            // originX: 'center',
+            // originY: 'center',
+            // selection:true,
+            // transparentCorners: true,
+            //  hasControls :true,
+            //  hasBorders :true
         });
         this.group.set(consts.fObjectOptions.SELECTION_STYLE);
-        this.group.set('selectable', true);
+        // this.group.set('selectable', true);
         group.customType = 'arrow';
         canvas.add(group);
         canvas.renderAll();
@@ -195,6 +200,7 @@ export default class Arrow extends Base {
         const canvas = this.getCanvas();
 
         this.line = null;
+        // canvas.setActiveObject(this.group);
 
         canvas.off({
             'mouse:move': this._listeners.mousemove,

@@ -1,4 +1,4 @@
-const Arrow = fabric.util.createClass(fabric.Line, {
+const Arrow = fabric.util.createClass(fabric.Path, {
     /**
      * Constructor
      * @param {Object} options Options object
@@ -45,6 +45,66 @@ const Arrow = fabric.util.createClass(fabric.Line, {
 
         // Reset scale
         ctx.scale(1 / originalScaleX, 1 / originalScaleY);
+    },
+
+    drawControls(){
+        if (!this.hasControls) {
+            return this;
+        }
+        var wh = this._calculateCurrentDimensions(),
+            width = wh.x,
+            height = wh.y,
+            scaleOffset = this.cornerSize,
+            left = -(width + scaleOffset) / 2,
+            top = -(height + scaleOffset) / 2,
+            methodName = this.transparentCorners ? 'stroke' : 'fill';
+        ctx.save();
+        ctx.strokeStyle = ctx.fillStyle = this.cornerColor;
+        if (!this.transparentCorners) {
+            ctx.strokeStyle = this.cornerStrokeColor;
+        }
+        this._setLineDash(ctx, this.cornerDashArray, null);
+        // top-left
+        this._drawControl('tl', ctx, methodName,
+            left,
+            top);
+        // top-right
+        this._drawControl('tr', ctx, methodName,
+            left + width,
+            top);
+        // bottom-left
+        this._drawControl('bl', ctx, methodName,
+            left,
+            top + height);
+        // bottom-right
+        this._drawControl('br', ctx, methodName,
+            left + width,
+            top + height);
+        if (!this.get('lockUniScaling')) {
+            // middle-top
+            this._drawControl('mt', ctx, methodName,
+                left + width / 2,
+                top);
+            // middle-bottom
+            this._drawControl('mb', ctx, methodName,
+                left + width / 2,
+                top + height);
+            // middle-right
+            this._drawControl('mr', ctx, methodName,
+                left + width,
+                top + height / 2);
+            // middle-left
+            this._drawControl('ml', ctx, methodName,
+                left,
+                top + height / 2);
+        }
+        // middle-top-rotate
+        if (this.hasRotatingPoint) {
+            this._drawControl('mtr', ctx, methodName,
+                left + width / 2,
+                top - this.rotatingPointOffset);
+        }
+        ctx.restore();
     }
 });
 export default Arrow;
