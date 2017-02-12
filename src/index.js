@@ -336,7 +336,7 @@ class FabricPhoto {
      * @example
      * fabricPhoto.isEditor();
      */
-    isEditor() {
+    isEdited() {
         return this._canvas.getObjects().length > 0;
     }
 
