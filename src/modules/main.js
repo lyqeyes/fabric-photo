@@ -271,7 +271,14 @@ export default class Main extends Base {
             height: canvasCssHeight / radio,
             left: Math.abs(left / radio),
             top: Math.abs(top / radio)
-        }
+        };
+        const wrapperElStyle = Object.assign({}, this.canvas.wrapperEl.style);
+        const lowerCanvasElStyle = Object.assign({}, this.canvas.lowerCanvasEl.style);
+        const upperCanvasElStyle = Object.assign({}, this.canvas.upperCanvasEl.style);
+        let url = this.getCanvas().toDataURL(cropInfo);
+        util.setStyle(this.canvas.wrapperEl, wrapperElStyle);
+        util.setStyle(this.canvas.lowerCanvasEl, lowerCanvasElStyle);
+        util.setStyle(this.canvas.upperCanvasEl, upperCanvasElStyle);
         return {
             cropInfo: cropInfo,
             originInfo: {
@@ -284,7 +291,7 @@ export default class Main extends Base {
                 height: canvasCssHeight,
                 width: canvasCssWidth
             },
-            url: this.getCanvas().toDataURL(cropInfo),
+            url: url,
             radio: radio
         }
     }
