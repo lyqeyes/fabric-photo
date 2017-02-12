@@ -128,6 +128,7 @@ export default class Text extends Base {
 
         const newText = new fabric.Text(text, styles);
         newText.set(consts.fObjectOptions.SELECTION_STYLE);
+        newText.set({objectCaching:false});
         newText.on({
             mouseup: this._onFabricMouseUp.bind(this)
         });
