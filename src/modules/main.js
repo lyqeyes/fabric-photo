@@ -124,7 +124,7 @@ export default class Main extends Base {
         this.canvas.selection = false;
         //be used in zoom and panning
         if (this.canvas.wrapperEl) {
-            this.canvas.wrapperEl.style['overflow'] = 'hidden';
+            this.canvas.wrapperEl.style.setProperty('overflow', 'hidden');
         }
     }
 
@@ -152,12 +152,12 @@ export default class Main extends Base {
         });
         this.canvas.centerObject(canvasImage);
         if (this.canvas.lowerCanvasEl) {
-            this.canvas.lowerCanvasEl.style['top'] = '0px';
-            this.canvas.lowerCanvasEl.style['left'] = '0px';
+            this.canvas.lowerCanvasEl.style.setProperty('top','0px');
+            this.canvas.lowerCanvasEl.style.setProperty('left','0px');
         }
         if (this.canvas.upperCanvasEl) {
-            this.canvas.upperCanvasEl.style['top'] = '0px';
-            this.canvas.upperCanvasEl.style['left'] = '0px';
+            this.canvas.upperCanvasEl.style.setProperty('top','0px');
+            this.canvas.upperCanvasEl.style.setProperty('left','0px');
         }
         this._zoom = maxDimension.width / width;
     }
@@ -228,23 +228,23 @@ export default class Main extends Base {
         const maxHeight = height * zoom;
         console.log('check   zoom', zoom,maxWidth,cssWidth)
         if (this.canvas.lowerCanvasEl) {
-            this.canvas.lowerCanvasEl.style['height'] = `${maxHeight}px`;
-            this.canvas.lowerCanvasEl.style['width'] = `${maxWidth}px`;
-            this.canvas.lowerCanvasEl.style['top'] = '0px';
-            this.canvas.lowerCanvasEl.style['left'] = '0px';
+            this.canvas.lowerCanvasEl.style.setProperty('height',`${maxHeight}px`);
+            this.canvas.lowerCanvasEl.style.setProperty('width', `${maxWidth}px`);
+            this.canvas.lowerCanvasEl.style.setProperty('top', '0px');
+            this.canvas.lowerCanvasEl.style.setProperty('left', '0px');
         }
         if (this.canvas.upperCanvasEl) {
-            this.canvas.upperCanvasEl.style['height'] = `${maxHeight}px`;
-            this.canvas.upperCanvasEl.style['width'] = `${maxWidth}px`;
-            this.canvas.upperCanvasEl.style['top'] = '0px';
-            this.canvas.upperCanvasEl.style['left'] = '0px';
+            this.canvas.upperCanvasEl.style.setProperty('height',`${maxHeight}px`);
+            this.canvas.upperCanvasEl.style.setProperty('width', `${maxWidth}px`);
+            this.canvas.upperCanvasEl.style.setProperty('top', '0px');
+            this.canvas.upperCanvasEl.style.setProperty('left', '0px');
         }
 
         if (this.cssMaxWidth > maxWidth) {
-            this.canvas.wrapperEl.style['width'] = `${maxWidth}px`;
+            this.canvas.wrapperEl.style.setProperty('width', `${maxWidth}px`);
         }
         if (this.cssMaxHeight > maxHeight) {
-            this.canvas.wrapperEl.style['height'] = `${maxHeight}px`;
+            this.canvas.wrapperEl.style.setProperty('height',`${maxHeight}px`);
         }
         this._zoom = zoom;
         this.canvas.renderAll();
@@ -275,6 +275,7 @@ export default class Main extends Base {
         const wrapperElStyle = Object.assign({}, this.canvas.wrapperEl.style);
         const lowerCanvasElStyle = Object.assign({}, this.canvas.lowerCanvasEl.style);
         const upperCanvasElStyle = Object.assign({}, this.canvas.upperCanvasEl.style);
+        console.log(JSON.stringify(wrapperElStyle),'wrapperElStyle',this.canvas.wrapperEl.style);
         let url = this.getCanvas().toDataURL(cropInfo);
         util.setStyle(this.canvas.wrapperEl, wrapperElStyle);
         util.setStyle(this.canvas.lowerCanvasEl, lowerCanvasElStyle);

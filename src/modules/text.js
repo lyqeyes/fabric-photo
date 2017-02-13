@@ -255,7 +255,7 @@ export default class Text extends Base {
 
         this._textarea = textarea;
 
-        this._listeners = util.extend(this._listeners, {
+        this._listeners = Object.assign(this._listeners, {
             input: util.bind(this._onInput,this),
             keydown: util.bind(this._onKeyDown,this),
             blur: util.bind(this._onBlur, this),
