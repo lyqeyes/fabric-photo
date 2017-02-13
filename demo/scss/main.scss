@@ -119,11 +119,11 @@
         vertical-align: middle;
         position: relative;
         .tools-divider {
-          display: inline-block;
-          height: 24px;
-          border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-          width: 2px;
-          margin: 0 14px;
+            width: 1px;
+            height: 24px;
+            background: rgba(0,0,0,0.10);
+            display: inline-block;
+            vertical-align: middle;
         }
         i {
           font-size: 24px;
