@@ -46,7 +46,14 @@ export default class Main extends Base {
      * @returns {string} A DOMString containing the requested data URI.
      */
     toDataURL(type, quality = 1) {
-        return this.canvas && this.canvas.toDataURL(type, quality, 1, 0, 0, this.canvas.width, this.canvas.height);
+        const wrapperElStyle = Object.assign({}, this.canvas.wrapperEl.style);
+        const lowerCanvasElStyle = Object.assign({}, this.canvas.lowerCanvasEl.style);
+        const upperCanvasElStyle = Object.assign({}, this.canvas.upperCanvasEl.style);
+        let url = this.canvas.toDataURL(type, quality, 1, 0, 0, this.canvas.width, this.canvas.height);
+        util.setStyle(this.canvas.wrapperEl, wrapperElStyle);
+        util.setStyle(this.canvas.lowerCanvasEl, lowerCanvasElStyle);
+        util.setStyle(this.canvas.upperCanvasEl, upperCanvasElStyle);
+        return url;
     }
 
     /**
@@ -56,14 +63,7 @@ export default class Main extends Base {
      * @returns {Blob}
      */
     toBlob(type, quality = 1) {
-        const wrapperElStyle = Object.assign({}, this.canvas.wrapperEl.style);
-        const lowerCanvasElStyle = Object.assign({}, this.canvas.lowerCanvasEl.style);
-        const upperCanvasElStyle = Object.assign({}, this.canvas.upperCanvasEl.style);
-        let blob = dataURLtoBlob(this.toDataURL(type, quality));
-        util.setStyle(this.canvas.wrapperEl, wrapperElStyle);
-        util.setStyle(this.canvas.lowerCanvasEl, lowerCanvasElStyle);
-        util.setStyle(this.canvas.upperCanvasEl, upperCanvasElStyle);
-        return blob;
+        return dataURLtoBlob(this.toDataURL(type, quality));
     }
 
     /**
