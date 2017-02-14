@@ -1,12 +1,12 @@
 import Base from './base';
 import consts from '../consts';
-import util from '../lib/util';
+// import util from '../lib/util';
 
 const abs = Math.abs;
-const resetStyles = {
-    fill: '#000000',
-    width: 5
-};
+// const resetStyles = {
+//     fill: '#000000',
+//     width: 5
+// };
 export default class Arrow extends Base {
     constructor(parent) {
         super();
@@ -72,7 +72,7 @@ export default class Arrow extends Base {
      * @param {object} activeObj - Current selected text object
      * @param {object} styleObj - Initial styles
      */
-    setStyle(activeObj,styleObj){
+    setStyle(activeObj,styleObj) {
         activeObj.set(styleObj);
         this.getCanvas().renderAll();
     }
@@ -102,7 +102,6 @@ export default class Arrow extends Base {
      */
     _onFabricMouseDown(fEvent) {
         const canvas = this.getCanvas();
-        console.log('ssss',fEvent.target)
         // if(fEvent.target && fEvent.target.customType === 'arrow') {
         //     canvas.trigger('object:selected', {target: fEvent.target});
         //     return;
@@ -111,7 +110,7 @@ export default class Arrow extends Base {
         //this.drawArrow(pointer,pointer);
         let group = this.group = new fabric.Group([/*this.line, this.arrow, this.circle*/], {
             left: pointer.x,
-            top: pointer.y,
+            top: pointer.y
             // originX: 'center',
             // originY: 'center',
             // selection:true,

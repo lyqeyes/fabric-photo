@@ -28,7 +28,7 @@ export default class Mosaic extends Base {
         canvas.selection = false;
 
         setting = setting || {};
-        this._dimensions = parseInt(setting.dimensions) || this._dimensions;
+        this._dimensions = parseInt(setting.dimensions,10) || this._dimensions;
 
         canvas.forEachObject(obj => {
             obj.set({
@@ -71,10 +71,10 @@ export default class Mosaic extends Base {
     _onFabricMouseMove(fEvent) {
         let ratio = this.getCanvasRatio();
         ratio = Math.ceil(ratio);
-        let dimensions = this._dimensions * ratio
+        let dimensions = this._dimensions * ratio;
         const canvas = this.getCanvas();
         const pointer = canvas.getPointer(fEvent.e);
-        let imageData = canvas.contextContainer.getImageData(parseInt(pointer.x), parseInt(pointer.y), dimensions, dimensions);
+        let imageData = canvas.contextContainer.getImageData(parseInt(pointer.x,10), parseInt(pointer.y,10), dimensions, dimensions);
         // let imageData = canvas.getContext().getImageData(parseInt(pointer.x), parseInt(pointer.y), this._dimensions, this._dimensions);
         let rgba = [0, 0, 0, 0];
         let length = imageData.data.length / 4;
@@ -110,7 +110,7 @@ export default class Mosaic extends Base {
             canvas.add(__mosaicShape);
             canvas.renderAll();
         }
-        if(this.mosaicLayer){
+        if(this.mosaicLayer) {
             this.mosaicLayer.remove();
         }
         this.mosaicArr = [];

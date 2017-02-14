@@ -1,6 +1,5 @@
 import Base from './base';
 import consts from '../consts';
-import util from '../lib/util';
 
 const abs = Math.abs;
 const arrowPath = 'M3.9603906,29.711582 C3.94156309,29.8708042 3.79272845,29.9999998 3.63155855,29.9999998 C3.482237,30.0001621 3.33535003,29.8737257 3.31603561,29.7117443 L2.24238114,5.11020599 C2.2384858,5.02109998 2.16642191,4.9706228 2.08072432,4.99789021 L0.0900407177,5.63039686 C0.00466773962,5.65750197 -0.0253588782,5.61871082 0.0233329345,5.5427516 L3.54894478,0.0568073759 C3.59747429,-0.0186649336 3.6757058,-0.0191518517 3.72455992,0.0566450699 L7.24725025,5.54047931 C7.29577976,5.61595162 7.26624006,5.65539199 7.18070478,5.62812457 L5.19034578,4.99691638 C5.10513511,4.96981127 5.03290892,5.01899 5.02901358,5.10923216 L3.9603906,29.711582 Z';
@@ -124,30 +123,26 @@ export default class Arrow extends Base {
 
     getAngle(x1, y1, x2, y2) {
         let x = Math.abs(x1 - x2),
-        y = Math.abs(y1 - y2),
-        z = Math.sqrt(x * x + y * y),
-        rotat = Math.round((Math.asin(y / z) / Math.PI * 180)),
-        quadrant = 1;
+            y = Math.abs(y1 - y2),
+            z = Math.sqrt(x * x + y * y),
+            rotat = Math.round((Math.asin(y / z) / Math.PI * 180));
         // 第一象限
         if (x2 >= x1 && y2 <= y1) {
-            rotat = 90-rotat;
+            rotat = 90 - rotat;
         }
         // 第二象限
         else if (x2 <= x1 && y2 <= y1) {
-            rotat = rotat-90;
-            quadrant = 2;
+            rotat = rotat - 90;
         }
         // 第三象限
         else if (x2 <= x1 && y2 >= y1) {
             rotat = 270 - rotat;
-            quadrant = 3
         }
         // 第四象限
         else if (x2 >= x1 && y2 >= y1) {
             rotat = 90 + rotat;
-            quadrant = 4;
         }
-        return rotat
+        return rotat;
     }
 
     /**
@@ -161,40 +156,39 @@ export default class Arrow extends Base {
         const {x:sx,y:sy} = this.startPointer;
         const x = pointer.x;
         const y = pointer.y;
-        console.log('move')
-        if (abs(x - sx) + abs(y-sy) > 5) {
-            if(x === sx && y>sy){
+        if (abs(x - sx) + abs(y - sy) > 5) {
+            if(x === sx && y > sy) {
                 this.arrow.setOriginX('center');
                 this.arrow.setOriginY('bottom');
-            }else if(x<sx && y>sy){
+            }else if(x < sx && y > sy) {
                 this.arrow.setOriginX('right');
                 this.arrow.setOriginY('bottom');
-            }else if(x<sx && y===sy){
+            }else if(x < sx && y === sy) {
                 this.arrow.setOriginX('right');
                 this.arrow.setOriginY('bottom');
-            }else if(x<sx && y<sy){
+            }else if(x < sx && y < sy) {
                 this.arrow.setOriginX('right');
                 this.arrow.setOriginY('top');
-            }else if(x === sx && y===sy){
+            }else if(x === sx && y === sy) {
                 this.arrow.setOriginX('center');
                 this.arrow.setOriginY('center');
-            }else if(x>sx && y<sy){
+            }else if(x > sx && y < sy) {
                 this.arrow.setOriginX('left');
                 this.arrow.setOriginY('top');
-            }else if(x>sx && y === sy){
+            }else if(x > sx && y === sy) {
                 this.arrow.setOriginX('center');
                 this.arrow.setOriginY('left');
-            }else if(x>sx && y>sy){
+            }else if(x > sx && y > sy) {
                 this.arrow.setOriginX('left');
                 this.arrow.setOriginY('bottom');
-            }else if(x === sx && y< sy) {
+            }else if(x === sx && y < sy) {
                 this.arrow.setOriginX('center');
                 this.arrow.setOriginY('top');
             }
-                let scale = Math.max(abs(x - this.startPointer.x) / 8*this.getRoot().getZoom(),
-                abs(y - this.startPointer.y)/ 30*this.getRoot().getZoom());
+            let scale = Math.max(abs(x - this.startPointer.x) / 8 * this.getRoot().getZoom(),
+                abs(y - this.startPointer.y) / 30 * this.getRoot().getZoom());
             this.arrow.scale(scale);
-            let angle = this.getAngle(this.startPointer.x, this.startPointer.y,x, y)
+            let angle = this.getAngle(this.startPointer.x, this.startPointer.y,x, y);
             this.arrow.setAngle(angle);
             canvas.renderAll();
         }

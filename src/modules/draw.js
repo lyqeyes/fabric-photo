@@ -40,7 +40,7 @@ export default class FreeDrawing extends Base {
      * @param {object} activeObj - Current selected text object
      * @param {object} styleObj - Initial styles
      */
-    setStyle(activeObj,styleObj){
+    setStyle(activeObj,styleObj) {
         activeObj.set(styleObj);
         this.getCanvas().renderAll();
     }

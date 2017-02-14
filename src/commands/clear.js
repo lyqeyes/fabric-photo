@@ -19,7 +19,7 @@ export default function () {
                 this.store = objs.slice();
                 if (this.store.length) {
                     objs.slice().forEach(obj => {
-                        if(obj.get('type') === 'group'){
+                        if(obj.get('type') === 'group') {
                             canvas.remove(obj);
                         }else{
                             obj.remove();

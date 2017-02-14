@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 
 const {
@@ -24,13 +24,13 @@ module.exports = {
     devtool: 'cheap-eval-source-map',
 
     devServer: {
-        contentBase: [path.join(__dirname, "views"),path.join(__dirname, "dist")],
+        contentBase: [path.join(__dirname, 'views'),path.join(__dirname, 'dist')],
         compress: false,
         port: 9876,
-        host: "0.0.0.0",
+        host: '0.0.0.0',
         hot: true,
         inline: true,
-        publicPath: "/",
+        publicPath: '/',
         historyApiFallback: {
             rewrites: [{
                 from: /^\/$/,
@@ -103,9 +103,9 @@ module.exports = {
              * 在这里引入 manifest 文件
              */
             manifest: require('./dist/vendor-manifest.json')
-        }),
+        })
         // new webpack.optimize.CommonsChunkPlugin({
         //   name: 'common'
         // })
-    ],
+    ]
 };

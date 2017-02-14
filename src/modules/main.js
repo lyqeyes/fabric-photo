@@ -218,7 +218,7 @@ export default class Main extends Base {
         // const boundingRect = canvasImage.getBoundingRect();
         // const width = boundingRect.width;
         // const height = boundingRect.height;
-        let {width,height,cssWidth} = this.getViewPortInfo().canvas;
+        let {width,height} = this.getViewPortInfo().canvas;
         const maxDimension = this._calcMaxDimension(width, height);
         //maximum is no more than twice the size of the picture
 
@@ -226,7 +226,6 @@ export default class Main extends Base {
 
         const maxWidth = width * zoom;
         const maxHeight = height * zoom;
-        console.log('check   zoom', zoom,maxWidth,cssWidth)
         if (this.canvas.lowerCanvasEl) {
             this.canvas.lowerCanvasEl.style.setProperty('height',`${maxHeight}px`);
             this.canvas.lowerCanvasEl.style.setProperty('width', `${maxWidth}px`);
@@ -275,7 +274,6 @@ export default class Main extends Base {
         const wrapperElStyle = Object.assign({}, this.canvas.wrapperEl.style);
         const lowerCanvasElStyle = Object.assign({}, this.canvas.lowerCanvasEl.style);
         const upperCanvasElStyle = Object.assign({}, this.canvas.upperCanvasEl.style);
-        console.log(JSON.stringify(wrapperElStyle),'wrapperElStyle',this.canvas.wrapperEl.style);
         let url = this.getCanvas().toDataURL(cropInfo);
         util.setStyle(this.canvas.wrapperEl, wrapperElStyle);
         util.setStyle(this.canvas.lowerCanvasEl, lowerCanvasElStyle);
@@ -294,7 +292,7 @@ export default class Main extends Base {
             },
             url: url,
             radio: radio
-        }
+        };
     }
 
     getViewPortInfo() {
@@ -313,7 +311,7 @@ export default class Main extends Base {
                 left:left,
                 top:top
             }
-        }
+        };
     }
 
     /**

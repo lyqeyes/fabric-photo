@@ -329,7 +329,6 @@ export default class Text extends Base {
      * @private
      */
     _onBlur() {
-        const ratio = this.getCanvasRatio();
         const editingObj = this._editingObj;
         const editingObjInfos = this._editingObjInfos;
         let transWidth = (editingObj.getWidth()) - (editingObjInfos.width);
@@ -343,8 +342,8 @@ export default class Text extends Base {
         this._textarea.style.display = 'none';
 
         this._editingObj.set({
-            left: editingObjInfos.left+transWidth/2,
-            top: editingObjInfos.top+transHeight/2
+            left: editingObjInfos.left + transWidth / 2,
+            top: editingObjInfos.top + transHeight / 2
         });
 
         this.getCanvas().add(this._editingObj);

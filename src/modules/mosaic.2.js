@@ -77,7 +77,7 @@ export default class Mosaic extends Base {
     _onFabricMouseMove(fEvent) {
         let ratio = this.getCanvasRatio();
         ratio = Math.ceil(ratio);
-        let dimensions = this._dimensions*ratio
+        let dimensions = this._dimensions * ratio;
         const canvas = this.getCanvas();
         const pointer = canvas.getPointer(fEvent.e);
         let imageData = canvas.contextContainer.getImageData(parseInt(pointer.x), parseInt(pointer.y), dimensions, dimensions);

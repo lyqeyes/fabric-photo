@@ -47,7 +47,7 @@ const Arrow = fabric.util.createClass(fabric.Path, {
         ctx.scale(1 / originalScaleX, 1 / originalScaleY);
     },
 
-    drawControls(){
+    drawControls(ctx) {
         if (!this.hasControls) {
             return this;
         }
