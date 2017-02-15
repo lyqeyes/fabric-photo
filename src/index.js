@@ -357,6 +357,7 @@ class FabricPhoto {
         this.endArrowDrawing();
         this.endMosaicDrawing();
         this.endDrawingShapeMode();
+        this.endCropByBoundInfo();
         this.endPan();
         this.deactivateAll();
         this._state = states.NORMAL;
@@ -475,6 +476,7 @@ class FabricPhoto {
          *     console.log(dimension.currentHeight);
          * });
          */
+
         this.fire(events.LOAD_IMAGE, {
             originalWidth: oImage.width,
             originalHeight: oImage.height,
@@ -578,7 +580,6 @@ class FabricPhoto {
         if(!cropInfo){
             return;
         }
-        this.endAll();
 
         const data = {
             imageName: this.getImageName(),
@@ -586,6 +587,8 @@ class FabricPhoto {
         };
 
         this.once('loadImage', () => {
+            this.clearRedoStack();
+            this.clearUndoStack();
             this.fire(events.END_CROPPING);
         });
 
