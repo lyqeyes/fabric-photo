@@ -64,6 +64,7 @@ export default class{
         return command.execute(this._moduleMap)
             .then(value => {
                 this.pushUndoStack(command);
+                this.unlock();
                 if (util.isFunction(command.executeCallback)) {
                     command.executeCallback(value);
                 }
@@ -85,13 +86,14 @@ export default class{
         return command.undo(this._moduleMap)
             .then(value => {
                 this.pushRedoStack(command);
+                this.unlock();
                 if (util.isFunction(command.undoCallback)) {
                     command.undoCallback(value);
                 }
 
                 return value;
             })
-            .catch(() => {}) //TODO  do nothing with exception
+            .catch(() => {this.unlock();console.error(err)}) //TODO  do nothing with exception
             .then(value => {
                 this.unlock();
 
