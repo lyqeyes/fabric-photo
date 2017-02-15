@@ -648,6 +648,13 @@ class FabricPhoto {
     }
 
     /**
+     * Get angle
+     */
+    getAngle(){
+        return this._getMainModule().getCanvasImage().angle
+    }
+
+    /**
      * Start free-drawing mode
      * @param {{width: number, color: string}} [setting] - Brush width & color
      * @example

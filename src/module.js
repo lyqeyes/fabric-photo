@@ -70,7 +70,7 @@ export default class{
 
                 return value;
             })
-            .catch(() => {}) // do nothing with exception
+            .catch((err) => {this.unlock();console.error(err)}) // do nothing with exception
             .then(value => {
                 this.unlock();
 
