@@ -53,7 +53,7 @@ export default class Pan extends Base {
      */
     _onFabricMouseDown(fEvent) {
         const canvas = this.getCanvas();
-        // this.pointer = canvas.getPointer(fEvent.e);
+        this.pointer = canvas.getPointer(fEvent.e);
         this.$lower = $(canvas.lowerCanvasEl);
         this.$upper = $(canvas.upperCanvasEl);
         this.$wrapper = $(canvas.wrapperEl);
@@ -76,8 +76,15 @@ export default class Pan extends Base {
         // go out of use because of transform opver
         // var delta = new fabric.Point(fEvent.e.movementX, fEvent.e.movementY);
         // canvas.relativePan(delta);
-        let deltaX = this.deltaX + fEvent.e.movementX;
-        let deltaY = this.deltaY + fEvent.e.movementY;
+
+        //safari9 not work for movement event
+        // let deltaX = this.deltaX + fEvent.e.movementX;
+        // let deltaY = this.deltaY + fEvent.e.movementY;
+        const canvas = this.getCanvas();
+        const movePointer = canvas.getPointer(fEvent.e);
+
+        let deltaX = this.deltaX + movePointer.x-this.pointer.x;
+        let deltaY = this.deltaY + movePointer.y - this.pointer.y;
 
         if (this.deltaWidth > Math.abs(deltaX) && deltaX < 0) {
             this.$lower.css('left', deltaX);
@@ -98,7 +105,7 @@ export default class Pan extends Base {
      */
     _onFabricMouseUp() {
         const canvas = this.getCanvas();
-        // this.pointer = null;
+        this.pointer = null;
         this.$lower = null;
         this.$upper = null;
         canvas.off({
