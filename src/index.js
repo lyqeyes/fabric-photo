@@ -1041,6 +1041,7 @@ class FabricPhoto {
      *         @param {string} [options.styles.textAlign] Type of text align (left / center / right)
      *         @param {string} [options.styles.textDecoraiton] Type of line (underline / line-throgh / overline)
      *     @param {{x: number, y: number}} [options.position] - Initial position
+     * @param {boolean} defaultEdit default start edit
      * @example
      * fabricPhoto.addText();
      * fabricPhoto.addText('init text', {
@@ -1055,12 +1056,12 @@ class FabricPhoto {
      *     }
      * });
      */
-    addText(text, options) {
+    addText(text, options,defaultEdit=false) {
         if (this.getCurrentState() !== states.TEXT) {
             this._state = states.TEXT;
         }
 
-        this._getModule(modules.TEXT).add(text || '', options || {});
+        this._getModule(modules.TEXT).add(text || '', options || {},defaultEdit);
     }
 
     /**
@@ -1122,27 +1123,6 @@ class FabricPhoto {
         this._getModule(modules.TEXT).end();
     }
 
-    /**
-     * Start pan mode
-     */
-    startPan() {
-        if (this.getCurrentState() === states.PAN) {
-            return;
-        }
-
-        this.endAll();
-        this._getModule(modules.PAN).start();
-        this._state = states.PAN;
-        this.fire(events.START_PAN);
-    }
-    /**
-     * End pan mode
-     */
-    endPan() {
-        this._getModule(modules.PAN).end();
-        this._state = states.NORMAL;
-        this.fire(events.END_PAN);
-    }
     /**
      * Double click event handler
      * @private
@@ -1233,6 +1213,28 @@ class FabricPhoto {
         const target = canvas.getActiveObject() || canvas.getActiveGroup();
         const command = commandFactory.create(commands.REMOVE_OBJECT, target);
         this.execute(command);
+    }
+
+    /**
+     * Start pan mode
+     */
+    startPan() {
+        if (this.getCurrentState() === states.PAN) {
+            return;
+        }
+
+        this.endAll();
+        this._getModule(modules.PAN).start();
+        this._state = states.PAN;
+        this.fire(events.START_PAN);
+    }
+    /**
+     * End pan mode
+     */
+    endPan() {
+        this._getModule(modules.PAN).end();
+        this._state = states.NORMAL;
+        this.fire(events.END_PAN);
     }
 
     setZoom(rate) {
