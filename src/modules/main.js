@@ -34,6 +34,9 @@ export default class Main extends Base {
 
         /*Image name*/
         this.imageName = '';
+
+        fabric.Path.prototype.selectable = false;
+
     }
 
     /**
@@ -42,8 +45,15 @@ export default class Main extends Base {
      * @param {number} quality - image's quality number
      * @returns {string} A DOMString containing the requested data URI.
      */
-    toDataURL(type,quality) {
-        return this.canvas && this.canvas.toDataURL(type,quality,1,0,0,this.canvas.width,this.canvas.height);
+    toDataURL(type, quality = 1) {
+        const wrapperElStyle = Object.assign({}, this.canvas.wrapperEl.style);
+        const lowerCanvasElStyle = Object.assign({}, this.canvas.lowerCanvasEl.style);
+        const upperCanvasElStyle = Object.assign({}, this.canvas.upperCanvasEl.style);
+        let url = this.canvas.toDataURL(type, quality, 1, 0, 0, this.canvas.width, this.canvas.height);
+        util.setStyle(this.canvas.wrapperEl, wrapperElStyle);
+        util.setStyle(this.canvas.lowerCanvasEl, lowerCanvasElStyle);
+        util.setStyle(this.canvas.upperCanvasEl, upperCanvasElStyle);
+        return url;
     }
 
     /**
@@ -52,15 +62,8 @@ export default class Main extends Base {
      * @param {number} quality - image's quality number
      * @returns {Blob}
      */
-    toBlob(type,quality = 1) {
-        const wrapperElStyle = Object.assign({},this.canvas.wrapperEl.style);
-        const lowerCanvasElStyle = Object.assign({},this.canvas.lowerCanvasEl.style);
-        const upperCanvasElStyle = Object.assign({},this.canvas.upperCanvasEl.style);
-        let blob = dataURLtoBlob(this.toDataURL(type,quality));
-        util.setStyle(this.canvas.wrapperEl,wrapperElStyle);
-        util.setStyle(this.canvas.lowerCanvasEl,lowerCanvasElStyle);
-        util.setStyle(this.canvas.upperCanvasEl,upperCanvasElStyle);
-        return blob;
+    toBlob(type, quality = 1) {
+        return dataURLtoBlob(this.toDataURL(type, quality));
     }
 
     /**
@@ -118,10 +121,10 @@ export default class Main extends Base {
             containerClass: 'xm-fabric-photo-editor-canvas-container',
             enableRetinaScaling: false
         });
-
+        this.canvas.selection = false;
         //be used in zoom and panning
         if (this.canvas.wrapperEl) {
-            this.canvas.wrapperEl.style['overflow'] = 'hidden';
+            this.canvas.wrapperEl.style.setProperty('overflow', 'hidden');
         }
     }
 
@@ -130,7 +133,6 @@ export default class Main extends Base {
      */
     adjustCanvasDimension() {
         //reset zoom to adjust canvas
-        this._zoom = 1;
         const canvasImage = this.canvasImage.scale(1);
         const boundingRect = canvasImage.getBoundingRect();
         const width = boundingRect.width;
@@ -150,13 +152,14 @@ export default class Main extends Base {
         });
         this.canvas.centerObject(canvasImage);
         if (this.canvas.lowerCanvasEl) {
-            this.canvas.lowerCanvasEl.style['top'] = '0px';
-            this.canvas.lowerCanvasEl.style['left'] = '0px';
+            this.canvas.lowerCanvasEl.style.setProperty('top','0px');
+            this.canvas.lowerCanvasEl.style.setProperty('left','0px');
         }
         if (this.canvas.upperCanvasEl) {
-            this.canvas.upperCanvasEl.style['top'] = '0px';
-            this.canvas.upperCanvasEl.style['left'] = '0px';
+            this.canvas.upperCanvasEl.style.setProperty('top','0px');
+            this.canvas.upperCanvasEl.style.setProperty('left','0px');
         }
+        this._zoom = maxDimension.width / width;
     }
 
     /**
@@ -211,44 +214,104 @@ export default class Main extends Base {
         if (this._zoom === zoom) {
             return;
         }
-        const canvasImage = this.canvasImage.scale(1);
-        const boundingRect = canvasImage.getBoundingRect();
-        const width = boundingRect.width;
-        const height = boundingRect.height;
+        // const canvasImage = this.canvasImage.scale(1);
+        // const boundingRect = canvasImage.getBoundingRect();
+        // const width = boundingRect.width;
+        // const height = boundingRect.height;
+        let {width,height} = this.getViewPortInfo().canvas;
         const maxDimension = this._calcMaxDimension(width, height);
         //maximum is no more than twice the size of the picture
-        if (zoom < 1 || zoom > width * 2 / maxDimension.width) {
-            return;
-        }
-        const maxWidth = maxDimension.width * zoom;
-        const maxHeight = maxDimension.height * zoom;
 
+        zoom = Math.max(maxDimension.width / width, Math.min(zoom, 2));
+
+        const maxWidth = width * zoom;
+        const maxHeight = height * zoom;
         if (this.canvas.lowerCanvasEl) {
-            this.canvas.lowerCanvasEl.style['height'] = `${maxHeight}px`;
-            this.canvas.lowerCanvasEl.style['width'] = `${maxWidth}px`;
-            this.canvas.lowerCanvasEl.style['top'] = '0px';
-            this.canvas.lowerCanvasEl.style['left'] = '0px';
+            this.canvas.lowerCanvasEl.style.setProperty('height',`${maxHeight}px`);
+            this.canvas.lowerCanvasEl.style.setProperty('width', `${maxWidth}px`);
+            this.canvas.lowerCanvasEl.style.setProperty('top', '0px');
+            this.canvas.lowerCanvasEl.style.setProperty('left', '0px');
         }
         if (this.canvas.upperCanvasEl) {
-            this.canvas.upperCanvasEl.style['height'] = `${maxHeight}px`;
-            this.canvas.upperCanvasEl.style['width'] = `${maxWidth}px`;
-            this.canvas.upperCanvasEl.style['top'] = '0px';
-            this.canvas.upperCanvasEl.style['left'] = '0px';
+            this.canvas.upperCanvasEl.style.setProperty('height',`${maxHeight}px`);
+            this.canvas.upperCanvasEl.style.setProperty('width', `${maxWidth}px`);
+            this.canvas.upperCanvasEl.style.setProperty('top', '0px');
+            this.canvas.upperCanvasEl.style.setProperty('left', '0px');
         }
 
         if (this.cssMaxWidth > maxWidth) {
-            this.canvas.wrapperEl.style['width'] = `${maxWidth}px`;
+            this.canvas.wrapperEl.style.setProperty('width', `${maxWidth}px`);
         }
         if (this.cssMaxHeight > maxHeight) {
-            this.canvas.wrapperEl.style['height'] = `${maxHeight}px`;
+            this.canvas.wrapperEl.style.setProperty('height',`${maxHeight}px`);
         }
-        this.canvas.renderAll();
         this._zoom = zoom;
+        this.canvas.renderAll();
     }
-
 
     getZoom() {
         return this._zoom;
+    }
+
+    getViewPortImage() {
+        const wrapperEl = this.getCanvas().wrapperEl;
+        const upperCanvasEl = this.getCanvas().upperCanvasEl;
+        const left = parseInt(upperCanvasEl.style['left'], 10),
+            top = parseInt(upperCanvasEl.style['top'], 10);
+        let canvasCssWidth = parseInt(wrapperEl.style['width'], 10),
+            canvasCssHeight = parseInt(wrapperEl.style['height'], 10),
+            upperCanvasCssWidth = parseInt(upperCanvasEl.style['width'], 10),
+            upperCanvasCssHeight = parseInt(upperCanvasEl.style['height'], 10),
+            canvasWidth = upperCanvasEl.width;
+
+        let radio = upperCanvasCssWidth / canvasWidth;
+        let cropInfo = {
+            width: canvasCssWidth / radio,
+            height: canvasCssHeight / radio,
+            left: Math.abs(left / radio),
+            top: Math.abs(top / radio)
+        };
+        const wrapperElStyle = Object.assign({}, this.canvas.wrapperEl.style);
+        const lowerCanvasElStyle = Object.assign({}, this.canvas.lowerCanvasEl.style);
+        const upperCanvasElStyle = Object.assign({}, this.canvas.upperCanvasEl.style);
+        let url = this.getCanvas().toDataURL(cropInfo);
+        util.setStyle(this.canvas.wrapperEl, wrapperElStyle);
+        util.setStyle(this.canvas.lowerCanvasEl, lowerCanvasElStyle);
+        util.setStyle(this.canvas.upperCanvasEl, upperCanvasElStyle);
+        return {
+            cropInfo: cropInfo,
+            originInfo: {
+                height: upperCanvasCssHeight,
+                width: upperCanvasCssWidth,
+                left: Math.abs(left),
+                top: Math.abs(top)
+            },
+            viewPortInfo: {
+                height: canvasCssHeight,
+                width: canvasCssWidth
+            },
+            url: url,
+            radio: radio
+        };
+    }
+
+    getViewPortInfo() {
+        const canvas = this.getCanvas();
+        const upperCanvasEl = this.getCanvas().upperCanvasEl;
+        const left = parseInt(upperCanvasEl.style['left'], 10),
+            top = parseInt(upperCanvasEl.style['top'], 10);
+        let upperCanvasCssWidth = parseInt(upperCanvasEl.style['width'], 10),
+            upperCanvasCssHeight = parseInt(upperCanvasEl.style['height'], 10);
+        return {
+            canvas: {
+                height: canvas.height,
+                width: canvas.width,
+                cssHeight: upperCanvasCssHeight,
+                cssWidth: upperCanvasCssWidth,
+                left:left,
+                top:top
+            }
+        };
     }
 
     /**

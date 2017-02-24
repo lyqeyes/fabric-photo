@@ -89,14 +89,15 @@ export default class Cropper extends Base {
         const canvas = this.getCanvas();
         const cropzone = this._cropzone;
         let data;
-
+        canvas.off('mouse:down', this._listeners.mousedown);
+        fabric.util.removeListener(document, 'keydown', this._listeners.keydown);
+        fabric.util.removeListener(document, 'keyup', this._listeners.keyup);
         if (!cropzone) {
             return null;
         }
         cropzone.remove();
-        canvas.selection = true;
+        canvas.selection = false;
         canvas.defaultCursor = 'default';
-        canvas.off('mouse:down', this._listeners.mousedown);
         canvas.forEachObject(obj => {
             obj.evented = true;
         });
@@ -105,8 +106,7 @@ export default class Cropper extends Base {
         }
         this._cropzone = null;
 
-        fabric.util.removeListener(document, 'keydown', this._listeners.keydown);
-        fabric.util.removeListener(document, 'keyup', this._listeners.keyup);
+
 
         return data;
     }

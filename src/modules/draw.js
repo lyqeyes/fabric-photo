@@ -5,11 +5,8 @@ export default class FreeDrawing extends Base {
     constructor(parent) {
         super();
         this.setParent(parent);
-
         this.name = consts.moduleNames.FREE_DRAWING;
-
         this.width = 12;
-
         this.oColor = new fabric.Color('rgba(0, 0, 0, 0.5)');
     }
 
@@ -28,7 +25,7 @@ export default class FreeDrawing extends Base {
      * @param {{width: ?number, color: ?string}} [setting] - Brush width & color
      */
     setBrush(setting) {
-        const brush = this.getCanvas().freeDrawingBrush;
+        let brush = this.getCanvas().freeDrawingBrush;
         setting = setting || {};
         this.width = setting.width || this.width;
         if (setting.color) {
@@ -36,6 +33,16 @@ export default class FreeDrawing extends Base {
         }
         brush.width = this.width;
         brush.color = this.oColor.toRgba();
+    }
+
+    /**
+     * Set obj style
+     * @param {object} activeObj - Current selected text object
+     * @param {object} styleObj - Initial styles
+     */
+    setStyle(activeObj,styleObj) {
+        activeObj.set(styleObj);
+        this.getCanvas().renderAll();
     }
 
     /**

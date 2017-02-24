@@ -23,9 +23,9 @@ export default function(zoom) {
             // this.zoom = canvas.getZoom();
             // canvas.setZoom(zoom);
             //使用新的方法通过放大canvas本身的方式进行设置
-            this.zoom = mainModule.getZoom();
+            this.zoom = mainModule.getZoom();//mainModule.getZoom();
             mainModule.setZoom(zoom);
-            return Promise.resolve();
+            return Promise.resolve(zoom);
         },
         /**
          * @param {object.<string, Component>} moduleMap - Modules injection
@@ -38,7 +38,7 @@ export default function(zoom) {
             // canvas.setZoom.call(canvasContext, this.zoom);
             const mainModule = moduleMap[MAIN];
             mainModule.setZoom(this.zoom);
-            return Promise.resolve();
+            return Promise.resolve(this.zoom);
         }
     });
 }

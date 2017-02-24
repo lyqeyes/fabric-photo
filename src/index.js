@@ -135,7 +135,6 @@ class FabricPhoto {
             this._module.pushUndoStack(command);
             this._module.clearRedoStack();
         }
-
         /**
          * @event fabricPhoto#addObject
          * @param {fabric.Object} obj - http://fabricjs.com/docs/fabric.Object.html
@@ -226,6 +225,7 @@ class FabricPhoto {
      * @private
      */
     _onCreatedPath(obj) {
+        obj.path.customType = 'freedraw';
         obj.path.set(consts.fObjectOptions.SELECTION_STYLE);
     }
     /**
@@ -336,7 +336,7 @@ class FabricPhoto {
      * @example
      * fabricPhoto.isEditor();
      */
-    isEditor() {
+    isEdited() {
         return this._canvas.getObjects().length > 0;
     }
 
@@ -350,13 +350,14 @@ class FabricPhoto {
      * fabricPhoto.endAll(); // === fabricPhoto.endCropping();
      */
     endAll() {
+        this.endCropping();
         this.endTextMode();
         this.endFreeDrawing();
         this.endLineDrawing();
         this.endArrowDrawing();
         this.endMosaicDrawing();
-        this.endCropping();
         this.endDrawingShapeMode();
+        this.endCropByBoundInfo();
         this.endPan();
         this.deactivateAll();
         this._state = states.NORMAL;
@@ -475,6 +476,7 @@ class FabricPhoto {
          *     console.log(dimension.currentHeight);
          * });
          */
+
         this.fire(events.LOAD_IMAGE, {
             originalWidth: oImage.width,
             originalHeight: oImage.height,
@@ -564,6 +566,40 @@ class FabricPhoto {
             this.loadImageFromURL(data.url, data.imageName);
         }
     }
+    /**
+     * start cropping
+     */
+    startCropByBoundInfo(){
+        this._state = states.CROP;
+    }
+    /**
+     * Apply cropping
+     * @param {object} [cropInfo] - crop bound info left top width height
+     */
+    endCropByBoundInfo(cropInfo){
+        if(!cropInfo){
+            return;
+        }
+
+        const data = {
+            imageName: this.getImageName(),
+            url: this._canvas.toDataURL(cropInfo)
+        };
+
+        this.once('loadImage', () => {
+            this.clearRedoStack();
+            this.clearUndoStack();
+            this.fire(events.END_CROPPING);
+        });
+
+        if (data) {
+            this.loadImageFromURL(data.url, data.imageName);
+        }
+    }
+
+    getViewPortImage(){
+        return this._getMainModule().getViewPortImage();
+    }
 
     /**
      * @param {string} type - 'rotate' or 'setAngle'
@@ -615,6 +651,13 @@ class FabricPhoto {
     }
 
     /**
+     * Get angle
+     */
+    getAngle(){
+        return this._getMainModule().getCanvasImage().angle
+    }
+
+    /**
      * Start free-drawing mode
      * @param {{width: number, color: string}} [setting] - Brush width & color
      * @example
@@ -638,7 +681,20 @@ class FabricPhoto {
          */
         this.fire(events.START_FREE_DRAWING);
     }
+    /**
+     * change path style
+     * @param {{width: number, color: string}} [setting] - Brush width & color
+     */
+    changeFreeDrawingPathStyle(setting){
+        const activeObj = this._canvas.getActiveObject();
 
+        if (this.getCurrentState() !== states.FREE_DRAWING ||
+            !activeObj || activeObj.customType !== 'freedraw') {
+            return;
+        }
+
+        this._getModule(modules.FREE_DRAWING).setStyle(activeObj, setting);
+    }
     /**
      * Set drawing brush
      * @param {{width: number, color: string}} setting - Brush width & color
@@ -751,6 +807,20 @@ class FabricPhoto {
         this.fire(events.START_ARROW_DRAWING);
     }
 
+    /**
+     * Start change arrow obj
+     * @param {{width: number, color: string}} [setting] - Brush width & color
+     */
+    changeArrowStyle(setting){
+        const activeObj = this._canvas.getActiveObject();
+
+        if (this.getCurrentState() !== states.ARROW ||
+            !activeObj || activeObj.customType !== 'arrow') {
+            return;
+        }
+
+        this._getModule(modules.ARROW).setStyle(activeObj, setting);
+    }
     /**
      * End arrow-drawing mode
      * @example
@@ -949,10 +1019,10 @@ class FabricPhoto {
             this._state = states.TEXT;
 
             this._getModule(modules.TEXT).start({
-                mousedown: util.bind(this._onFabricMouseDown,this),
-                select: util.bind(this._onFabricSelect, this),
-                selectClear: util.bind(this._onFabricSelectClear, this),
-                dbclick: util.bind(this._onDBClick, this),
+                mousedown: this._onFabricMouseDown.bind(this),
+                select: this._onFabricSelect.bind(this),
+                selectClear: this._onFabricSelectClear.bind(this),
+                dbclick: this._onDBClick.bind(this),
                 remove: this._handlers.removedObject
             });
         }
@@ -971,6 +1041,7 @@ class FabricPhoto {
      *         @param {string} [options.styles.textAlign] Type of text align (left / center / right)
      *         @param {string} [options.styles.textDecoraiton] Type of line (underline / line-throgh / overline)
      *     @param {{x: number, y: number}} [options.position] - Initial position
+     * @param {boolean} defaultEdit default start edit
      * @example
      * fabricPhoto.addText();
      * fabricPhoto.addText('init text', {
@@ -985,12 +1056,12 @@ class FabricPhoto {
      *     }
      * });
      */
-    addText(text, options) {
+    addText(text, options,defaultEdit=false) {
         if (this.getCurrentState() !== states.TEXT) {
             this._state = states.TEXT;
         }
 
-        this._getModule(modules.TEXT).add(text || '', options || {});
+        this._getModule(modules.TEXT).add(text || '', options || {},defaultEdit);
     }
 
     /**
@@ -1053,27 +1124,6 @@ class FabricPhoto {
     }
 
     /**
-     * Start pan mode
-     */
-    startPan() {
-        if (this.getCurrentState() === states.PAN) {
-            return;
-        }
-
-        this.endAll();
-        this._getModule(modules.PAN).start();
-        this._state = states.PAN;
-        this.fire(events.START_PAN);
-    }
-    /**
-     * End pan mode
-     */
-    endPan() {
-        this._getModule(modules.PAN).end();
-        this._state = states.NORMAL;
-        this.fire(events.END_PAN);
-    }
-    /**
      * Double click event handler
      * @private
      */
@@ -1098,17 +1148,15 @@ class FabricPhoto {
         const e = event.e || {};
         const originPointer = this._canvas.getPointer(e);
         const textComp = this._getModule(modules.TEXT);
-
+        let isNew = !obj;
         if (obj && !obj.isType('text')) {
-            return;
+            isNew = true;
         }
-
         if (textComp.isPrevEditing) {
             textComp.isPrevEditing = false;
 
             return;
         }
-
         /**
          * @event fabricPhoto#activateText
          * @param {object} options
@@ -1134,7 +1182,7 @@ class FabricPhoto {
          * });
          */
         this.fire(events.ACTIVATE_TEXT, {
-            type: obj ? 'select' : 'new',
+            type: !isNew ? 'select' : 'new',
             text: obj ? obj.text : '',
             styles: obj ? {
                 fill: obj.fill,
@@ -1167,10 +1215,41 @@ class FabricPhoto {
         this.execute(command);
     }
 
+    /**
+     * Start pan mode
+     */
+    startPan() {
+        if (this.getCurrentState() === states.PAN) {
+            return;
+        }
+
+        this.endAll();
+        this._getModule(modules.PAN).start();
+        this._state = states.PAN;
+        this.fire(events.START_PAN);
+    }
+    /**
+     * End pan mode
+     */
+    endPan() {
+        this._getModule(modules.PAN).end();
+        this._state = states.NORMAL;
+        this.fire(events.END_PAN);
+    }
+
     setZoom(rate) {
         rate = rate || 1;
         const command = commandFactory.create(commands.ZOOM, rate);
+        const callback = this._callbackAfterZoom.bind(this);
+        command.setExecuteCallback(callback)
+            .setUndoCallback(zoom => {
+                callback(zoom);
+            });
         this.execute(command);
+    }
+
+    _callbackAfterZoom(zoom){
+        this.fire(consts.eventNames.CHANGE_ZOOM,zoom)
     }
 
     getZoom() {
@@ -1297,6 +1376,16 @@ class FabricPhoto {
         }
     }
 
+    /**
+     * adjustCanvasDimension
+     */
+    adjustCanvasDimension(){
+        this._getMainModule().adjustCanvasDimension();
+    }
+
+    getViewPortInfo(){
+        return this._getMainModule().getViewPortInfo();
+    }
 
 }
 

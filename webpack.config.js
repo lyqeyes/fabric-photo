@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 
 const {
@@ -12,7 +12,7 @@ module.exports = {
     entry: {
         'index': [
             'react-hot-loader/patch',
-            `webpack-dev-server/client?${c9?c9Host:'http://127.0.0.1:9876'}`,
+            `webpack-dev-server/client?${c9 ? c9Host : 'http://127.0.0.1:9876'}`,
             'webpack/hot/only-dev-server',
             './demo/index.js'
         ]
@@ -26,13 +26,13 @@ module.exports = {
     devtool: 'cheap-module-eval-source-map',
 
     devServer: {
-        contentBase: [path.join(__dirname, "html"), path.join(__dirname, "dist")],
+        contentBase: [path.join(__dirname, 'html'), path.join(__dirname, 'dist')],
         compress: true,
-        port: parseInt(process.env.PORT) || 9876,
-        host: "0.0.0.0",
+        port: parseInt(process.env.PORT,10) || 9876,
+        host: '0.0.0.0',
         hot: true,
         inline: true,
-        publicPath: "/dist/",
+        publicPath: '/dist/',
         historyApiFallback: {
             rewrites: [{
                 from: /^\/$/,
@@ -50,19 +50,19 @@ module.exports = {
             use: [{
                 loader: 'babel-loader',
                 options: {
-                    "presets": [
-                        ["es2015", {
-                            "modules": false
-                        }], "stage-0", "react"
+                    'presets': [
+                        ['es2015', {
+                            'modules': false
+                        }], 'stage-0', 'react'
                     ],
-                    "env": {},
-                    "ignore": [
-                        "node_modules/**",
-                        "dist"
+                    'env': {},
+                    'ignore': [
+                        'node_modules/**',
+                        'dist'
                     ],
-                    "plugins": [
-                        "react-hot-loader/babel",
-                        "transform-decorators-legacy"
+                    'plugins': [
+                        'react-hot-loader/babel',
+                        'transform-decorators-legacy'
                     ]
                 }
             }],
@@ -72,8 +72,8 @@ module.exports = {
             use: [
                 'style-loader',
                 'css-loader',
-                'postcss-loader',
-            ],
+                'postcss-loader'
+            ]
         }, {
             test: /\.scss$/,
             use: [
@@ -81,7 +81,7 @@ module.exports = {
                 'css-loader',
                 'postcss-loader',
                 'sass-loader'
-            ],
+            ]
         }, {
             test: /\.(png|jpg|jpeg|gif|woff|svg|eot|ttf|woff2)$/i,
             use: ['url-loader']

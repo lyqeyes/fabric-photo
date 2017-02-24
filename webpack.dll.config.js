@@ -26,7 +26,7 @@ module.exports = {
             /**
              * name
              * dll bundle 输出到那个全局变量上
-             * 和 output.library 一样即可。 
+             * 和 output.library 一样即可。
              */
             name: '[name]_library'
         })

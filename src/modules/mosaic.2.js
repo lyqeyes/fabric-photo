@@ -1,5 +1,6 @@
 import Base from './base.js';
 import consts from '../consts';
+import MosaicShape from '../shape/mosaic.js';
 
 export default class Mosaic extends Base {
     constructor(parent) {
@@ -8,7 +9,7 @@ export default class Mosaic extends Base {
 
         this.name = consts.moduleNames.MOSAIC;
 
-        this._dimensions = 16;
+        this._dimensions = 20;
 
         this._listeners = {
             mousedown: this._onFabricMouseDown.bind(this),
@@ -58,14 +59,15 @@ export default class Mosaic extends Base {
     _onFabricMouseDown(fEvent) {
         const canvas = this.getCanvas();
         const pointer = this.pointer = canvas.getPointer(fEvent.e);
-        this._mosaicGroup = new fabric.Group([], {
+        this._mosaicShape = new MosaicShape({
+            mosaicRects:[],
+            selectable:false,
             left: pointer.x,
             top: pointer.y,
             originX: 'center',
             originY: 'center'
         });
-        canvas.add(this._mosaicGroup);
-        this._mosaicGroup.set('selectable', false);
+        canvas.add(this._mosaicShape);
         canvas.renderAll();
         canvas.on({
             'mouse:move': this._listeners.mousemove,
@@ -88,27 +90,24 @@ export default class Mosaic extends Base {
             rgba[2] += imageData.data[i * 4 + 2];
             rgba[3] += imageData.data[i * 4 + 3];
         }
-        let mosaicRect = new fabric.Rect({
-            fill: `rgb(${parseInt(rgba[0] / length)},${parseInt(rgba[1] / length)},${parseInt(rgba[2] / length)})`,
-            height: dimensions,
-            width: dimensions,
+        this._mosaicShape.addMosicRectWithUpdate({
             left: pointer.x,
-            top: pointer.y
+            top: pointer.y,
+            fill: `rgb(${parseInt(rgba[0] / length)},${parseInt(rgba[1] / length)},${parseInt(rgba[2] / length)})`,
+            dimensions: dimensions
         });
-        //this._mosaicGroup.addWithUpdate(mosaicRect);
-        canvas.add(mosaicRect);
         canvas.renderAll();
     }
 
     _onFabricMouseUp() {
         const canvas = this.getCanvas();
-        this._mosaicGroup = null;
-        this.pointer = null;
+        this._mosaicShape = null;
         canvas.off({
             'mouse:move': this._listeners.mousemove,
             'mouse:up': this._listeners.mouseup
         });
     }
+
     /**
      * Get ratio value of canvas
      * @returns {number} Ratio value

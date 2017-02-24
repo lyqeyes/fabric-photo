@@ -1,7 +1,12 @@
 import Base from './base';
 import consts from '../consts';
-const abs = Math.abs;
+// import util from '../lib/util';
 
+const abs = Math.abs;
+// const resetStyles = {
+//     fill: '#000000',
+//     width: 5
+// };
 export default class Arrow extends Base {
     constructor(parent) {
         super();
@@ -63,13 +68,23 @@ export default class Arrow extends Base {
     }
 
     /**
+     * Set obj style
+     * @param {object} activeObj - Current selected text object
+     * @param {object} styleObj - Initial styles
+     */
+    setStyle(activeObj,styleObj) {
+        activeObj.set(styleObj);
+        this.getCanvas().renderAll();
+    }
+
+    /**
      * End drawing line mode
      */
     end() {
         const canvas = this.getCanvas();
 
         canvas.defaultCursor = 'default';
-        canvas.selection = true;
+        canvas.selection = false;
 
         canvas.forEachObject(obj => {
             obj.set({
@@ -81,59 +96,30 @@ export default class Arrow extends Base {
     }
 
     /**
-     * create an arrow on head
-     * @param [x1,y1,x2,y2]
-     */
-    _createArrowHead(points) {
-        var headLength = 15,
-
-            x1 = points[0],
-            y1 = points[1],
-            x2 = points[2],
-            y2 = points[3],
-
-            dx = x2 - x1,
-            dy = y2 - y1,
-
-            angle = Math.atan2(dy, dx);
-
-        angle *= 180 / Math.PI;
-        angle += 90;
-
-        var triangle = new fabric.Triangle({
-            angle: angle,
-            fill: this._oColor.toRgba(),
-            top: y2,
-            left: x2,
-            height: headLength,
-            width: headLength,
-            originX: 'center',
-            originY: 'center'
-        });
-        return triangle;
-    }
-
-    /**
      * Mousedown event handler in fabric canvas
      * @param {{target: fabric.Object, e: MouseEvent}} fEvent - Fabric event object
      * @private
      */
     _onFabricMouseDown(fEvent) {
         const canvas = this.getCanvas();
-        if(fEvent.target && fEvent.target.customType === 'arrow') {
-            canvas.trigger('object:selected', {target: fEvent.target});
-            return;
-        }
+        // if(fEvent.target && fEvent.target.customType === 'arrow') {
+        //     canvas.trigger('object:selected', {target: fEvent.target});
+        //     return;
+        // }
         const pointer = this.startPointer = canvas.getPointer(fEvent.e);
         //this.drawArrow(pointer,pointer);
         let group = this.group = new fabric.Group([/*this.line, this.arrow, this.circle*/], {
             left: pointer.x,
-            top: pointer.y,
-            originX: 'center',
-            originY: 'center'
+            top: pointer.y
+            // originX: 'center',
+            // originY: 'center',
+            // selection:true,
+            // transparentCorners: true,
+            //  hasControls :true,
+            //  hasBorders :true
         });
         this.group.set(consts.fObjectOptions.SELECTION_STYLE);
-        this.group.set('selectable', true);
+        // this.group.set('selectable', true);
         group.customType = 'arrow';
         canvas.add(group);
         canvas.renderAll();
@@ -213,6 +199,7 @@ export default class Arrow extends Base {
         const canvas = this.getCanvas();
 
         this.line = null;
+        // canvas.setActiveObject(this.group);
 
         canvas.off({
             'mouse:move': this._listeners.mousemove,
