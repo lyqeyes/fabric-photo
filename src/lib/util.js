@@ -374,8 +374,9 @@ function extend(target, objects) {
     return target;
 }
 function setStyle(obj,css) {
-    for(let atr in css)
-        {obj.style[atr] = css[atr];}
+    for(let atr in css) {
+        obj.style.setProperty(atr,css[atr]);
+    }
 }
 export default {
     createObject: createObject(),

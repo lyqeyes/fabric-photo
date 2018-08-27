@@ -87,7 +87,7 @@ export default class Text extends Base {
     end() {
         const canvas = this.getCanvas();
 
-        canvas.selection = true;
+        canvas.selection = false;
         canvas.defaultCursor = 'default';
         canvas.deactivateAllWithDispatch(); // action for undo stack
         canvas.off({
@@ -115,8 +115,9 @@ export default class Text extends Base {
      *         @param {string} [options.styles.textAlign] Type of text align (left / center / right)
      *         @param {string} [options.styles.textDecoraiton] Type of line (underline / line-throgh / overline)
      *     @param {{x: number, y: number}} [options.position] - Initial position
+     * @param {boolean} defaultEdit default start edit
      */
-    add(text, options) {
+    add(text, options,defaultEdit=false) {
         const canvas = this.getCanvas();
         let styles = this._defaultStyles;
 
@@ -128,6 +129,10 @@ export default class Text extends Base {
 
         const newText = new fabric.Text(text, styles);
         newText.set(consts.fObjectOptions.SELECTION_STYLE);
+        newText.set({objectCaching:false});
+        newText.setControlsVisibility({
+            bl:true,br:true,mb:false,ml:false,mr:false,mt:false,tl:true,tr:true,mtr:true
+        });
         newText.on({
             mouseup: this._onFabricMouseUp.bind(this)
         });
@@ -136,6 +141,11 @@ export default class Text extends Base {
 
         if (!canvas.getActiveObject()) {
             canvas.setActiveObject(newText);
+            if(defaultEdit){
+                this._changeToEditingMode(newText);
+                this._lastClickTime = (new Date()).getTime();
+                this._listeners.dbclick(); // fire dbclick event
+            }
         }
 
         this.isPrevEditing = true;
@@ -254,11 +264,11 @@ export default class Text extends Base {
 
         this._textarea = textarea;
 
-        this._listeners = util.extend(this._listeners, {
-            input: util.bind(this._onInput,this),
-            keydown: util.bind(this._onKeyDown,this),
-            blur: util.bind(this._onBlur, this),
-            scroll:util.bind(this._onScroll, this)
+        this._listeners = Object.assign(this._listeners, {
+            input: this._onInput.bind(this),
+            keydown: this._onKeyDown.bind(this),
+            blur: this._onBlur.bind(this),
+            scroll:this._onScroll.bind(this)
         });
 
         if (browser.msie && browser.version === 9) {
@@ -328,29 +338,25 @@ export default class Text extends Base {
      * @private
      */
     _onBlur() {
-        const ratio = this.getCanvasRatio();
         const editingObj = this._editingObj;
         const editingObjInfos = this._editingObjInfos;
-        let transWidth = (editingObj.getWidth() / ratio) - (editingObjInfos.width / ratio);
-        let transHeight = (editingObj.getHeight() / ratio) - (editingObjInfos.height / ratio);
-        console.log(editingObjInfos,transWidth,transHeight,
-            this._defaultStyles.left,this._defaultStyles.top);
-
-        if (ratio === 1) {
-            transWidth /= 2;
-            transHeight /= 2;
-        }
+        let transWidth = (editingObj.getWidth()) - (editingObjInfos.width);
+        let transHeight = (editingObj.getHeight()) - (editingObjInfos.height);
+        // if (ratio === 1) {
+        //     transWidth /= 2;
+        //     transHeight /= 2;
+        // }
 
         this._textarea.style.display = 'none';
-
         this._editingObj.set({
-            left: editingObjInfos.left + transWidth,
-            top: editingObjInfos.top + transHeight
+            left: editingObjInfos.left + transWidth / 2,
+            top: editingObjInfos.top + transHeight / 2
         });
 
         this.getCanvas().add(this._editingObj);
-
+        //this._editingObj.
         this.getCanvas().on('object:removed', this._listeners.remove);
+
     }
 
     /**
@@ -385,7 +391,7 @@ export default class Text extends Base {
         const newClickTime = (new Date()).getTime();
 
         if (this._isDoubleClick(newClickTime)) {
-            this._changeToEditingMode(fEvent);
+            this._changeToEditingMode(fEvent.target);
             this._listeners.dbclick(); // fire dbclick event
         }
 
@@ -407,8 +413,8 @@ export default class Text extends Base {
      * @param {fabric.fEvent} fEvent.target is fabric.Text - Text object fired event
      * @private
      */
-    _changeToEditingMode(fEvent) {
-        const obj = fEvent.target;
+    _changeToEditingMode(obj) {
+        // const obj = fEvent.target;
         const ratio = this.getCanvasRatio();
         const textareaStyle = this._textarea.style;
 
@@ -449,7 +455,6 @@ export default class Text extends Base {
         textareaStyle['text-align'] = obj.getTextAlign();
         textareaStyle['line-height'] = obj.getLineHeight() + EXTRA_PIXEL_LINEHEIGHT;
         textareaStyle['transform-origin'] = 'left top';
-
         this._textarea.focus();
     }
 }

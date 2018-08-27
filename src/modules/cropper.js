@@ -96,7 +96,7 @@ export default class Cropper extends Base {
             return null;
         }
         cropzone.remove();
-        canvas.selection = true;
+        canvas.selection = false;
         canvas.defaultCursor = 'default';
         canvas.forEachObject(obj => {
             obj.evented = true;

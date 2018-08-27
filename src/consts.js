@@ -70,7 +70,8 @@ export default {
         ACTIVATE_TEXT: 'activateText',
         APPLY_FILTER: 'applyFilter',
         EDIT_TEXT: 'editText',
-        MOUSE_DOWN: 'mousedown'
+        MOUSE_DOWN: 'mousedown',
+        CHANGE_ZOOM:'changeZoom'
     },
 
     /**
