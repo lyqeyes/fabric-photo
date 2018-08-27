@@ -89,8 +89,7 @@ module.exports = {
     },
     externals: {
         jquery: 'jQuery',
-        lodash: '_',
-        fabric: 'fabric'
+        lodash: '_'
     },
     plugins: [
         new webpack.HotModuleReplacementPlugin(),

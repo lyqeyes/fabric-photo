@@ -1,3 +1,4 @@
+import {fabric} from 'fabric';
 // var cacheProperties = fabric.Object.prototype.cacheProperties.concat();
 // cacheProperties.push('_mosaicRects');
 const Mosaic = fabric.util.createClass(fabric.Object, {

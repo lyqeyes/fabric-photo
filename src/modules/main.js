@@ -1,3 +1,4 @@
+import {fabric} from 'fabric';
 import Base from './base';
 import consts from '../consts';
 import util from '../lib/util.js';

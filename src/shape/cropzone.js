@@ -1,3 +1,4 @@
+import {fabric} from 'fabric';
 import util from '../lib/util';
 
 const clamp = util.clamp;

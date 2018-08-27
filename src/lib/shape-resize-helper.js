@@ -1,3 +1,4 @@
+import {fabric} from 'fabric';
 const DIVISOR = {
     rect: 1,
     circle: 2,
