@@ -5,7 +5,7 @@
   "repository": "",
   "author": "yanzhi",
   "scripts": {
-    "i": "SASS_BINARY_SITE=http://npm.sankuai.com/dist/node-sass/ npm install",
+    "i": "PUPPETEER_DOWNLOAD_HOST=https://npm.taobao.org/mirrors SASS_BINARY_SITE=https://npm.taobao.org/mirrors/node-sass npm install",
     "build": "webpack --config mywebpack.config.js",
     "dev": "./node_modules/.bin/webpack-dev-server ",
     "dll": "./node_modules/.bin/webpack --config webpack.dll.config.js"
@@ -13,6 +13,7 @@
   "dependencies": {
     "babel-polyfill": "^6.20.0",
     "classnames": "^2.2.5",
+    "fabric": "1.7.3",
     "react": "^15.4.2",
     "react-dom": "^15.4.2"
   },
