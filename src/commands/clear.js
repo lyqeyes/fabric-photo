@@ -17,18 +17,14 @@ export default function () {
 
                 // Slice: "canvas.clear()" clears the objects array, So shallow copy the array
                 this.store = objs.slice();
-                if (this.store.length) {
-                    objs.slice().forEach(obj => {
-                        if(obj.get('type') === 'group') {
-                            canvas.remove(obj);
-                        }else{
-                            obj.remove();
-                        }
-                    });
-                    resolve();
-                } else {
-                    reject();
-                }
+                objs.slice().forEach(obj => {
+                    if(obj.get('type') === 'group') {
+                        canvas.remove(obj);
+                    }else{
+                        obj.remove();
+                    }
+                });
+                resolve();
             });
         },
         /**
