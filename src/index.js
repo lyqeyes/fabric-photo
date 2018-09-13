@@ -1,3 +1,5 @@
+import {fabric} from 'fabric';
+
 import Module from './module';
 import commandFactory from './command';
 import consts from './consts';
@@ -1345,14 +1347,35 @@ class FabricPhoto {
      * Destroy
      */
     destroy() {
-        const wrapperEl = this._canvas.wrapperEl;
-
+        this.clearRedoStack();
+        this.clearUndoStack();
         this.endAll();
         this._detachDomEvents();
 
         this._canvas.clear();
 
-        wrapperEl.parentNode.removeChild(wrapperEl);
+        //调用fabric的dispose方法, 清空canvas元素, 解除对其的reference.
+        this._canvas.dispose();
+
+        //基于fabric后期升级的commit记录(其中涉及一些内存泄漏的fix), 将代码改动搬到这里.
+        try {
+            this._canvas.upperCanvasEl = null;
+            this._canvas.cacheCanvasEl = null;
+            this._canvas.contextCache = null;
+            this._canvas.contextTop = null;
+
+            // cancel eventually ongoing renders
+            if (this._canvas.isRendering) {
+                fabric.util.cancelAnimFrame(this._canvas.isRendering);
+                this._canvas.isRendering = 0;
+            }
+
+            this._canvas.contextContainer = null;
+
+        } catch (err) {
+            console.log('---fp destroy error:', err);
+        }
+        this._canvas = null;
 
         forEach(this, (value, key) => {
             this[key] = null;
